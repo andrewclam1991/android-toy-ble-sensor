@@ -18,7 +18,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.andrewclam.toyblesensor">
+    package="com.andrewclam.weatherclient">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -28,7 +28,7 @@
         android:required="true" />
 
     <application
-        android:name="BleSensorApplication"
+        android:name=".WeatherClientApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

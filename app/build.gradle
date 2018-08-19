@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion rootProject.targetSdkVersion
     defaultConfig {
-        applicationId "com.andrewclam.toyblesensor"
+        applicationId "com.andrewclam.weatherclient"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
