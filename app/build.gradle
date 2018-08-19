@@ -19,11 +19,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.targetSdkVersion
     defaultConfig {
-        applicationId "com.andrewclam.toyblesensor"
-        minSdkVersion 15
-        targetSdkVersion 28
+        applicationId "com.andrewclam.weatherclient"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
