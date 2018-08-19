@@ -13,19 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.data.source.datapoint.DataPointDataSource
+ * com.andrewclam.toyblesensor.data.source.datapoint.DataPointsLocalDataSource
  */
 
 package com.andrewclam.toyblesensor.data.source.datapoint;
 
-import com.andrewclam.toyblesensor.data.source.DataSource;
+import android.support.annotation.NonNull;
+
+import com.andrewclam.toyblesensor.data.roomdb.DataPointDao;
+import com.andrewclam.toyblesensor.data.source.LocalDataSource;
 import com.andrewclam.toyblesensor.model.DataPoint;
 
-/**
- * API exposes {@link DataPoint} model specific data source requirements
- */
-public interface DataPointDataSource extends DataSource<DataPoint> {
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-  /* Allows for future extensibility */
+
+/**
+ * Local sqlite database implementation of {@link DataPointsDataSource}
+ */
+@Singleton
+class DataPointsLocalDataSource extends LocalDataSource<DataPoint> implements DataPointsDataSource {
+
+  @NonNull
+  private final DataPointDao mDataPointDao;
+
+  @Inject
+  DataPointsLocalDataSource(@NonNull DataPointDao dataPointDao) {
+    super(dataPointDao);
+    this.mDataPointDao = dataPointDao;
+  }
 
 }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.data.source.sensor.SensorsRepository
+ * com.andrewclam.toyblesensor.data.source.datapoint.DataPointsRepository
  */
 
-package com.andrewclam.toyblesensor.data.source.sensor;
+package com.andrewclam.toyblesensor.data.source.datapoint;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
@@ -24,7 +24,7 @@ import android.support.annotation.VisibleForTesting;
 import com.andrewclam.toyblesensor.data.source.Local;
 import com.andrewclam.toyblesensor.data.source.Remote;
 import com.andrewclam.toyblesensor.data.source.Repository;
-import com.andrewclam.toyblesensor.model.Sensor;
+import com.andrewclam.toyblesensor.model.DataPoint;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,22 +33,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Repository class responsible for managing cache,
- * local and remote types of {@link SensorsDataSource}
+ * local and remote types of {@link DataPointsDataSource}
  */
 
 @Singleton
-public class SensorsRepository extends Repository<Sensor> implements SensorsDataSource {
+public class DataPointsRepository extends Repository<DataPoint> implements DataPointsDataSource {
 
   @NonNull
-  private final SensorsDataSource mLocalDataSource;
+  private final DataPointsDataSource mLocalDataSource;
 
   @NonNull
-  private final SensorsDataSource mRemoteDataSource;
+  private final DataPointsDataSource mRemoteDataSource;
 
   @VisibleForTesting
   @Inject
-  SensorsRepository(@NonNull @Local SensorsDataSource localDataSource,
-                    @NonNull @Remote SensorsDataSource remoteDataSource) {
+  DataPointsRepository(@NonNull @Local DataPointsDataSource localDataSource,
+                       @NonNull @Remote DataPointsDataSource remoteDataSource) {
     super(localDataSource, remoteDataSource);
     mLocalDataSource = checkNotNull(localDataSource);
     mRemoteDataSource = checkNotNull(remoteDataSource);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.data.source.sensor.SensorRepositoryModule
+ * com.andrewclam.toyblesensor.data.source.sensor.SensorsRepositoryModule
  */
 
 package com.andrewclam.toyblesensor.data.source.sensor;
@@ -33,24 +33,24 @@ import dagger.Module;
  * This is used by Dagger to inject the required arguments into the {@link SensorsRepository}.
  */
 @Module
-abstract public class SensorRepositoryModule {
+public abstract class SensorsRepositoryModule {
 
   @NonNull
   @Singleton
   @Binds
   @Repo
-  abstract SensorDataSource providesRepository(@NonNull SensorsRepository repository);
+  abstract SensorsDataSource providesRepository(@NonNull SensorsRepository repository);
 
   @NonNull
   @Singleton
   @Binds
   @Local
-  abstract SensorDataSource providesLocalDataSource(@NonNull SensorLocalDataSource dataSource);
+  abstract SensorsDataSource providesLocalDataSource(@NonNull SensorsLocalDataSource dataSource);
 
   @NonNull
   @Singleton
   @Binds
   @Remote
-  abstract SensorDataSource providesRemoteDataSource(@NonNull SensorLocalDataSource dataSource);
+  abstract SensorsDataSource providesRemoteDataSource(@NonNull SensorsLocalDataSource dataSource);
 
 }

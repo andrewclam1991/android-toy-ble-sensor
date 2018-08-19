@@ -22,7 +22,7 @@ import android.app.Application;
 
 import com.andrewclam.toyblesensor.BleSensorApplication;
 import com.andrewclam.toyblesensor.data.roomdb.AppDatabaseModule;
-import com.andrewclam.toyblesensor.data.source.sensor.SensorRepositoryModule;
+import com.andrewclam.toyblesensor.data.source.sensor.SensorsRepositoryModule;
 import com.andrewclam.toyblesensor.di.modules.ActivityBindingModule;
 import com.andrewclam.toyblesensor.di.modules.ApplicationModule;
 import com.andrewclam.toyblesensor.di.modules.SchedulerProviderModule;
@@ -48,7 +48,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Singleton
 @Component(modules = {
     // data modules
-    SensorRepositoryModule.class,
+    SensorsRepositoryModule.class,
     AppDatabaseModule.class,
 
     // app wide modules

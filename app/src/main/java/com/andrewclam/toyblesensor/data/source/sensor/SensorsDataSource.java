@@ -13,34 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.data.source.sensor.SensorLocalDataSource
+ * com.andrewclam.toyblesensor.data.source.sensor.SensorsDataSource
  */
 
 package com.andrewclam.toyblesensor.data.source.sensor;
 
-import android.support.annotation.NonNull;
-
-import com.andrewclam.toyblesensor.data.roomdb.SensorDao;
-import com.andrewclam.toyblesensor.data.source.LocalDataSource;
+import com.andrewclam.toyblesensor.data.source.DataSource;
 import com.andrewclam.toyblesensor.model.Sensor;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-
 /**
- * Concrete implementation of a data source as a db.
+ * API exposes {@link Sensor} model specific data source requirements
  */
-@Singleton
-class SensorLocalDataSource extends LocalDataSource<Sensor> implements SensorDataSource {
+public interface SensorsDataSource extends DataSource<Sensor> {
 
-  @NonNull
-  private final SensorDao mSensorDao;
-
-  @Inject
-  SensorLocalDataSource(@NonNull SensorDao sensorDao) {
-    super(sensorDao);
-    this.mSensorDao = sensorDao;
-  }
+  /* Allows for future extensibility */
 
 }
