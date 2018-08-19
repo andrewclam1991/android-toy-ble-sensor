@@ -1,9 +1,15 @@
-TOY BLE SENSOR Android App
+TOY Weather Android Thing Project
 -------
-Sample MVP toy ble sensor Android device app, interfaces with Android Things
+Example Weather Client App with Android Thing Server
+- Uses BLE
 
-
-
+Tools:
+- Uses MVP archiecture
+- Uses Dagger2 to manage dependencies
+- Uses RxJava2 to manage workflow
+- Uses Repository pattern for data management
+- Uses Android Room ORM for local data
+- Uses Firebase Firestore for remote data
 
 License
 -------
