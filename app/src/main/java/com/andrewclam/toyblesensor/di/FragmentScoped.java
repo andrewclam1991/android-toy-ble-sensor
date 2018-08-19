@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.di.FragmentScoped
  */
 
-package com.andrewclam.toyblesensor.model;
+package com.andrewclam.toyblesensor.di;
 
-import android.support.annotation.NonNull;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+import javax.inject.Scope;
 
-  /**
-   * @return unique id of a data model
-   */
-  @NonNull
-  String getUid();
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface FragmentScoped {
 }

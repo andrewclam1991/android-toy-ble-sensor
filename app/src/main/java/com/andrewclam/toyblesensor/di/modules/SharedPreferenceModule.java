@@ -13,24 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.di.modules.SharedPreferenceModule
  */
 
-package com.andrewclam.toyblesensor.model;
+package com.andrewclam.toyblesensor.di.modules;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+import javax.inject.Singleton;
 
-  /**
-   * @return unique id of a data model
-   */
+import dagger.Module;
+import dagger.Provides;
+
+@Module
+public abstract class SharedPreferenceModule {
+
   @NonNull
-  String getUid();
+  @Singleton
+  @Provides
+  static SharedPreferences provideSharedPreferences(Application context) {
+    return context.getApplicationContext().getSharedPreferences("app_shared_preference",
+        Context.MODE_PRIVATE);
+  }
 }

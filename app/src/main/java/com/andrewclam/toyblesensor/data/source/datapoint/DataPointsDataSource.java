@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.data.source.datapoint.DataPointsDataSource
  */
 
-package com.andrewclam.toyblesensor.model;
+package com.andrewclam.toyblesensor.data.source.datapoint;
 
-import android.support.annotation.NonNull;
+import com.andrewclam.toyblesensor.data.source.DataSource;
+import com.andrewclam.toyblesensor.model.DataPoint;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+/**
+ * API exposes {@link DataPoint} model specific data source requirements
+ */
+public interface DataPointsDataSource extends DataSource<DataPoint> {
 
-  /**
-   * @return unique id of a data model
-   */
-  @NonNull
-  String getUid();
+  /* Allows for future extensibility */
+
 }
