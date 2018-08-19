@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.schedulers.BaseSchedulerProvider
  */
 
-package com.andrewclam.toyblesensor.model;
+package com.andrewclam.toyblesensor.schedulers;
 
 import android.support.annotation.NonNull;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+import io.reactivex.Scheduler;
 
-  /**
-   * @return unique id of a data model
-   */
+/**
+ * Allow providing different types of {@link Scheduler}s.
+ */
+public interface BaseSchedulerProvider {
+
   @NonNull
-  String getUid();
+  Scheduler computation();
+
+  @NonNull
+  Scheduler io();
+
+  @NonNull
+  Scheduler ui();
 }

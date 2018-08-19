@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.di.modules.SchedulerProviderModule
  */
 
-package com.andrewclam.toyblesensor.model;
+package com.andrewclam.toyblesensor.di.modules;
 
 import android.support.annotation.NonNull;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+import com.andrewclam.toyblesensor.schedulers.BaseSchedulerProvider;
+import com.andrewclam.toyblesensor.schedulers.SchedulerProvider;
 
-  /**
-   * @return unique id of a data model
-   */
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+@Module
+public abstract class SchedulerProviderModule {
+
   @NonNull
-  String getUid();
+  @Singleton
+  @Provides
+  static BaseSchedulerProvider provideSchedulerProvider() {
+    return SchedulerProvider.getInstance();
+  }
 }

@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.toyblesensor.model.BaseModel
+ * com.andrewclam.toyblesensor.data.source.Local
  */
+package com.andrewclam.toyblesensor.data.source;
 
-package com.andrewclam.toyblesensor.model;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import android.support.annotation.NonNull;
+import javax.inject.Qualifier;
 
-public interface BaseModel {
-  /**
-   * Sets the unique id
-   *
-   * @param uid unique id of a data model
-   */
-  void setUid(@NonNull String uid);
+@Qualifier
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Local {
 
-  /**
-   * @return unique id of a data model
-   */
-  @NonNull
-  String getUid();
 }
