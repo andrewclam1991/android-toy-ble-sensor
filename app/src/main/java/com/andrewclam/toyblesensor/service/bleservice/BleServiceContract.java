@@ -29,12 +29,15 @@ import com.andrewclam.toyblesensor.view.BaseView;
 public interface BleServiceContract {
 
   interface BleServiceView extends BaseView {
+
     void checkBleSettings();
 
     void checkBlePermissions();
+
   }
 
   interface Service extends ServiceState, BaseService<BleServiceView> {
+
     void postNotification();
 
     void postNotificationUpdate();
@@ -50,6 +53,7 @@ public interface BleServiceContract {
   }
 
   interface Controller extends BaseController<Service> {
+
     void sendCommand();
 
     void onCommandReceived();
@@ -59,6 +63,7 @@ public interface BleServiceContract {
     void onDataReceived(@NonNull Sensor Sensor);
 
     void onInvalidDataReceived(@NonNull Throwable throwable);
+
   }
 
 }
