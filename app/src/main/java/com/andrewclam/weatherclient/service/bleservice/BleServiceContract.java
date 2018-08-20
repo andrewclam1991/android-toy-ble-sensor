@@ -28,7 +28,7 @@ import com.andrewclam.weatherclient.view.BaseView;
 
 public interface BleServiceContract {
 
-  interface BleServiceView extends BaseView {
+  interface View extends BaseView {
 
     void checkBleSettings();
 
@@ -36,7 +36,7 @@ public interface BleServiceContract {
 
   }
 
-  interface Service extends ServiceState, BaseService<BleServiceView> {
+  interface Service extends ServiceState, BaseService<View> {
 
     void postNotification();
 
