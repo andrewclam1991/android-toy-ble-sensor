@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsLocalDataSource
+ * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsCacheDataSource
  */
 
 package com.andrewclam.weatherclient.data.source.peripheral;
@@ -40,14 +40,14 @@ import timber.log.Timber;
  * Concrete implementation of a data source as a in memory cache
  */
 @Singleton
-class PeripheralsLocalDataSource implements PeripheralsDataSource {
+class PeripheralsCacheDataSource implements PeripheralsDataSource {
 
   @VisibleForTesting
   @NonNull
   final Map<String, Peripheral> mCachePeripherals;
 
   @Inject
-  PeripheralsLocalDataSource() {
+  PeripheralsCacheDataSource() {
     mCachePeripherals = new LinkedHashMap<>();
   }
 

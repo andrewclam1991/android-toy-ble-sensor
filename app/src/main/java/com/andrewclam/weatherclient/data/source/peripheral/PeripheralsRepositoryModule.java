@@ -20,8 +20,6 @@ package com.andrewclam.weatherclient.data.source.peripheral;
 
 import android.support.annotation.NonNull;
 
-import com.andrewclam.weatherclient.data.source.Local;
-import com.andrewclam.weatherclient.data.source.Remote;
 import com.andrewclam.weatherclient.data.source.Repo;
 
 import javax.inject.Singleton;
@@ -39,18 +37,6 @@ public abstract class PeripheralsRepositoryModule {
   @Singleton
   @Binds
   @Repo
-  abstract PeripheralsDataSource providesRepository(@NonNull PeripheralsRepository repository);
-
-  @NonNull
-  @Singleton
-  @Binds
-  @Local
-  abstract PeripheralsDataSource providesLocalDataSource(@NonNull PeripheralsLocalDataSource dataSource);
-
-  @NonNull
-  @Singleton
-  @Binds
-  @Remote
-  abstract PeripheralsDataSource providesRemoteDataSource(@NonNull PeripheralsLocalDataSource dataSource);
+  abstract PeripheralsDataSource providesRepository(@NonNull PeripheralsCacheDataSource repository);
 
 }
