@@ -18,8 +18,14 @@
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
+import android.support.annotation.NonNull;
+
 import com.andrewclam.weatherclient.data.source.DataSource;
 import com.andrewclam.weatherclient.model.Peripheral;
+
+import java.util.List;
+
+import io.reactivex.Flowable;
 
 /**
  * API exposes {@link Peripheral} model specific data source requirements
@@ -28,4 +34,16 @@ public interface PeripheralsDataSource extends DataSource<Peripheral> {
 
   /* Allows for future extensibility */
 
+  /**
+   * Allows central device to scan for near by discoverable {@link Peripheral}s
+   *
+   * @return an observable list of discoverable {@link Peripheral}
+   */
+  @NonNull
+  Flowable<List<Peripheral>> scan();
+
+  /**
+   * @return flags whether an instance of scan is currently in progress
+   */
+  boolean isScanning();
 }

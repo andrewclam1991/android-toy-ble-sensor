@@ -18,6 +18,7 @@
 
 package com.andrewclam.weatherclient.model;
 
+import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
 /**
@@ -25,9 +26,14 @@ import android.support.annotation.NonNull;
  */
 public class Peripheral implements BaseModel {
   /**
-   * UUID of the bluetooth peripheral device
+   * UUID of the peripheral bluetooth device
    */
   private String uid;
+
+  /**
+   * The peripheral bluetooth device
+   */
+  private BluetoothDevice bluetoothDevice;
 
   @Override
   public void setUid(@NonNull String uid) {
@@ -39,4 +45,14 @@ public class Peripheral implements BaseModel {
   public String getUid() {
     return uid;
   }
+
+  @NonNull
+  public BluetoothDevice getBluetoothDevice() {
+    return bluetoothDevice;
+  }
+
+  public void setBluetoothDevice(@NonNull BluetoothDevice bluetoothDevice) {
+    this.bluetoothDevice = bluetoothDevice;
+  }
+
 }

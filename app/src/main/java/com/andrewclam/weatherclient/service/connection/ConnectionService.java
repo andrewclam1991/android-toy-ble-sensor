@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.service.bleservice.BleService
+ * com.andrewclam.weatherclient.service.connection.ConnectionService
  */
 
-package com.andrewclam.weatherclient.service.bleservice;
+package com.andrewclam.weatherclient.service.connection;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.andrewclam.weatherclient.model.Peripheral;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,12 +31,12 @@ import java.util.UUID;
 
 import dagger.android.DaggerService;
 
-public class BleService extends DaggerService implements BleServiceContract.Service {
+public class ConnectionService extends DaggerService implements ConnectionServiceContract.Service {
 
   @NonNull
-  private Map<String, BleServiceContract.View> mObservers;
+  private Map<String, ConnectionServiceContract.View> mObservers;
 
-  public BleService() {
+  public ConnectionService() {
     mObservers = new LinkedHashMap<>(0);
   }
 
@@ -57,7 +58,7 @@ public class BleService extends DaggerService implements BleServiceContract.Serv
 
   @NonNull
   @Override
-  public String addView(@NonNull BleServiceContract.View view) {
+  public String addView(@NonNull ConnectionServiceContract.View view) {
     String viewTag = UUID.randomUUID().toString();
     mObservers.put(viewTag, view);
     return viewTag;
@@ -84,12 +85,17 @@ public class BleService extends DaggerService implements BleServiceContract.Serv
   }
 
   @Override
-  public void connect(BluetoothDevice device) {
+  public void connect(Peripheral peripheral) {
 
   }
 
   @Override
-  public void disconnect(BluetoothDevice device) {
+  public void reconnect(Peripheral peripheral) {
+
+  }
+
+  @Override
+  public void disconnect(Peripheral peripheral) {
 
   }
 

@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.view.pairing.PairingContract
+ * com.andrewclam.weatherclient.service.pairing.PairingServiceContract
  */
 
-package com.andrewclam.weatherclient.view.pairing;
+package com.andrewclam.weatherclient.service.pairing;
 
-import android.bluetooth.BluetoothDevice;
-
-import com.andrewclam.weatherclient.view.BasePresenter;
+import com.andrewclam.weatherclient.model.Peripheral;
+import com.andrewclam.weatherclient.service.BaseService;
 import com.andrewclam.weatherclient.view.BaseView;
 
-public interface PairingContract {
+public interface PairingServiceContract {
   interface View extends BaseView {
-    void onPeripheralsChanged();
+    void notifyOnDataSetChanged();
   }
 
-  interface Presenter extends BasePresenter<View> {
-    void scanBlePeripherals();
+  interface Service extends BaseService<View> {
+    boolean isScanning();
 
-    void onPeripheralClicked(BluetoothDevice device);
+    void scanPeripherals();
+
+    void handleOnPeripheralClicked(Peripheral peripheral);
   }
 }
