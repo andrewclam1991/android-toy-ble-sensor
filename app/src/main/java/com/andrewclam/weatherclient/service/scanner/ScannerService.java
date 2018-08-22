@@ -55,6 +55,16 @@ public final class ScannerService extends DaggerService implements ScannerContra
   }
 
   @Override
+  public void setContext(ScannerContract.Context context) {
+
+  }
+
+  @Override
+  public void dropContext() {
+
+  }
+
+  @Override
   public void startService() {
     startScan();
   }

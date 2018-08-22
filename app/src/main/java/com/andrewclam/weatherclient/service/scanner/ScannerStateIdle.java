@@ -1,7 +1,5 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
@@ -11,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -22,8 +22,8 @@ import timber.log.Timber;
 @Singleton
 final class ScannerStateIdle implements ScannerContract.State {
 
-  @NonNull
-  private final ScannerContract.Context mContext;
+  @Nullable
+  private ScannerContract.Context mContext;
 
   @NonNull
   private final ScannerContract.Producer mProducer;
@@ -41,11 +41,9 @@ final class ScannerStateIdle implements ScannerContract.State {
   private static final long SCAN_PERIOD_SECONDS = 10;
 
   @Inject
-  ScannerStateIdle(@NonNull ScannerContract.Context context,
-                   @NonNull ScannerContract.Producer producer,
+  ScannerStateIdle(@NonNull ScannerContract.Producer producer,
                    @NonNull @Repo PeripheralsDataSource repository,
                    @NonNull BaseSchedulerProvider schedulerProvider) {
-    mContext = context;
     mProducer = producer;
     mRepository = repository;
     mSchedulerProvider = schedulerProvider;
@@ -71,5 +69,16 @@ final class ScannerStateIdle implements ScannerContract.State {
   public void stopScan() {
     // no implementation, illegal state, scanner is idle
     Timber.d("Scan is already idle, stopScan() request ignored.");
+  }
+
+  @Override
+  public void setContext(@NonNull ScannerContract.Context context) {
+    mContext = context;
+  }
+
+  @Override
+  public void dropContext() {
+    mContext = null;
+    mCompositeDisposable.clear();
   }
 }

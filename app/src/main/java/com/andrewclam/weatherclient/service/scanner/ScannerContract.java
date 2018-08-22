@@ -18,8 +18,6 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.service.BaseController;
 import com.andrewclam.weatherclient.service.BaseService;
@@ -33,6 +31,7 @@ import javax.inject.Qualifier;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
 
 /**
  * Scanner service contract handles device discovery responsibilities
@@ -119,6 +118,18 @@ interface ScannerContract {
      * Command to stop device start
      */
     void stopScan();
+
+    /**
+     * Sets the state context
+     *
+     * @param context state context
+     */
+    void setContext(@NonNull ScannerContract.Context context);
+
+    /**
+     * Removes reference to the state context
+     */
+    void dropContext();
   }
 
   /**
