@@ -18,7 +18,6 @@
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
-import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -28,75 +27,28 @@ import com.google.common.base.Optional;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import timber.log.Timber;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-
 /**
  * Concrete implementation of a data source as a in memory cache
+ * TODO handle data production at the controller level
  */
 @Singleton
 class PeripheralsCacheDataSource implements PeripheralsDataSource {
-
-  @NonNull
-  private final BluetoothAdapter mBluetoothAdapter;
-
-  @NonNull
-  private AtomicBoolean mIsScanning;
 
   @VisibleForTesting
   @NonNull
   final Map<String, Peripheral> mCachePeripherals;
 
-  // Stops scanning after 10 seconds
-  private static final long SCAN_PERIOD_SECONDS = 10;
-
   @Inject
-  PeripheralsCacheDataSource(@NonNull BluetoothAdapter bluetoothAdapter) {
-    mBluetoothAdapter = bluetoothAdapter;
-    mIsScanning = new AtomicBoolean(false);
+  PeripheralsCacheDataSource() {
     mCachePeripherals = new LinkedHashMap<>();
-  }
-
-  @NonNull
-  @Override
-  public Flowable<List<Peripheral>> scan() {
-    // Get scanned result, then add to cache, then return all result after scan period
-    return getPeripheral()
-        .flatMapCompletable(this::add)
-        .delay(SCAN_PERIOD_SECONDS, TimeUnit.SECONDS)
-        .andThen(getAll())
-        .doOnSubscribe(subscription -> mIsScanning.set(true))
-        .doOnTerminate(() -> {
-          // TODO andrew investigate creating immutable callback that can be reused for releasing scanner
-          mBluetoothAdapter.stopLeScan(null);
-          mIsScanning.set(false);
-        });
-  }
-
-  private Flowable<Peripheral> getPeripheral() {
-    return Flowable.create(emitter ->
-        mBluetoothAdapter.startLeScan((device, rssi, scanRecord) -> {
-          Peripheral peripheral = new Peripheral();
-          peripheral.setBluetoothDevice(checkNotNull(device, "device can't be null"));
-          peripheral.setUid(device.getAddress());
-          emitter.onNext(peripheral);
-        }), BackpressureStrategy.BUFFER);
-  }
-
-  @Override
-  public boolean isScanning() {
-    return mIsScanning.get();
   }
 
   @NonNull

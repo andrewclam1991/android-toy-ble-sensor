@@ -22,30 +22,14 @@ import android.support.annotation.NonNull;
 
 import com.andrewclam.weatherclient.view.BaseView;
 
-public interface BaseService<V extends BaseView> {
+public interface BaseService {
   /**
-   * Add observer {@link BaseView} with view tag
-   *
-   * @param view instance of a {@link BaseView}
-   * @return the instance unique tag that identifies the {@link BaseView}
-   */
-  @NonNull
-  String addView(@NonNull V view);
-
-  /**
-   * Removes an observer {@link BaseView} base on its unique tag
-   *
-   * @param viewTag the instance unique tag that identifies the {@link BaseView}
-   */
-  void dropView(@NonNull String viewTag);
-
-  /**
-   * Command to start this {@link BaseService<V>}
+   * Command to start this {@link BaseService}
    */
   void startService();
 
   /**
-   * Command to terminate this {@link BaseService<V>}
+   * Command to terminate this {@link BaseService}
    */
   void stopService();
 }

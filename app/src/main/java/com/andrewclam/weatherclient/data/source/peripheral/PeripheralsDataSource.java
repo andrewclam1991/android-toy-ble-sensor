@@ -33,17 +33,4 @@ import io.reactivex.Flowable;
 public interface PeripheralsDataSource extends DataSource<Peripheral> {
 
   /* Allows for future extensibility */
-
-  /**
-   * Allows central device to scan for near by discoverable {@link Peripheral}s
-   *
-   * @return an observable list of discoverable {@link Peripheral}
-   */
-  @NonNull
-  Flowable<List<Peripheral>> scan();
-
-  /**
-   * @return flags whether an instance of scan is currently in progress
-   */
-  boolean isScanning();
 }

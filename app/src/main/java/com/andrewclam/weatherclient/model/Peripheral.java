@@ -35,6 +35,17 @@ public class Peripheral implements BaseModel {
    */
   private BluetoothDevice bluetoothDevice;
 
+  /**
+   * Remembers the relative received signal strength in
+   * the wireless environment, higher rssi means the stronger the signal
+   */
+  private double rssi;
+
+  /**
+   * Remembers the content of the advertisement record offered by the remote device.
+   */
+  private byte[] scanRecord;
+
   @Override
   public void setUid(@NonNull String uid) {
     this.uid = uid;
@@ -55,4 +66,19 @@ public class Peripheral implements BaseModel {
     this.bluetoothDevice = bluetoothDevice;
   }
 
+  public double getRssi() {
+    return rssi;
+  }
+
+  public void setRssi(double rssi) {
+    this.rssi = rssi;
+  }
+
+  public byte[] getScanRecord() {
+    return scanRecord;
+  }
+
+  public void setScanRecord(byte[] scanRecord) {
+    this.scanRecord = scanRecord;
+  }
 }

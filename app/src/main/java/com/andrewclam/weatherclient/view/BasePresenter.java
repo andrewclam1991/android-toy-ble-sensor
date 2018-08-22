@@ -18,13 +18,25 @@
 
 package com.andrewclam.weatherclient.view;
 
+import android.support.annotation.NonNull;
+
 /**
  * Base Presenter class
  *
  * @param <V>
  */
 public interface BasePresenter<V extends BaseView> {
-  void setView(V view);
+  /**
+   * Add observer {@link BaseView} with view tag
+   *
+   * @param view instance of a {@link BaseView}
+   */
+  void addView(@NonNull V view);
 
-  void dropView();
+  /**
+   * Removes an observer {@link BaseView} from
+   *
+   * @param view instance of a {@link BaseView}
+   */
+  void dropView(@NonNull V view);
 }

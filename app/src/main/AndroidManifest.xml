@@ -42,7 +42,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.pairing.PairingService" />
+
+        <service android:name=".service.scanner.ScannerService" />
+        <service android:name=".service.connection.ConnectionService" />
     </application>
 
 </manifest>

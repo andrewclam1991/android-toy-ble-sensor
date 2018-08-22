@@ -13,74 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.service.connection.ConnectionService
+ * com.andrewclam.weatherclient.service.pairing.PairingService
  */
 
-package com.andrewclam.weatherclient.service.connection;
+package com.andrewclam.weatherclient.service.scanner;
 
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.andrewclam.weatherclient.model.Peripheral;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import javax.inject.Inject;
 
 import dagger.android.DaggerService;
 
-public class ConnectionService extends DaggerService implements ConnectionServiceContract.Service {
+/**
+ * Delegates scanning for ble peripheral devices to its {@link ScannerContract.Controller}
+ */
+public final class ScannerService extends DaggerService implements ScannerContract.Service {
 
-  public ConnectionService() {
+  @Inject
+  ScannerContract.Controller mController;
 
+  public ScannerService() {
+    // Required no-arg constructor
+  }
+
+  @Override
+  public void setScanningInProgress(boolean isVisible) {
+    // TODO implement showing user that scanning is in progress
+  }
+
+  @Override
+  public void startScan() {
+    mController.startScan();
+  }
+
+  @Override
+  public void stopScan() {
+    mController.stopScan();
+  }
+
+  @Override
+  public void startService() {
+    startScan();
+  }
+
+  @Override
+  public void stopService() {
+    stopScan();
+    stopForeground(true);
+    stopSelf();
   }
 
   @Nullable
   @Override
   public IBinder onBind(Intent intent) {
     return null;
-  }
-
-  @Override
-  public void postNotification() {
-
-  }
-
-  @Override
-  public void postNotificationUpdate() {
-
-  }
-
-  @Override
-  public void startService() {
-
-  }
-
-  @Override
-  public void stopService() {
-    cleanUp();
-    stopForeground(true);
-    stopSelf();
-  }
-
-  @Override
-  public void connect(Peripheral peripheral) {
-
-  }
-
-  @Override
-  public void reconnect(Peripheral peripheral) {
-
-  }
-
-  @Override
-  public void disconnect(Peripheral peripheral) {
-
-  }
-
-  private void cleanUp() {
-
   }
 }
