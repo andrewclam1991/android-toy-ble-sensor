@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 /**
@@ -16,9 +15,6 @@ import timber.log.Timber;
  */
 @Singleton
 class ScannerController implements ScannerContract.Controller {
-
-  @NonNull
-  private final CompositeDisposable mCompositeDisposable;
 
   @NonNull
   private final ScannerContract.State mIdleState;
@@ -38,7 +34,6 @@ class ScannerController implements ScannerContract.Controller {
     mIdleState = idleState;
     mActiveState = activeState;
     mCurrentState = mIdleState;
-    mCompositeDisposable = new CompositeDisposable();
   }
 
   @Override
@@ -49,7 +44,6 @@ class ScannerController implements ScannerContract.Controller {
   @Override
   public void dropService() {
     mService = null;
-    mCompositeDisposable.clear();
   }
 
   @Override
@@ -69,7 +63,6 @@ class ScannerController implements ScannerContract.Controller {
         state.getClass().getSimpleName());
 
     mCurrentState = state;
-
   }
 
   @NonNull
@@ -83,84 +76,4 @@ class ScannerController implements ScannerContract.Controller {
   public ScannerContract.State getActiveState() {
     return mActiveState;
   }
-
-//  /**
-//   * Encapsulate how scanner should behave when in {@link Idle}
-//   */
-//  private class Idle implements ScannerContract.State {
-//
-//    @NonNull
-//    private final ScannerContract.Context mContext;
-//
-//    @NonNull
-//    private final ScannerContract.Producer mProducer;
-//
-//    @NonNull
-//    private final BaseSchedulerProvider mSchedulerProvider;
-//
-//    @NonNull
-//    private final CompositeDisposable mCompositeDisposable;
-//
-//    Idle(@NonNull ScannerContract.Context context,
-//              @NonNull ScannerContract.Producer producer,
-//              @NonNull BaseSchedulerProvider schedulerProvider) {
-//      mContext = context;
-//      mProducer = producer;
-//      mSchedulerProvider = schedulerProvider;
-//      mCompositeDisposable = new CompositeDisposable();
-//    }
-//
-//    @Override
-//    public void startScan() {
-//      // TODO implement legal, scanner is idle
-//      Disposable disposable = mProducer.start()
-//          .flatMapCompletable(mRepository::add)
-//          .subscribeOn(mSchedulerProvider.io())
-//          .observeOn(mSchedulerProvider.ui())
-//          .subscribe();
-//
-//      mCompositeDisposable.add(disposable);
-//
-//      Timber.d("start started");
-//      if (mService != null) {
-//        mService.setScanningInProgress(true);
-//      }
-//      mContext.setCurrentState(mActiveState);
-//    }
-//
-//    @Override
-//    public void stopScan() {
-//      // no implementation, illegal state, scanner is idle
-//      Timber.d("Scan is already idle, stopScan() request ignored.");
-//    }
-//  }
-//
-//  /**
-//   * Encapsulate how scanner should behave when in {@link Active}
-//   */
-//  private class Active implements ScannerContract.State {
-//
-//    @NonNull
-//    private final ScannerContract.Context mContext;
-//
-//    Active(@NonNull ScannerContract.Context context) {
-//      mContext = context;
-//    }
-//
-//    @Override
-//    public void startScan() {
-//      // No implementation, illegal state, scanner is in progress
-//      Timber.d("Scan currently in progress, startScan() request ignored.");
-//    }
-//
-//    @Override
-//    public void stopScan() {
-//      // TODO implement legal, scanner is active
-//      if (mService != null) {
-//        mService.setScanningInProgress(false);
-//      }
-//      Timber.d("Scan stopped");
-//      mContext.setCurrentState(mIdleState);
-//    }
-//  }
 }

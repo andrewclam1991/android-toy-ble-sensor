@@ -118,18 +118,6 @@ interface ScannerContract {
      * Command to stop device start
      */
     void stopScan();
-
-    /**
-     * Sets the state context
-     *
-     * @param context state context
-     */
-    void setContext(@NonNull ScannerContract.Context context);
-
-    /**
-     * Removes reference to the state context
-     */
-    void dropContext();
   }
 
   /**

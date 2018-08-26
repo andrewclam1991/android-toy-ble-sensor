@@ -41,7 +41,7 @@ public interface ConnectionServiceContract {
 
   }
 
-  interface Service extends ServiceState, BaseService<View> {
+  interface Service extends ServiceState, BaseService {
 
     void postNotification();
 

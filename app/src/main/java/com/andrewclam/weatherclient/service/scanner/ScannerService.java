@@ -20,7 +20,6 @@ package com.andrewclam.weatherclient.service.scanner;
 
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
@@ -52,16 +51,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void stopScan() {
     mController.stopScan();
-  }
-
-  @Override
-  public void setContext(ScannerContract.Context context) {
-
-  }
-
-  @Override
-  public void dropContext() {
-
   }
 
   @Override
