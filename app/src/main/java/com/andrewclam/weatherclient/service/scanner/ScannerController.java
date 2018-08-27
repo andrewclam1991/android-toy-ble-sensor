@@ -16,11 +16,11 @@ import timber.log.Timber;
 @Singleton
 class ScannerController implements ScannerContract.Controller {
 
-  @NonNull
-  private final ScannerContract.State mIdleState;
+  @Inject
+  ScannerContract.State mIdleState;
 
-  @NonNull
-  private final ScannerContract.State mActiveState;
+  @Inject
+  ScannerContract.State mActiveState;
 
   @NonNull
   private ScannerContract.State mCurrentState;
@@ -29,10 +29,7 @@ class ScannerController implements ScannerContract.Controller {
   private ScannerContract.Service mService;
 
   @Inject
-  ScannerController(@NonNull @Idle ScannerContract.State idleState,
-                    @NonNull @Active ScannerContract.State activeState) {
-    mIdleState = idleState;
-    mActiveState = activeState;
+  ScannerController() {
     mCurrentState = mIdleState;
   }
 
