@@ -27,10 +27,12 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import javax.annotation.Nonnull;
 import javax.inject.Qualifier;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
 /**
@@ -52,6 +54,10 @@ interface ScannerContract {
 
     void checkBluetoothPermissions();
 
+    void getBluetoothAdapter();
+
+    void showScanningInProgress(boolean isVisible);
+
   }
 
   /**
@@ -60,7 +66,11 @@ interface ScannerContract {
    */
   interface Service extends BaseService, State {
 
-    void setScanningInProgress(boolean isVisible);
+    void addView(@Nonnull View view);
+
+    void dropView(@Nonnull View view);
+
+    void showScanningInProgress(boolean isVisible);
 
   }
 

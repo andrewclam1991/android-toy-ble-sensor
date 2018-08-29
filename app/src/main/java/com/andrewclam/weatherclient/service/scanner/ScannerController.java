@@ -1,7 +1,8 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import android.support.annotation.NonNull;
+import com.andrewclam.weatherclient.di.ServiceScoped;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,6 +14,7 @@ import timber.log.Timber;
  * Uses State Pattern to handle states.
  * Uses Strategy Pattern to handle runtime compat issues.
  */
+@ServiceScoped
 @Singleton
 class ScannerController implements ScannerContract.Controller {
 
@@ -22,7 +24,7 @@ class ScannerController implements ScannerContract.Controller {
   @Inject
   ScannerContract.State mActiveState;
 
-  @NonNull
+  @Nonnull
   private ScannerContract.State mCurrentState;
 
   @Nullable
@@ -34,7 +36,7 @@ class ScannerController implements ScannerContract.Controller {
   }
 
   @Override
-  public void setService(@NonNull ScannerContract.Service service) {
+  public void setService(@Nonnull ScannerContract.Service service) {
     mService = service;
   }
 
@@ -54,21 +56,20 @@ class ScannerController implements ScannerContract.Controller {
   }
 
   @Override
-  public void setCurrentState(@NonNull ScannerContract.State state) {
+  public void setCurrentState(@Nonnull ScannerContract.State state) {
     Timber.d("Current state: %s1, transitioning to state: %s2",
         mCurrentState.getClass().getSimpleName(),
         state.getClass().getSimpleName());
-
     mCurrentState = state;
   }
 
-  @NonNull
+  @Nonnull
   @Override
   public ScannerContract.State getIdleState() {
     return mIdleState;
   }
 
-  @NonNull
+  @Nonnull
   @Override
   public ScannerContract.State getActiveState() {
     return mActiveState;

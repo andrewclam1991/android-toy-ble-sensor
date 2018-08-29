@@ -22,25 +22,57 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.andrewclam.weatherclient.di.ServiceScoped;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
+import timber.log.Timber;
 
 /**
  * Delegates scanning for ble peripheral devices to its {@link ScannerContract.Controller}
  */
 public final class ScannerService extends DaggerService implements ScannerContract.Service {
 
+  @Nonnull
+  private final List<ScannerContract.View> mObservers;
+
   @Inject
   ScannerContract.Controller mController;
 
   public ScannerService() {
     // Required no-arg constructor
+    mObservers = new LinkedList<>();
   }
 
   @Override
-  public void setScanningInProgress(boolean isVisible) {
-    // TODO implement showing user that scanning is in progress
+  public void addView(@Nonnull ScannerContract.View view) {
+    mObservers.add(view);
+  }
+
+  @Override
+  public void dropView(@Nonnull ScannerContract.View view) {
+    mObservers.remove(view);
+  }
+
+  @Override
+  public void showScanningInProgress(boolean isVisible) {
+    if (mObservers.isEmpty()){
+      return; // No observers
+    }
+
+    for (@Nullable ScannerContract.View observer : mObservers){
+      if (observer != null && observer.isActive()) {
+        observer.showScanningInProgress(isVisible);
+      }else{
+        Timber.d("observer is inactive, ignore view update");
+      }
+    }
   }
 
   @Override
@@ -61,6 +93,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void stopService() {
     stopScan();
+    mObservers.clear();
     stopForeground(true);
     stopSelf();
   }

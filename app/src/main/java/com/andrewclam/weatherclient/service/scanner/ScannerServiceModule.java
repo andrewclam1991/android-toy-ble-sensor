@@ -43,7 +43,7 @@ public abstract class ScannerServiceModule {
     if (bluetoothManager != null) {
       adapter = bluetoothManager.getAdapter();
     } else{
-      throw new UnsupportedOperationException("Unable to get device bluetooth adapter");
+      throw new UnsupportedOperationException("Unable to get device bluetooth adapter.");
     }
     return adapter;
   }

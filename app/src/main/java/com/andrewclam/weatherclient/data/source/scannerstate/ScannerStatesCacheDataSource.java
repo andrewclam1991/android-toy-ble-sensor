@@ -16,12 +16,13 @@
  * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsCacheDataSource
  */
 
-package com.andrewclam.weatherclient.data.source.peripheral;
+package com.andrewclam.weatherclient.data.source.scannerstate;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.andrewclam.weatherclient.model.Peripheral;
+import com.andrewclam.weatherclient.model.ScannerState;
 import com.google.common.base.Optional;
 
 import java.util.LinkedHashMap;
@@ -39,45 +40,45 @@ import timber.log.Timber;
  * Concrete implementation of a data source as a in memory cache
  */
 @Singleton
-class PeripheralsCacheDataSource implements PeripheralsDataSource {
+class ScannerStatesCacheDataSource implements ScannerStatesDataSource {
 
   @VisibleForTesting
   @NonNull
-  final Map<String, Peripheral> mCachePeripherals;
+  final Map<String, ScannerState> mCacheItems;
 
   @Inject
-  PeripheralsCacheDataSource() {
-    mCachePeripherals = new LinkedHashMap<>();
+  ScannerStatesCacheDataSource() {
+    mCacheItems = new LinkedHashMap<>();
   }
 
   @NonNull
   @Override
-  public Flowable<Optional<Peripheral>> get(@NonNull String id) {
-    final Peripheral cachedItem = mCachePeripherals.get(id);
+  public Flowable<Optional<ScannerState>> get(@NonNull String id) {
+    final ScannerState cachedItem = mCacheItems.get(id);
     return Flowable.just(cachedItem != null ? Optional.of(cachedItem) : Optional.absent());
   }
 
   @NonNull
   @Override
-  public Flowable<List<Peripheral>> getAll() {
-    return Flowable.fromIterable(mCachePeripherals.values()).toList().toFlowable();
+  public Flowable<List<ScannerState>> getAll() {
+    return Flowable.fromIterable(mCacheItems.values()).toList().toFlowable();
   }
 
   @NonNull
   @Override
-  public Completable add(@NonNull Peripheral item) {
+  public Completable add(@NonNull ScannerState item) {
     return Completable.create(emitter -> {
-      mCachePeripherals.put(item.getUid(), item);
+      mCacheItems.put(item.getUid(), item);
       emitter.onComplete();
     });
   }
 
   @NonNull
   @Override
-  public Completable add(@NonNull List<Peripheral> items) {
+  public Completable add(@NonNull List<ScannerState> items) {
     return Completable.create(emitter -> {
-      for (Peripheral item : items) {
-        mCachePeripherals.put(item.getUid(), item);
+      for (ScannerState item : items) {
+        mCacheItems.put(item.getUid(), item);
       }
       emitter.onComplete();
     });
@@ -85,7 +86,7 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
 
   @NonNull
   @Override
-  public Completable update(@NonNull Peripheral item) {
+  public Completable update(@NonNull ScannerState item) {
     return add(item);
   }
 
@@ -93,8 +94,8 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @Override
   public Completable delete(@NonNull String id) {
     return Completable.create(emitter -> {
-      if (!mCachePeripherals.isEmpty() && mCachePeripherals.containsKey(id)) {
-        mCachePeripherals.remove(id);
+      if (!mCacheItems.isEmpty() && mCacheItems.containsKey(id)) {
+        mCacheItems.remove(id);
         Timber.d("Cached peripheral removed: %s", id);
       } else {
         Timber.d("Cache peripherals doesn't contain item with id: %s", id);
@@ -114,6 +115,6 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
 
   @Override
   public void refresh() {
-    mCachePeripherals.clear();
+    mCacheItems.clear();
   }
 }
