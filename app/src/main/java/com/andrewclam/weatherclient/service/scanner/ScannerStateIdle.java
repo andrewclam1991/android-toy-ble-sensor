@@ -84,6 +84,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     Timber.d("scan started");
     mContext.setCurrentState(mContext.getActiveState());
 
+    // TODO remove the state data repository, use stateSource instead
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(true);
@@ -98,6 +99,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     Timber.d("scan terminated");
     mContext.setCurrentState(mContext.getIdleState());
 
+    // TODO remove the state data repository, use stateSource instead
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(false);

@@ -25,9 +25,6 @@ final class ScannerStateActive implements ScannerContract.State {
   @NonNull
   private final ScannerContract.Producer mProducer;
 
-  @Nonnull
-  private final ScannerStatesDataSource mStateRepository;
-
   @NonNull
   private final BaseSchedulerProvider mSchedulerProvider;
 
@@ -37,11 +34,9 @@ final class ScannerStateActive implements ScannerContract.State {
   @Inject
   ScannerStateActive(@Nonnull ScannerContract.Context context,
                      @NonNull ScannerContract.Producer producer,
-                     @Nonnull @Repo ScannerStatesDataSource stateRepository,
                      @NonNull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
-    mStateRepository = stateRepository;
     mSchedulerProvider = schedulerProvider;
     mCompositeDisposable = new CompositeDisposable();
   }
