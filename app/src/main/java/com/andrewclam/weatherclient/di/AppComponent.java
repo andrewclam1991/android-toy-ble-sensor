@@ -26,6 +26,7 @@ import com.andrewclam.weatherclient.data.source.datapoint.DataPointsRepositoryMo
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsRepositoryModule;
 import com.andrewclam.weatherclient.data.source.sensor.SensorsRepositoryModule;
 import com.andrewclam.weatherclient.data.source.sensordatapoint.SensorDataPointsRepositoryModule;
+import com.andrewclam.weatherclient.data.state.scannerstate.ScannerStateRepositoryModule;
 import com.andrewclam.weatherclient.di.modules.ActivityBindingModule;
 import com.andrewclam.weatherclient.di.modules.ApplicationModule;
 import com.andrewclam.weatherclient.di.modules.SchedulerProviderModule;
@@ -58,6 +59,9 @@ import dagger.android.support.AndroidSupportInjectionModule;
     DataPointsRepositoryModule.class,
     SensorDataPointsRepositoryModule.class,
     AppDatabaseModule.class,
+
+    // state modules
+    ScannerStateRepositoryModule.class,
 
     // app wide modules
     ApplicationModule.class,

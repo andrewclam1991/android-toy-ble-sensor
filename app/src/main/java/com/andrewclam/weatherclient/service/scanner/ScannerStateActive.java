@@ -1,7 +1,5 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import com.andrewclam.weatherclient.data.source.Repo;
-import com.andrewclam.weatherclient.data.source.scannerstate.ScannerStatesDataSource;
 import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;

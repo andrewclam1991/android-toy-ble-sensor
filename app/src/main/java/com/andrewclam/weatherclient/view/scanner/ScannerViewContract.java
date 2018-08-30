@@ -1,14 +1,14 @@
-package com.andrewclam.weatherclient.view.main;
+package com.andrewclam.weatherclient.view.scanner;
 
 import com.andrewclam.weatherclient.view.BasePresenter;
 import com.andrewclam.weatherclient.view.BaseView;
 
-interface MainContract {
+public interface ScannerViewContract {
   interface View extends BaseView {
-    void showScannerUi();
+    void showScannerInProgress(boolean isVisible);
   }
 
   interface Presenter extends BasePresenter<View> {
-
+    void loadScannerState();
   }
 }

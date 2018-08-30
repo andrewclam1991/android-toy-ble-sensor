@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Toy BLE Sensor</string>
+
+    <string name="start_scanner_btn">Start Scanner</string>
+    <string name="ble_not_supported">BLE Not Supported</string>
 </resources>

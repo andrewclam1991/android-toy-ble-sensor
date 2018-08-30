@@ -2,7 +2,7 @@ package com.andrewclam.weatherclient.service.scanner;
 
 import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
-import com.andrewclam.weatherclient.data.source.scannerstate.ScannerStatesDataSource;
+import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
 
@@ -21,7 +21,7 @@ import timber.log.Timber;
 
 /**
  * Internal state of a {@link ScannerContract.Context},
- * implements behaviors when it is in idle
+ * implements behaviors when it is idle
  */
 @Singleton
 final class ScannerStateIdle implements ScannerContract.State {
@@ -36,7 +36,7 @@ final class ScannerStateIdle implements ScannerContract.State {
   private final PeripheralsDataSource mRepository;
 
   @Nonnull
-  private final ScannerStatesDataSource mStateRepository;
+  private final StateSource<ScannerState> mStateRepository;
 
   @NonNull
   private final BaseSchedulerProvider mSchedulerProvider;
@@ -51,7 +51,7 @@ final class ScannerStateIdle implements ScannerContract.State {
   ScannerStateIdle(@Nonnull ScannerContract.Context context,
                    @Nonnull ScannerContract.Producer producer,
                    @Nonnull @Repo PeripheralsDataSource repository,
-                   @Nonnull @Repo ScannerStatesDataSource stateRepository,
+                   @Nonnull @Repo StateSource<ScannerState> stateRepository,
                    @Nonnull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
@@ -84,11 +84,10 @@ final class ScannerStateIdle implements ScannerContract.State {
     Timber.d("scan started");
     mContext.setCurrentState(mContext.getActiveState());
 
-    // TODO remove the state data repository, use stateSource instead
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(true);
-    Disposable disposable = mStateRepository.update(state)
+    Disposable disposable = mStateRepository.set(state)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 
@@ -99,11 +98,10 @@ final class ScannerStateIdle implements ScannerContract.State {
     Timber.d("scan terminated");
     mContext.setCurrentState(mContext.getIdleState());
 
-    // TODO remove the state data repository, use stateSource instead
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(false);
-    Disposable disposable = mStateRepository.update(state)
+    Disposable disposable = mStateRepository.set(state)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 

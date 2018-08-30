@@ -18,6 +18,8 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
+import android.bluetooth.BluetoothAdapter;
+
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.service.BaseController;
 import com.andrewclam.weatherclient.service.BaseService;
@@ -32,14 +34,13 @@ import javax.inject.Qualifier;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
 /**
  * Scanner service contract handles device discovery responsibilities
  * Stores discovered devices to the data layer
  */
-interface ScannerContract {
+public interface ScannerContract {
 
   // --------------------------------- Framework Layer ------------------------------------------ //
 
@@ -54,9 +55,8 @@ interface ScannerContract {
 
     void checkBluetoothPermissions();
 
-    void getBluetoothAdapter();
-
-    void showScanningInProgress(boolean isVisible);
+    @Nonnull
+    BluetoothAdapter getBluetoothAdapter();
 
   }
 
@@ -68,9 +68,7 @@ interface ScannerContract {
 
     void addView(@Nonnull View view);
 
-    void dropView(@Nonnull View view);
-
-    void showScanningInProgress(boolean isVisible);
+    void dropView();
 
   }
 

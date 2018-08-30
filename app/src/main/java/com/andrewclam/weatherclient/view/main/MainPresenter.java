@@ -2,20 +2,28 @@ package com.andrewclam.weatherclient.view.main;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
+import com.andrewclam.weatherclient.data.source.Repo;
+import com.andrewclam.weatherclient.data.state.StateSource;
+import com.andrewclam.weatherclient.model.ScannerState;
+
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 public class MainPresenter implements MainContract.Presenter {
 
+  @Nonnull
+  private final StateSource<ScannerState> mStateRepository;
+
+  @Nonnull
   private final Set<MainContract.View> mViews;
 
   @Inject
-  MainPresenter() {
+  MainPresenter(@Nonnull @Repo StateSource<ScannerState> stateRepository) {
     mViews = new LinkedHashSet<>();
+    mStateRepository = stateRepository;
   }
 
   @Override

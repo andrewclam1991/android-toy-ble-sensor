@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource
+ * com.andrewclam.weatherclient.data.source.sensor.SensorsRepositoryModule
  */
 
-package com.andrewclam.weatherclient.data.source.scannerstate;
+package com.andrewclam.weatherclient.data.state.scannerstate;
 
-import com.andrewclam.weatherclient.data.source.DataSource;
-import com.andrewclam.weatherclient.model.Peripheral;
+import android.support.annotation.NonNull;
+
+import com.andrewclam.weatherclient.data.source.Repo;
+import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.model.ScannerState;
 
-/**
- * API exposes {@link ScannerState} model specific data source requirements
- */
-public interface ScannerStatesDataSource extends DataSource<ScannerState> {
+import javax.inject.Singleton;
 
-  /* Allows for future extensibility */
+import dagger.Binds;
+import dagger.Module;
+
+/**
+ * This is used by Dagger to inject the required arguments into the {@link ScannerStateSource}.
+ */
+@Module
+public abstract class ScannerStateRepositoryModule {
+
+  @NonNull
+  @Singleton
+  @Binds
+  @Repo
+  abstract StateSource<ScannerState> providesRepository(@NonNull ScannerStateSource repository);
+
 }

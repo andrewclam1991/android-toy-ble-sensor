@@ -18,10 +18,9 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
-import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
+
+import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -36,16 +35,8 @@ public abstract class ScannerServiceModule {
   @Nonnull
   @Singleton
   @Provides
-  static BluetoothAdapter providesBluetoothAdapter(@Nonnull Application context){
-    final BluetoothManager bluetoothManager =
-        (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-    BluetoothAdapter adapter;
-    if (bluetoothManager != null) {
-      adapter = bluetoothManager.getAdapter();
-    } else{
-      throw new UnsupportedOperationException("Unable to get device bluetooth adapter.");
-    }
-    return adapter;
+  static BluetoothAdapter providesBluetoothAdapter(@Nonnull ScannerActivity activity) {
+    return activity.getBluetoothAdapter();
   }
 
   @Nonnull

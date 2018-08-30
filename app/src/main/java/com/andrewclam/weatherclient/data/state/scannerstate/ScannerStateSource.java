@@ -1,5 +1,6 @@
-package com.andrewclam.weatherclient.data.state;
+package com.andrewclam.weatherclient.data.state.scannerstate;
 
+import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.model.ScannerState;
 
 import javax.annotation.Nonnull;

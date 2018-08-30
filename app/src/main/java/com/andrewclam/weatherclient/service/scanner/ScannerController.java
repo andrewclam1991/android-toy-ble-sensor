@@ -1,7 +1,5 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import com.andrewclam.weatherclient.di.ServiceScoped;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -14,7 +12,6 @@ import timber.log.Timber;
  * Uses State Pattern to handle states.
  * Uses Strategy Pattern to handle runtime compat issues.
  */
-@ServiceScoped
 @Singleton
 class ScannerController implements ScannerContract.Controller {
 
