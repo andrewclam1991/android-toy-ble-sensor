@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.di.modules.SchedulerProviderModule
+ * com.andrewclam.weatherclient.data.source.sensor.SensorsRepositoryModule
  */
 
-package com.andrewclam.weatherclient.di.modules;
+package com.andrewclam.weatherclient.data.state.scannerstate;
 
 import android.support.annotation.NonNull;
 
-import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
-import com.andrewclam.weatherclient.scheduler.SchedulerProvider;
+import com.andrewclam.weatherclient.data.source.Repo;
+import com.andrewclam.weatherclient.data.state.StateSource;
+import com.andrewclam.weatherclient.model.ScannerState;
 
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
+/**
+ * This is used by Dagger to inject the required arguments into the {@link ScannerStateSource}.
+ */
 @Module
-public abstract class SchedulerProviderModule {
+public abstract class ScannerStateRepositoryModule {
 
   @NonNull
   @Singleton
-  @Provides
-  static BaseSchedulerProvider provideSchedulerProvider() {
-    return SchedulerProvider.getInstance();
-  }
+  @Binds
+  @Repo
+  abstract StateSource<ScannerState> providesRepository(@NonNull ScannerStateSource repository);
+
 }

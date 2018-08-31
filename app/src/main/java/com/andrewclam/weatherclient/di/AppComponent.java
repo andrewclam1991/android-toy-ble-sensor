@@ -22,10 +22,15 @@ import android.app.Application;
 
 import com.andrewclam.weatherclient.WeatherClientApplication;
 import com.andrewclam.weatherclient.data.roomdb.AppDatabaseModule;
+import com.andrewclam.weatherclient.data.source.datapoint.DataPointsRepositoryModule;
+import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsRepositoryModule;
 import com.andrewclam.weatherclient.data.source.sensor.SensorsRepositoryModule;
+import com.andrewclam.weatherclient.data.source.sensordatapoint.SensorDataPointsRepositoryModule;
+import com.andrewclam.weatherclient.data.state.scannerstate.ScannerStateRepositoryModule;
 import com.andrewclam.weatherclient.di.modules.ActivityBindingModule;
 import com.andrewclam.weatherclient.di.modules.ApplicationModule;
 import com.andrewclam.weatherclient.di.modules.SchedulerProviderModule;
+import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
 
 import javax.inject.Singleton;
 
@@ -48,8 +53,15 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Singleton
 @Component(modules = {
     // data modules
+    ScannerServiceModule.class,
+    PeripheralsRepositoryModule.class,
     SensorsRepositoryModule.class,
+    DataPointsRepositoryModule.class,
+    SensorDataPointsRepositoryModule.class,
     AppDatabaseModule.class,
+
+    // state modules
+    ScannerStateRepositoryModule.class,
 
     // app wide modules
     ApplicationModule.class,

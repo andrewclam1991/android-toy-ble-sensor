@@ -13,54 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.schedulers.SchedulerProvider
+ * com.andrewclam.weatherclient.schedulers.ImmediateSchedulerProvider
  */
 
-package com.andrewclam.weatherclient.schedulers;
+package com.andrewclam.weatherclient.scheduler;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-
 /**
- * Provides different types of schedulers.
+ * Implementation of the {@link BaseSchedulerProvider} making all {@link Scheduler}s execute
+ * synchronously so we can easily run assertions in our tests.
+ * <p>
+ * To achieve this, we are using the {@link io.reactivex.internal.schedulers.TrampolineScheduler}
+ * from the {@link Schedulers} class.
  */
-public class SchedulerProvider implements BaseSchedulerProvider {
-
-  @Nullable
-  private static SchedulerProvider INSTANCE;
-
-  // Prevent direct instantiation.
-  private SchedulerProvider() {
-  }
+public class ImmediateSchedulerProvider implements BaseSchedulerProvider {
 
   @NonNull
-  public static synchronized SchedulerProvider getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new SchedulerProvider();
-    }
-    return INSTANCE;
-  }
-
   @Override
-  @NonNull
   public Scheduler computation() {
-    return Schedulers.computation();
+    return Schedulers.trampoline();
   }
 
-  @Override
   @NonNull
+  @Override
   public Scheduler io() {
-    return Schedulers.io();
+    return Schedulers.trampoline();
   }
 
-  @Override
   @NonNull
+  @Override
   public Scheduler ui() {
-    return AndroidSchedulers.mainThread();
+    return Schedulers.trampoline();
   }
 }

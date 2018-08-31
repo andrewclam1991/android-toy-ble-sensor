@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider
+ * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsRepositoryModule
  */
 
-package com.andrewclam.weatherclient.schedulers;
+package com.andrewclam.weatherclient.data.source.peripheral;
 
 import android.support.annotation.NonNull;
 
-import io.reactivex.Scheduler;
+import com.andrewclam.weatherclient.data.source.Repo;
+
+import javax.inject.Singleton;
+
+import dagger.Binds;
+import dagger.Module;
 
 /**
- * Allow providing different types of {@link Scheduler}s.
+ * This is used by Dagger to inject the required arguments into the {@link PeripheralsDataSource}.
  */
-public interface BaseSchedulerProvider {
+@Module
+public abstract class PeripheralsRepositoryModule {
 
   @NonNull
-  Scheduler computation();
+  @Singleton
+  @Binds
+  @Repo
+  abstract PeripheralsDataSource providesRepository(@NonNull PeripheralsCacheDataSource repository);
 
-  @NonNull
-  Scheduler io();
-
-  @NonNull
-  Scheduler ui();
 }

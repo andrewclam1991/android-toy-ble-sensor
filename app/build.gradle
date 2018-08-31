@@ -27,6 +27,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -55,6 +56,8 @@ dependencies {
 
     // Android architecture lifecycle components dependencies
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
+    implementation 'com.android.support:support-v4:28.0.0-rc01'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     // Room components dependencies

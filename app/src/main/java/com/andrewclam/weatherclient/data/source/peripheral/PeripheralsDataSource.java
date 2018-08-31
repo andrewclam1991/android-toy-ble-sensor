@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.view.BasePresenter
+ * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource
  */
 
-package com.andrewclam.weatherclient.view;
+package com.andrewclam.weatherclient.data.source.peripheral;
 
 import android.support.annotation.NonNull;
 
-/**
- * Base Presenter class
- *
- * @param <V>
- */
-public interface BasePresenter<V extends BaseView> {
-  /**
-   * Add observer {@link BaseView} with view tag
-   *
-   * @param view instance of a {@link BaseView}
-   */
-  void addView(@NonNull V view);
+import com.andrewclam.weatherclient.data.source.DataSource;
+import com.andrewclam.weatherclient.model.Peripheral;
 
-  /**
-   * Removes an observer {@link BaseView} from
-   *
-   * @param view instance of a {@link BaseView}
-   */
-  void dropView(@NonNull V view);
+import java.util.List;
+
+import io.reactivex.Flowable;
+
+/**
+ * API exposes {@link Peripheral} model specific data source requirements
+ */
+public interface PeripheralsDataSource extends DataSource<Peripheral> {
+
+  /* Allows for future extensibility */
 }

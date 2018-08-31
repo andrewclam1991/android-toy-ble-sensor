@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.service.bleservice.BleServiceContract
+ * com.andrewclam.weatherclient.service.connection.ConnectionServiceContract
  */
 
-package com.andrewclam.weatherclient.service.bleservice;
+package com.andrewclam.weatherclient.service.connection;
 
-import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
+import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.model.Sensor;
 import com.andrewclam.weatherclient.service.BaseController;
 import com.andrewclam.weatherclient.service.BaseService;
 import com.andrewclam.weatherclient.view.BaseView;
 
-public interface BleServiceContract {
+/**
+ * Responsible for starting, maintaining and ending the connection
+ * between {@link com.andrewclam.weatherclient.model.Peripheral} devices
+ * and the central device.
+ */
+public interface ConnectionServiceContract {
 
-  interface BleServiceView extends BaseView {
+  interface View extends BaseView {
 
-    void checkBleSettings();
+    void checkBluetoothAdapterSettings();
 
-    void checkBlePermissions();
+    void checkBluetoothPermissions();
 
   }
 
-  interface Service extends ServiceState, BaseService<BleServiceView> {
+  interface Service extends ServiceState, BaseService {
 
     void postNotification();
 
@@ -46,9 +51,11 @@ public interface BleServiceContract {
 
   interface ServiceState {
 
-    void connect(BluetoothDevice device);
+    void connect(Peripheral peripheral);
 
-    void disconnect(BluetoothDevice device);
+    void reconnect(Peripheral peripheral);
+
+    void disconnect(Peripheral peripheral);
 
   }
 
