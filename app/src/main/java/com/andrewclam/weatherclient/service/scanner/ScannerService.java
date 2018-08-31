@@ -64,6 +64,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void startService() {
+    // TODO implement framework start service and start foreground notification
     startScan();
   }
 
@@ -74,6 +75,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
     stopSelf();
   }
 
+  // TODO implement IBinder
   @Nullable
   @Override
   public IBinder onBind(Intent intent) {
