@@ -20,8 +20,8 @@ package com.andrewclam.weatherclient.di.modules;
 
 import android.support.annotation.NonNull;
 
-import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
-import com.andrewclam.weatherclient.schedulers.SchedulerProvider;
+import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
+import com.andrewclam.weatherclient.scheduler.SchedulerProvider;
 
 import javax.inject.Singleton;
 

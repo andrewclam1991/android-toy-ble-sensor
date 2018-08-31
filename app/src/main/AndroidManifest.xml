@@ -40,11 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".view.scanner.ScannerActivity" />
         <service android:name=".service.scanner.ScannerService" />
         <service android:name=".service.connection.ConnectionService" />
-
-        <activity android:name=".view.scanner.ScannerActivity"></activity>
     </application>
 
 </manifest>

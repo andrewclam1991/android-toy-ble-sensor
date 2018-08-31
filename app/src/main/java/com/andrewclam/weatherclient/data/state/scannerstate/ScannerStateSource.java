@@ -8,22 +8,23 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Completable;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
 
 @Singleton
 public class ScannerStateSource implements StateSource<ScannerState> {
 
   @Nonnull
-  private final PublishSubject<ScannerState> mScannerState;
+  private final PublishProcessor<ScannerState> mScannerState;
 
   @Inject
   ScannerStateSource(){
-    mScannerState = PublishSubject.create();
+    mScannerState = PublishProcessor.create();
   }
 
   @Nonnull
   @Override
-  public PublishSubject<ScannerState> get() {
+  public Flowable<ScannerState> get() {
     return mScannerState;
   }
 

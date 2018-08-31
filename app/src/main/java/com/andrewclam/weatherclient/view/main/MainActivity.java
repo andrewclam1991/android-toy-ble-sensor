@@ -18,10 +18,15 @@
 
 package com.andrewclam.weatherclient.view.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.andrewclam.weatherclient.BuildConfig;
 import com.andrewclam.weatherclient.R;
+import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    if (BuildConfig.DEBUG) {
+      Timber.d("Launch scanner instance.");
+      Intent intent = new Intent(this, ScannerActivity.class);
+      startActivity(intent);
+    }
   }
 
 }

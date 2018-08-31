@@ -1,6 +1,6 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
+import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;

@@ -46,10 +46,10 @@ public interface ScannerContract {
 
   /**
    * Framework layer
-   * Reactive View handles requesting permission and necessary
+   * Reactive Authority handles requesting permission and necessary
    * settings from user.
    */
-  interface View extends BaseView {
+  interface Authority extends BaseView {
 
     void checkBluetoothAdapterSettings();
 
@@ -66,9 +66,9 @@ public interface ScannerContract {
    */
   interface Service extends BaseService, State {
 
-    void addView(@Nonnull View view);
+    void addAuthority(@Nonnull Authority authority);
 
-    void dropView();
+    void dropAuthority();
 
   }
 

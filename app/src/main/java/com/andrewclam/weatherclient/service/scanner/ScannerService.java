@@ -36,20 +36,20 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Inject
   ScannerContract.Controller mController;
 
-  private ScannerContract.View mView;
+  private ScannerContract.Authority mAuthority;
 
   public ScannerService() {
     // Required no-arg constructor
   }
 
   @Override
-  public void addView(@Nonnull ScannerContract.View view) {
-    mView = view;
+  public void addAuthority(@Nonnull ScannerContract.Authority authority) {
+    mAuthority = authority;
   }
 
   @Override
-  public void dropView() {
-    mView = null;
+  public void dropAuthority() {
+    mAuthority = null;
   }
 
   @Override

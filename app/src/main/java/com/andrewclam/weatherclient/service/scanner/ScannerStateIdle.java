@@ -4,7 +4,7 @@ import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.model.ScannerState;
-import com.andrewclam.weatherclient.schedulers.BaseSchedulerProvider;
+import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import org.reactivestreams.Subscription;
 
@@ -87,6 +87,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(true);
+
     Disposable disposable = mStateRepository.set(state)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
@@ -101,6 +102,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     ScannerState state = new ScannerState();
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(false);
+
     Disposable disposable = mStateRepository.set(state)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();

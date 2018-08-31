@@ -23,17 +23,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 @ActivityScoped
-public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View, ScannerContract.View {
+public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View, ScannerContract.Authority {
 
   @Inject
   ScannerViewContract.Presenter mPresenter;
 
   @Nullable
-  private ScannerContract.View mParent;
+  private ScannerContract.Authority mParent;
 
   @BindView(R.id.scanner_start_scan_btn)
   Button mButtonStartScanner;
@@ -45,11 +47,11 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
-    if (context instanceof ScannerContract.View) {
-      mParent = (ScannerContract.View) context;
+    if (context instanceof ScannerContract.Authority) {
+      mParent = (ScannerContract.Authority) context;
     } else {
       throw new IllegalArgumentException(context.getClass().getSimpleName() +
-          " must implement ScannerViewContract.View");
+          " must implement ScannerViewContract.Authority");
     }
   }
 
@@ -65,7 +67,11 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     // Inflate the layout for this fragment
     View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
     ButterKnife.bind(this, rootView);
-    mButtonStartScanner.setOnClickListener(view -> mPresenter.loadScannerState());
+    mButtonStartScanner.setOnClickListener(view -> {
+      mPresenter.refresh();
+      mPresenter.loadScannerState();
+      mPresenter.loadPeripherals();
+    });
     return rootView;
   }
 
@@ -83,7 +89,8 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
 
   @Override
   public void showScannerInProgress(boolean isVisible) {
-    Toast.makeText(getContext(), isVisible ? "scanning" : "done", Toast.LENGTH_LONG).show();
+    checkNotNull(mParent, "requires parent activity");
+    Toast.makeText(getActivity(), isVisible ? "scanning" : "done", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -93,25 +100,20 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
 
   @Override
   public void checkBluetoothAdapterSettings() {
-    if (mParent != null) {
-      mParent.checkBluetoothAdapterSettings();
-    }
+    checkNotNull(mParent, "requires parent activity");
+    mParent.checkBluetoothAdapterSettings();
   }
 
   @Override
   public void checkBluetoothPermissions() {
-    if (mParent != null) {
+    checkNotNull(mParent, "requires parent activity");
       mParent.checkBluetoothPermissions();
-    }
   }
 
   @NonNull
   @Override
   public BluetoothAdapter getBluetoothAdapter() {
-    if (mParent != null) {
-      return mParent.getBluetoothAdapter();
-    } else {
-      throw new RuntimeException("Unable to get bluetooth adapter");
-    }
+    checkNotNull(mParent, "requires parent activity");
+    return mParent.getBluetoothAdapter();
   }
 }

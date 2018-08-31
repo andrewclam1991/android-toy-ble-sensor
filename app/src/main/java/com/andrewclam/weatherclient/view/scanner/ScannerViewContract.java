@@ -9,6 +9,9 @@ public interface ScannerViewContract {
   }
 
   interface Presenter extends BasePresenter<View> {
+    void refresh();
+
+    void loadPeripherals();
     void loadScannerState();
   }
 }
