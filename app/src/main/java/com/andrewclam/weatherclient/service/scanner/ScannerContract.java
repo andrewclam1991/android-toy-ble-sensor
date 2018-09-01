@@ -66,7 +66,7 @@ public interface ScannerContract {
    */
   interface Service extends BaseService, State {
 
-    void addAuthority(@Nonnull Authority authority);
+    void setAuthority(@Nonnull Authority authority);
 
     void dropAuthority();
 

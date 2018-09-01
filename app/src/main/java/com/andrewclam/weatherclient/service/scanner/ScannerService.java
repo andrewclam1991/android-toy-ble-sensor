@@ -18,14 +18,19 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
+import timber.log.Timber;
 
 /**
  * Simple Service class
@@ -36,6 +41,10 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Inject
   ScannerContract.Controller mController;
 
+  @Nonnull
+  private final ServiceBinder mBinder = new ServiceBinder();
+
+  @Nullable
   private ScannerContract.Authority mAuthority;
 
   public ScannerService() {
@@ -43,8 +52,10 @@ public final class ScannerService extends DaggerService implements ScannerContra
   }
 
   @Override
-  public void addAuthority(@Nonnull ScannerContract.Authority authority) {
+  public void setAuthority(@Nonnull ScannerContract.Authority authority) {
     mAuthority = authority;
+    mAuthority.checkBluetoothPermissions();
+    mAuthority.checkBluetoothAdapterSettings();
   }
 
   @Override
@@ -54,7 +65,15 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void startScan() {
-    mController.startScan();
+    if (hasPermissions()) {
+      Timber.d("Start scan, permission(s) granted.");
+      mController.startScan();
+    } else if (mAuthority != null) {
+      Timber.d("Abort scan, permission(s) not granted, ask Authority for permission(s).");
+      mAuthority.checkBluetoothPermissions();
+    } else {
+      Timber.w("Abort scan, Authority unavailable to ask for permission(s).");
+    }
   }
 
   @Override
@@ -75,10 +94,31 @@ public final class ScannerService extends DaggerService implements ScannerContra
     stopSelf();
   }
 
-  // TODO implement IBinder
-  @Nullable
+  @Nonnull
   @Override
   public IBinder onBind(Intent intent) {
-    return null;
+    return mBinder;
+  }
+
+  /**
+   * Class used for the client Binder.  Because we know this service always
+   * runs in the same process as its clients, we don't need to deal with IPC.
+   */
+  public final class ServiceBinder extends Binder {
+    public ScannerContract.Service getService() {
+      return ScannerService.this;
+    }
+  }
+
+
+  /**
+   * Internal
+   * Checks if the current application has all the permissions to do the required operations
+   * @return flags whether the app has all the necessary permissions.
+   */
+  private boolean hasPermissions() {
+    return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
+        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED;
   }
 }

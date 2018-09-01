@@ -12,6 +12,7 @@ public interface ScannerViewContract {
     void refresh();
 
     void loadPeripherals();
+
     void loadScannerState();
   }
 }

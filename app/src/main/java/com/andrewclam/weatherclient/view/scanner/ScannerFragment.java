@@ -1,7 +1,6 @@
 package com.andrewclam.weatherclient.view.scanner;
 
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,9 +26,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A simple {@link Fragment} subclass.
+ * View class responsible for
+ * - showing user a list of nearby peripherals
+ * - delegate user interaction to ?? class
  */
 @ActivityScoped
-public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View, ScannerContract.Authority {
+public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View{
 
   @Inject
   ScannerViewContract.Presenter mPresenter;
@@ -89,7 +91,6 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
 
   @Override
   public void showScannerInProgress(boolean isVisible) {
-    checkNotNull(mParent, "requires parent activity");
     Toast.makeText(getActivity(), isVisible ? "scanning" : "done", Toast.LENGTH_LONG).show();
   }
 
@@ -98,22 +99,4 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     return isAdded();
   }
 
-  @Override
-  public void checkBluetoothAdapterSettings() {
-    checkNotNull(mParent, "requires parent activity");
-    mParent.checkBluetoothAdapterSettings();
-  }
-
-  @Override
-  public void checkBluetoothPermissions() {
-    checkNotNull(mParent, "requires parent activity");
-      mParent.checkBluetoothPermissions();
-  }
-
-  @NonNull
-  @Override
-  public BluetoothAdapter getBluetoothAdapter() {
-    checkNotNull(mParent, "requires parent activity");
-    return mParent.getBluetoothAdapter();
-  }
 }
