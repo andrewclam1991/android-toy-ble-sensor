@@ -43,6 +43,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.scanner.ScannerActivity" />
+        <activity android:name=".service.scanner.ScannerAuthority" />
+
         <service android:name=".service.scanner.ScannerService" />
         <service android:name=".service.connection.ConnectionService" />
     </application>

@@ -24,19 +24,23 @@ import android.support.annotation.VisibleForTesting;
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
+import java.io.PushbackInputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.processors.PublishProcessor;
 import timber.log.Timber;
 
 /**
  * Concrete implementation of a data source as a in memory cache
+ * - Whenever a list is updated, notify the subscribers
  */
 @Singleton
 class PeripheralsCacheDataSource implements PeripheralsDataSource {
@@ -45,9 +49,13 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @NonNull
   final Map<String, Peripheral> mCachePeripherals;
 
+  @Nonnull
+  private final PublishProcessor<Map<String, Peripheral>> mCachePeripheralsPublisher;
+
   @Inject
   PeripheralsCacheDataSource() {
     mCachePeripherals = new LinkedHashMap<>();
+    mCachePeripheralsPublisher = PublishProcessor.create();
   }
 
   @NonNull

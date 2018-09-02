@@ -51,9 +51,9 @@ public interface ScannerContract {
    */
   interface Authority extends BaseView {
 
-    void checkBluetoothAdapterSettings();
+    void requestBluetoothAdapterSettings();
 
-    void checkBluetoothPermissions();
+    void requestBluetoothPermissions();
 
   }
 

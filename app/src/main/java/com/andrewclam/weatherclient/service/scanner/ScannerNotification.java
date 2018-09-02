@@ -31,7 +31,7 @@ final class ScannerNotification {
   private static final String SCANNER_NOTIFICATION_CHANNEL_ID = PACKAGE_NAME + ".scanner_channel";
 
   /**
-   * Tracking Notification
+   * Scanner Notification
    * Helper method to build a a simple foreground notification to notify user that the app
    * is currently scanning for nearby devices, and allows user to manipulate the scanner
    * service state
@@ -54,7 +54,7 @@ final class ScannerNotification {
       NotificationChannel notificationChannel = new NotificationChannel(
           SCANNER_NOTIFICATION_CHANNEL_ID,
           notificationChannelDescription,
-          NotificationManager.IMPORTANCE_HIGH
+          NotificationManager.IMPORTANCE_DEFAULT
       );
 
       // Configure the notification channel.
@@ -69,16 +69,17 @@ final class ScannerNotification {
         SCANNER_NOTIFICATION_CHANNEL_ID);
 
     builder.setContentTitle(context.getString(R.string.app_name))
+        .setSmallIcon(R.drawable.ic_launcher_background)
         .setContentText(context.getString(R.string.tracking_notification_content))
         .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setAutoCancel(true)
-        .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-        .setOnlyAlertOnce(false);
+        .setOnlyAlertOnce(true);
 
     // If the build version is greater than JELLY_BEAN and lower than OREO,
     // set the notification's priority to PRIORITY_HIGH.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-      builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+      builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
     return builder.build();
