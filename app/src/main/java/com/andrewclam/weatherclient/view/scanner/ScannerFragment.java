@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.di.ActivityScoped;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract;
 
 import javax.inject.Inject;
 
@@ -29,13 +28,13 @@ import dagger.android.support.DaggerFragment;
  * - delegate user interaction to ?? class
  */
 @ActivityScoped
-public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View{
+public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View {
 
   @Inject
   ScannerViewContract.Presenter mPresenter;
 
   @Nullable
-  private ScannerContract.Authority mParent;
+  private ScannerViewContract.Handler mHandler;
 
   @BindView(R.id.scanner_start_scan_btn)
   Button mButtonStartScanner;
@@ -48,11 +47,11 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
-    if (context instanceof ScannerContract.Authority) {
-      mParent = (ScannerContract.Authority) context;
+    if (context instanceof ScannerViewContract.Handler) {
+      mHandler = (ScannerViewContract.Handler) context;
     } else {
       throw new IllegalArgumentException(context.getClass().getSimpleName() +
-          " must implement ScannerViewContract.Authority");
+          " must implement ScannerViewContract.View");
     }
   }
 
@@ -60,6 +59,9 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   public void onResume() {
     super.onResume();
     mPresenter.addView(this);
+    mPresenter.refresh();
+    mPresenter.loadScannerState();
+    mPresenter.loadPeripherals();
   }
 
   @Override
@@ -69,9 +71,9 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
     ButterKnife.bind(this, rootView);
     mButtonStartScanner.setOnClickListener(view -> {
-      mPresenter.refresh();
-      mPresenter.loadScannerState();
-      mPresenter.loadPeripherals();
+      if (mHandler != null) {
+        mHandler.onUserStartScan();
+      }
     });
     return rootView;
   }
@@ -85,7 +87,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   @Override
   public void onDetach() {
     super.onDetach();
-    mParent = null;
+    mHandler = null;
   }
 
   @Override

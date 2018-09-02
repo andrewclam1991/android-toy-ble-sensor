@@ -49,15 +49,15 @@ public abstract class ScannerServiceModule {
   @Binds
   abstract ScannerContract.Producer providesProducer(@Nonnull PeripheralProducer peripheralProducer);
 
-  @Nonnull
-  @ServiceScoped
-  @Binds
-  @ScannerContract.State.Active
-  abstract ScannerContract.State providesActiveState(@Nonnull ScannerStateActive activeState);
-
-  @Nonnull
-  @ServiceScoped
-  @Binds
-  @ScannerContract.State.Idle
-  abstract ScannerContract.State providesIdleState(@Nonnull ScannerStateIdle idleState);
+//  @Nonnull
+//  @ServiceScoped
+//  @Binds
+//  @ScannerContract.State.Active
+//  abstract ScannerContract.State providesActiveState(@Nonnull ScannerStateActive activeState);
+//
+//  @Nonnull
+//  @ServiceScoped
+//  @Binds
+//  @ScannerContract.State.Idle
+//  abstract ScannerContract.State providesIdleState(@Nonnull ScannerStateIdle idleState);
 }

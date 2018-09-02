@@ -123,6 +123,11 @@ public interface ScannerContract {
      * Command to stop device start
      */
     void stopScan();
+
+    /**
+     * Command to cleanup resources
+     */
+    void cleanup();
   }
 
   /**

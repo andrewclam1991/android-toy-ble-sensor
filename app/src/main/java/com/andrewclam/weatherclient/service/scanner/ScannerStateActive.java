@@ -4,8 +4,6 @@ import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -13,27 +11,27 @@ import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 /**
- * Encapsulate how scanner should behave when in {@link ScannerStateActive}
+ * Internal state of a {@link ScannerContract.Context},
+ * implements behaviors when it is active
  */
 @ServiceScoped
 final class ScannerStateActive implements ScannerContract.State {
 
-  @NonNull
+  @Nonnull
   private final ScannerContract.Context mContext;
 
-  @NonNull
+  @Nonnull
   private final ScannerContract.Producer mProducer;
 
-  @NonNull
+  @Nonnull
   private final BaseSchedulerProvider mSchedulerProvider;
 
   @NonNull
   private final CompositeDisposable mCompositeDisposable;
 
-  @Inject
   ScannerStateActive(@Nonnull ScannerContract.Context context,
-                     @NonNull ScannerContract.Producer producer,
-                     @NonNull BaseSchedulerProvider schedulerProvider) {
+                     @Nonnull ScannerContract.Producer producer,
+                     @Nonnull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
     mSchedulerProvider = schedulerProvider;
@@ -51,15 +49,18 @@ final class ScannerStateActive implements ScannerContract.State {
     Timber.d("scan stopping...");
     Disposable disposable = mProducer.stop()
         .subscribeOn(mSchedulerProvider.io())
-        .doOnTerminate(this::handleOnStopScanTerminated)
-        .subscribe();
+        .subscribe(this::handleOnScanStopped);
 
     mCompositeDisposable.add(disposable);
   }
 
-  private void handleOnStopScanTerminated(){
+  private void handleOnScanStopped() {
     Timber.d("scan stopped");
     mContext.setCurrentState(mContext.getIdleState());
   }
 
+  @Override
+  public void cleanup() {
+    mCompositeDisposable.clear();
+  }
 }

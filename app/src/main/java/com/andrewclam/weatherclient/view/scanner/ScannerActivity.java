@@ -1,5 +1,6 @@
 package com.andrewclam.weatherclient.view.scanner;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
@@ -9,8 +10,9 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
@@ -35,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * - handles framework service request for authorization.
  * - encapsulate the framework permission logics.
  */
-public class ScannerActivity extends DaggerAppCompatActivity implements ScannerContract.Authority {
+public class ScannerActivity extends DaggerAppCompatActivity implements ScannerContract.Authority, ScannerViewContract.Handler {
 
   private static final int REQUEST_ENABLE_BT = 1234;
 
@@ -100,14 +102,38 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     } else {
       Timber.d("Bluetooth adapter is available and turned on.");
       if (mScannerService != null && mScannerServiceBound){
+        mScannerService.startService();
         mScannerService.startScan();
       }
     }
   }
 
+  /**
+   * Check if user has given the app the necessary permissions
+   */
+  private static final int REQUEST_COARSE_LOCATION_PERMISSION = 1001;
+
   @Override
   public void checkBluetoothPermissions() {
-    // TODO - Request permission
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      // Permission is not granted
+      // Should we show an explanation?
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+          Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        // Show an explanation to the user *asynchronously* -- don't block
+        // this thread waiting for the user's response! After the user
+        // sees the explanation, try again to request the permission.
+        // TODO implement snackbar showing user of coarse location is required for ble
+      } else {
+        // No explanation needed; request the permission
+        ActivityCompat.requestPermissions(this,
+            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+            REQUEST_COARSE_LOCATION_PERMISSION);
+      }
+    } else {
+      // Permission has already been granted
+      checkBluetoothAdapterSettings();
+    }
   }
 
   @Override
@@ -121,6 +147,9 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     switch (requestCode) {
       case REQUEST_ENABLE_BT:
           checkBluetoothAdapterSettings();
+        break;
+      case REQUEST_COARSE_LOCATION_PERMISSION:
+          checkBluetoothPermissions();
         break;
       default:
         Timber.w("Invalid request code.");
@@ -156,7 +185,7 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
         ScannerService.ServiceBinder binder = (ScannerService.ServiceBinder) service;
         mScannerService = binder.getService();
         mScannerService.setAuthority(ScannerActivity.this);
-        mScannerService.startScan();
+        mScannerService.startService();
         mScannerServiceBound = true;
         Timber.d("Authority View connected and bound to ScannerService.");
       }
@@ -167,5 +196,28 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
         Timber.d("Authority View disconnected and unbound from ScannerService.");
       }
     };
+  }
+
+  @Override
+  public void onUserStartScan() {
+    Timber.d("received user start scan command.");
+    if (mScannerService != null && mScannerServiceBound){
+      Timber.d("delegate start scan work to ScannerService.");
+      mScannerService.startScan();
+    }else{
+      Timber.w("unable to handle start scan command.");
+    }
+  }
+
+  @Override
+  public void onUserStopScan() {
+    Timber.d("received user stop scan command.");
+    if (mScannerService != null && mScannerServiceBound){
+      Timber.d("delegate stop scan work to ScannerService.");
+      mScannerService.stopScan();
+      mScannerService.stopService();
+    }else{
+      Timber.w("unable to handle stop scan command.");
+    }
   }
 }

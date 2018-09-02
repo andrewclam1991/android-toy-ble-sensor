@@ -3,4 +3,6 @@
 
     <string name="start_scanner_btn">Start Scanner</string>
     <string name="ble_not_supported">BLE Not Supported</string>
+    <string name="scanner_notification_description">Scans and pairs with nearby bluetooth capable devices.</string>
+    <string name="tracking_notification_content">Finding devices.</string>
 </resources>
