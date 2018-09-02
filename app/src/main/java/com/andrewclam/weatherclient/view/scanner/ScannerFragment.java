@@ -22,8 +22,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A simple {@link Fragment} subclass.
  * View class responsible for
@@ -42,6 +40,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   @BindView(R.id.scanner_start_scan_btn)
   Button mButtonStartScanner;
 
+  @Inject
   public ScannerFragment() {
     // Required empty public constructor
   }

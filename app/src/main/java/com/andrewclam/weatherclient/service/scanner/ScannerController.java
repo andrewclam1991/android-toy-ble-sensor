@@ -1,10 +1,12 @@
 package com.andrewclam.weatherclient.service.scanner;
 
+import com.andrewclam.weatherclient.di.ServiceScoped;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
+import dagger.Lazy;
 import timber.log.Timber;
 
 /**
@@ -12,28 +14,29 @@ import timber.log.Timber;
  * Uses State Pattern to handle states.
  * Uses Strategy Pattern to handle runtime compat issues.
  */
-@Singleton
+@ServiceScoped
 class ScannerController implements ScannerContract.Controller {
 
   @Inject
-  ScannerContract.State mIdleState;
+  @Idle
+  Lazy<ScannerContract.State> mIdleState;
 
   @Inject
-  ScannerContract.State mActiveState;
-
-  @Nonnull
-  private ScannerContract.State mCurrentState;
+  @Active
+  Lazy<ScannerContract.State> mActiveState;
 
   @Nullable
   private ScannerContract.Service mService;
 
+  @Nullable
+  private ScannerContract.State mCurrentState;
+
   @Inject
-  ScannerController() {
-    mCurrentState = mIdleState;
-  }
+  ScannerController() {}
 
   @Override
   public void setService(@Nonnull ScannerContract.Service service) {
+    mCurrentState = mIdleState.get();
     mService = service;
   }
 
@@ -44,31 +47,37 @@ class ScannerController implements ScannerContract.Controller {
 
   @Override
   public void startScan() {
-    mCurrentState.startScan();
+    if (mCurrentState != null) {
+      mCurrentState.startScan();
+    }
   }
 
   @Override
   public void stopScan() {
-    mCurrentState.stopScan();
+    if (mCurrentState != null) {
+      mCurrentState.stopScan();
+    }
   }
 
   @Override
   public void setCurrentState(@Nonnull ScannerContract.State state) {
-    Timber.d("Current state: %s1, transitioning to state: %s2",
-        mCurrentState.getClass().getSimpleName(),
-        state.getClass().getSimpleName());
+    if (mCurrentState != null) {
+      Timber.d("Current state: %s1, transitioning to state: %s2",
+          mCurrentState.getClass().getSimpleName(),
+          state.getClass().getSimpleName());
+    }
     mCurrentState = state;
   }
 
   @Nonnull
   @Override
   public ScannerContract.State getIdleState() {
-    return mIdleState;
+    return mIdleState.get();
   }
 
   @Nonnull
   @Override
   public ScannerContract.State getActiveState() {
-    return mActiveState;
+    return mActiveState.get();
   }
 }

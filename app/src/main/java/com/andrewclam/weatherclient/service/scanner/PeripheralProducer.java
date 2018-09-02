@@ -3,12 +3,14 @@ package com.andrewclam.weatherclient.service.scanner;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.NonNull;
 
+import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.Peripheral;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
+import dagger.Lazy;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -20,17 +22,17 @@ import static com.google.android.gms.common.internal.Preconditions.checkNotNull;
  * Framework level peripheral producer, handles just start and stop production
  * abstract to separate framework logic details from core business logic
  */
-@Singleton
+@ServiceScoped
 final class PeripheralProducer implements ScannerContract.Producer {
 
-  @NonNull
+  @Nonnull
   private final BluetoothAdapter mBluetoothAdapter;
 
   @Nullable
   private BluetoothAdapter.LeScanCallback mLeScanCallback;
 
   @Inject
-  PeripheralProducer(@NonNull BluetoothAdapter bluetoothAdapter) {
+  PeripheralProducer(@Nonnull BluetoothAdapter bluetoothAdapter) {
     mBluetoothAdapter = bluetoothAdapter;
   }
 

@@ -39,9 +39,6 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
 
   private static final int REQUEST_ENABLE_BT = 1234;
 
-  @Nullable
-  private BluetoothAdapter mBluetoothAdapter;
-
   @Nonnull
   private final ServiceConnection mScannerServiceConnection = getServiceConnection();
 
@@ -89,14 +86,14 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
       finish();
     }
 
-    // Initializes Bluetooth adapter.
+    // Initializes Bluetooth adapter for checking settings
     final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
     checkNotNull(bluetoothManager, "Requires valid bluetooth manager");
-    mBluetoothAdapter = bluetoothManager.getAdapter();
+    BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
 
     // Ensures Bluetooth is available on the device and it is enabled. If not,
     // displays a dialog requesting user permission to enable Bluetooth.
-    if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+    if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
       Timber.w("Bluetooth adapter is not available or is disabled, request user to enable bluetooth");
       Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
       startActivityForResult(bluetoothIntent, REQUEST_ENABLE_BT);
@@ -113,13 +110,6 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     // TODO - Request permission
   }
 
-  @NonNull
-  @Override
-  public BluetoothAdapter getBluetoothAdapter() {
-    checkNotNull(mBluetoothAdapter, "Requires valid bluetooth adapter");
-    return mBluetoothAdapter;
-  }
-
   @Override
   public boolean isActive() {
     return true;
@@ -130,13 +120,7 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode) {
       case REQUEST_ENABLE_BT:
-        if (resultCode == RESULT_OK) {
-          Timber.d("User enabled and turned on Bluetooth, scan can start.");
           checkBluetoothAdapterSettings();
-        } else {
-          Timber.w("User denied turning on Bluetooth, scan can't continue.");
-          finish();
-        }
         break;
       default:
         Timber.w("Invalid request code.");

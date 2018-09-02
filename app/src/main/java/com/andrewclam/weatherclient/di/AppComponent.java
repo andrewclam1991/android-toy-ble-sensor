@@ -29,6 +29,7 @@ import com.andrewclam.weatherclient.data.source.sensordatapoint.SensorDataPoints
 import com.andrewclam.weatherclient.data.state.scannerstate.ScannerStateRepositoryModule;
 import com.andrewclam.weatherclient.di.modules.ActivityBindingModule;
 import com.andrewclam.weatherclient.di.modules.ApplicationModule;
+import com.andrewclam.weatherclient.di.modules.BluetoothAdapterProviderModule;
 import com.andrewclam.weatherclient.di.modules.SchedulerProviderModule;
 import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
 
@@ -67,6 +68,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
     ApplicationModule.class,
     ActivityBindingModule.class,
     SchedulerProviderModule.class,
+    BluetoothAdapterProviderModule.class,
     AndroidSupportInjectionModule.class})
 public interface AppComponent extends AndroidInjector<WeatherClientApplication> {
 
@@ -81,7 +83,6 @@ public interface AppComponent extends AndroidInjector<WeatherClientApplication> 
 
     @BindsInstance
     AppComponent.Builder application(Application application);
-
     AppComponent build();
   }
 }

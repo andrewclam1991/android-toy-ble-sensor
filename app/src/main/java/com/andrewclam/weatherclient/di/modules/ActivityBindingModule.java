@@ -18,7 +18,16 @@
 
 package com.andrewclam.weatherclient.di.modules;
 
+import com.andrewclam.weatherclient.di.ActivityScoped;
+import com.andrewclam.weatherclient.di.ServiceScoped;
+import com.andrewclam.weatherclient.service.scanner.ScannerService;
+import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
+import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
+import com.andrewclam.weatherclient.view.scanner.ScannerModule;
+
 import dagger.Module;
+import dagger.android.ContributesAndroidInjector;
+import io.reactivex.annotations.NonNull;
 
 /**
  * We want Dagger.Android to create a Sub-component which has a parent Component of whichever
@@ -34,14 +43,13 @@ import dagger.Module;
  */
 @Module
 public abstract class ActivityBindingModule {
-//  @NonNull
-//  @ActivityScoped
-//  @ContributesAndroidInjector(modules = {MonitorModule.class, TrackingModule.class,
-//      ProgressModule.class})
-//  abstract DashboardActivity dashboardActivity();
-//
-//  @NonNull
-//  @ServiceScoped
-//  @ContributesAndroidInjector(modules = {TrackingModule.class})
-//  abstract TrackingService trackingService();
+  @NonNull
+  @ActivityScoped
+  @ContributesAndroidInjector(modules = {ScannerModule.class})
+  abstract ScannerActivity bindsScannerActivity();
+
+  @NonNull
+  @ServiceScoped
+  @ContributesAndroidInjector(modules = {ScannerServiceModule.class})
+  abstract ScannerService bindsScannerService();
 }

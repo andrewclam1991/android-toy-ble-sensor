@@ -47,6 +47,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Nullable
   private ScannerContract.Authority mAuthority;
 
+  @Inject
   public ScannerService() {
     // Required no-arg constructor
   }
@@ -54,8 +55,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void setAuthority(@Nonnull ScannerContract.Authority authority) {
     mAuthority = authority;
-    mAuthority.checkBluetoothPermissions();
-    mAuthority.checkBluetoothAdapterSettings();
   }
 
   @Override
@@ -84,6 +83,10 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void startService() {
     // TODO implement framework start service and start foreground notification
+    if (mAuthority != null){
+      mAuthority.checkBluetoothPermissions();
+      mAuthority.checkBluetoothAdapterSettings();
+    }
     startScan();
   }
 
@@ -117,8 +120,8 @@ public final class ScannerService extends DaggerService implements ScannerContra
    * @return flags whether the app has all the necessary permissions.
    */
   private boolean hasPermissions() {
-    return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED ||
-        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED;
+    return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED  &&
+        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
   }
 }

@@ -20,10 +20,12 @@ package com.andrewclam.weatherclient.service.scanner;
 
 import android.bluetooth.BluetoothAdapter;
 
+import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
 
+import java.util.Scanner;
+
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;
@@ -33,20 +35,28 @@ import dagger.Provides;
 public abstract class ScannerServiceModule {
 
   @Nonnull
-  @Singleton
-  @Provides
-  static BluetoothAdapter providesBluetoothAdapter(@Nonnull ScannerActivity activity) {
-    return activity.getBluetoothAdapter();
-  }
+  @ServiceScoped
+  @Binds
+  abstract ScannerContract.Controller providesController(@Nonnull ScannerController scannerController);
 
   @Nonnull
-  @Singleton
+  @ServiceScoped
+  @Binds
+  abstract ScannerContract.Context providesContext(@Nonnull ScannerController scannerController);
+
+  @Nonnull
+  @ServiceScoped
+  @Binds
+  abstract ScannerContract.Producer providesProducer(@Nonnull PeripheralProducer peripheralProducer);
+
+  @Nonnull
+  @ServiceScoped
   @Binds
   @ScannerContract.State.Active
   abstract ScannerContract.State providesActiveState(@Nonnull ScannerStateActive activeState);
 
   @Nonnull
-  @Singleton
+  @ServiceScoped
   @Binds
   @ScannerContract.State.Idle
   abstract ScannerContract.State providesIdleState(@Nonnull ScannerStateIdle idleState);

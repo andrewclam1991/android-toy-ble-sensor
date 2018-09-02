@@ -1,5 +1,6 @@
 package com.andrewclam.weatherclient.service.scanner;
 
+import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
@@ -14,7 +15,7 @@ import timber.log.Timber;
 /**
  * Encapsulate how scanner should behave when in {@link ScannerStateActive}
  */
-@Singleton
+@ServiceScoped
 final class ScannerStateActive implements ScannerContract.State {
 
   @NonNull

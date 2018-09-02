@@ -55,9 +55,6 @@ public interface ScannerContract {
 
     void checkBluetoothPermissions();
 
-    @Nonnull
-    BluetoothAdapter getBluetoothAdapter();
-
   }
 
   /**

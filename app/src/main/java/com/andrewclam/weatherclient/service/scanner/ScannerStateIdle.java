@@ -3,6 +3,7 @@ package com.andrewclam.weatherclient.service.scanner;
 import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.data.state.StateSource;
+import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
@@ -23,7 +24,7 @@ import timber.log.Timber;
  * Internal state of a {@link ScannerContract.Context},
  * implements behaviors when it is idle
  */
-@Singleton
+@ServiceScoped
 final class ScannerStateIdle implements ScannerContract.State {
 
   @NonNull
