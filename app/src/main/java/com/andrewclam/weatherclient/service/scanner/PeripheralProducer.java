@@ -31,12 +31,13 @@ final class PeripheralProducer implements ScannerContract.Producer {
   private final BluetoothAdapter.LeScanCallback mLeScanCallback;
 
   @Nonnull
-  private final PublishProcessor<Peripheral> mPeripheralSource = PublishProcessor.create();
+  private final PublishProcessor<Peripheral> mPeripheralSource;
 
   @Inject
   PeripheralProducer(@Nonnull BluetoothAdapter bluetoothAdapter) {
     mBluetoothAdapter = bluetoothAdapter;
     mLeScanCallback = getLeCallback();
+    mPeripheralSource = PublishProcessor.create();
   }
 
   @NonNull

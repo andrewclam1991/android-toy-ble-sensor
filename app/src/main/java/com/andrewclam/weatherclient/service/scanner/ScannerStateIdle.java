@@ -74,7 +74,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     Disposable disposable = mStateRepository.set(state)
         .andThen(mProducer.start())
         .doOnNext(mRepository::add)
-        .doOnTerminate(this::handleOnScanTerminated)
+        .doOnComplete(this::handleOnScanTerminated)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 
