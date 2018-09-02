@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.di.modules.SharedPreferenceModule
+ * com.andrewclam.weatherclient.di.modules.SchedulerProviderModule
  */
 
 package com.andrewclam.weatherclient.di.modules;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import javax.annotation.Nonnull;
@@ -29,14 +30,18 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Module
-public abstract class SharedPreferenceModule {
+public abstract class BluetoothAdapterProviderModule {
 
   @NonNull
   @Singleton
   @Provides
-  static SharedPreferences provideSharedPreferences(@Nonnull Application context) {
-    return context.getSharedPreferences("app_shared_preference",
-        Context.MODE_PRIVATE);
+  static BluetoothAdapter provideBluetoothAdapter(@Nonnull Application context) {
+    final BluetoothManager bluetoothManager = (BluetoothManager)
+        context.getSystemService(Context.BLUETOOTH_SERVICE);
+    checkNotNull(bluetoothManager, "Bluetooth manager can't be null");
+    return bluetoothManager.getAdapter();
   }
 }

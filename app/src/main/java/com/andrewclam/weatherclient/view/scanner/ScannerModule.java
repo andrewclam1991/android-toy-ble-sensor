@@ -16,27 +16,31 @@
  * com.andrewclam.weatherclient.di.modules.SharedPreferenceModule
  */
 
-package com.andrewclam.weatherclient.di.modules;
+package com.andrewclam.weatherclient.view.scanner;
 
-import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import com.andrewclam.weatherclient.di.ActivityScoped;
+import com.andrewclam.weatherclient.di.FragmentScoped;
+import com.andrewclam.weatherclient.service.scanner.ScannerContract;
+
+import java.util.Scanner;
 
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
+import io.reactivex.annotations.NonNull;
 
 @Module
-public abstract class SharedPreferenceModule {
+public abstract class ScannerModule {
+
+  @FragmentScoped
+  @ContributesAndroidInjector
+  abstract ScannerFragment providesFragment();
 
   @NonNull
-  @Singleton
-  @Provides
-  static SharedPreferences provideSharedPreferences(@Nonnull Application context) {
-    return context.getSharedPreferences("app_shared_preference",
-        Context.MODE_PRIVATE);
-  }
+  @ActivityScoped
+  @Binds
+  abstract ScannerViewContract.Presenter providesPresenter(@Nonnull ScannerPresenter presenter);
 }

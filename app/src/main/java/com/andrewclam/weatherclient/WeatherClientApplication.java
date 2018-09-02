@@ -48,7 +48,15 @@ public class WeatherClientApplication extends DaggerApplication {
   public void onCreate() {
     super.onCreate();
     if (BuildConfig.DEBUG) {
-      Timber.plant(new Timber.DebugTree());
+      Timber.plant(new Timber.DebugTree() {
+        @Override
+        protected String createStackElementTag(StackTraceElement element) {
+          return String.format("(%s:%s)#%s",
+              element.getFileName(),
+              element.getLineNumber(),
+              element.getMethodName());
+        }
+      });
     }
   }
 

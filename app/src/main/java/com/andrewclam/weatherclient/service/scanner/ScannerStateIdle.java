@@ -1,57 +1,58 @@
 package com.andrewclam.weatherclient.service.scanner;
 
-import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.data.state.StateSource;
+import com.andrewclam.weatherclient.di.ServiceScoped;
+import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.processors.PublishProcessor;
 import timber.log.Timber;
 
 /**
  * Internal state of a {@link ScannerContract.Context},
  * implements behaviors when it is idle
  */
-@Singleton
+@ServiceScoped
 final class ScannerStateIdle implements ScannerContract.State {
 
-  @NonNull
+  @Nonnull
   private final ScannerContract.Context mContext;
 
-  @NonNull
+  @Nonnull
   private final ScannerContract.Producer mProducer;
 
-  @NonNull
+  @Nonnull
   private final PeripheralsDataSource mRepository;
 
   @Nonnull
   private final StateSource<ScannerState> mStateRepository;
 
-  @NonNull
+  @Nonnull
   private final BaseSchedulerProvider mSchedulerProvider;
 
-  @NonNull
+  @Nonnull
   private final CompositeDisposable mCompositeDisposable;
 
   // Defines time span to actively scan for device
   private static final long SCAN_PERIOD_SECONDS = 10;
 
-  @Inject
   ScannerStateIdle(@Nonnull ScannerContract.Context context,
                    @Nonnull ScannerContract.Producer producer,
-                   @Nonnull @Repo PeripheralsDataSource repository,
-                   @Nonnull @Repo StateSource<ScannerState> stateRepository,
+                   @Nonnull PeripheralsDataSource repository,
+                   @Nonnull StateSource<ScannerState> stateRepository,
                    @Nonnull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
@@ -63,13 +64,19 @@ final class ScannerStateIdle implements ScannerContract.State {
 
   @Override
   public void startScan() {
-    Disposable disposable = mProducer.start()
-        .delay(SCAN_PERIOD_SECONDS, TimeUnit.SECONDS)
-        .doOnSubscribe(this::handleOnScanStarted)
-        .doOnTerminate(this::handleOnScanTerminated)
-        .doFinally(mCompositeDisposable::clear)
+    Timber.d("scan started");
+    mContext.setCurrentState(mContext.getActiveState());
+
+    ScannerState state = new ScannerState();
+    state.setUid(String.valueOf(this.hashCode()));
+    state.setActive(true);
+
+    Disposable disposable = mStateRepository.set(state)
+        .andThen(mProducer.start())
+        .doOnNext(mRepository::add)
+        .doOnComplete(this::handleOnScanTerminated)
         .subscribeOn(mSchedulerProvider.io())
-        .forEach(mRepository::add);
+        .subscribe();
 
     mCompositeDisposable.add(disposable);
   }
@@ -80,22 +87,7 @@ final class ScannerStateIdle implements ScannerContract.State {
     Timber.d("Scan is already idle, stopScan() request ignored.");
   }
 
-  private void handleOnScanStarted(@Nonnull Subscription subscription){
-    Timber.d("scan started");
-    mContext.setCurrentState(mContext.getActiveState());
-
-    ScannerState state = new ScannerState();
-    state.setUid(String.valueOf(this.hashCode()));
-    state.setActive(true);
-
-    Disposable disposable = mStateRepository.set(state)
-        .subscribeOn(mSchedulerProvider.io())
-        .subscribe();
-
-    mCompositeDisposable.add(disposable);
-  }
-
-  private void handleOnScanTerminated(){
+  private void handleOnScanTerminated() {
     Timber.d("scan terminated");
     mContext.setCurrentState(mContext.getIdleState());
 
@@ -103,10 +95,16 @@ final class ScannerStateIdle implements ScannerContract.State {
     state.setUid(String.valueOf(this.hashCode()));
     state.setActive(false);
 
-    Disposable disposable = mStateRepository.set(state)
+    Disposable disposable = mProducer.stop()
+        .andThen(mStateRepository.set(state))
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 
     mCompositeDisposable.add(disposable);
+  }
+
+  @Override
+  public void cleanup() {
+    mCompositeDisposable.clear();
   }
 }

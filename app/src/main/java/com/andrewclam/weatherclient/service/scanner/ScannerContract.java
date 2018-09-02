@@ -55,9 +55,6 @@ public interface ScannerContract {
 
     void checkBluetoothPermissions();
 
-    @Nonnull
-    BluetoothAdapter getBluetoothAdapter();
-
   }
 
   /**
@@ -66,7 +63,7 @@ public interface ScannerContract {
    */
   interface Service extends BaseService, State {
 
-    void addAuthority(@Nonnull Authority authority);
+    void setAuthority(@Nonnull Authority authority);
 
     void dropAuthority();
 
@@ -126,6 +123,11 @@ public interface ScannerContract {
      * Command to stop device start
      */
     void stopScan();
+
+    /**
+     * Command to cleanup resources
+     */
+    void cleanup();
   }
 
   /**
