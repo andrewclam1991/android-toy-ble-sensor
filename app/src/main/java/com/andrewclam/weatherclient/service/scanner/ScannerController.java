@@ -85,6 +85,7 @@ class ScannerController implements ScannerContract.Controller {
 
   @Override
   public void cleanup() {
-    mCurrentState.cleanup();
+    getActiveState().cleanup();
+    getIdleState().cleanup();
   }
 }

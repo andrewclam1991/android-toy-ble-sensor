@@ -127,8 +127,8 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void stopService() {
-    stopScan();
     mController.dropService();
+    stopScan();
     stopForeground(true);
     stopSelf();
   }

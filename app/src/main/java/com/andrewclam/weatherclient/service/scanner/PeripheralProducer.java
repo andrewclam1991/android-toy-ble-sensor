@@ -7,14 +7,13 @@ import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.Peripheral;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import dagger.Lazy;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
+import io.reactivex.processors.PublishProcessor;
+import timber.log.Timber;
 
 import static com.google.android.gms.common.internal.Preconditions.checkNotNull;
 
@@ -28,53 +27,47 @@ final class PeripheralProducer implements ScannerContract.Producer {
   @Nonnull
   private final BluetoothAdapter mBluetoothAdapter;
 
-  @Nullable
-  private BluetoothAdapter.LeScanCallback mLeScanCallback;
+  @Nonnull
+  private final BluetoothAdapter.LeScanCallback mLeScanCallback;
+
+  @Nonnull
+  private final PublishProcessor<Peripheral> mPeripheralSource = PublishProcessor.create();
 
   @Inject
   PeripheralProducer(@Nonnull BluetoothAdapter bluetoothAdapter) {
     mBluetoothAdapter = bluetoothAdapter;
+    mLeScanCallback = getLeCallback();
   }
 
   @NonNull
   @Override
   public Flowable<Peripheral> start() {
-    return Flowable.create(emitter -> mBluetoothAdapter.startLeScan(getLeCallback(emitter)),
-        BackpressureStrategy.DROP);
+    mBluetoothAdapter.startLeScan(mLeScanCallback);
+    return mPeripheralSource;
   }
 
   @NonNull
   @Override
   public Completable stop() {
     return Completable.create(emitter -> {
-      if (mLeScanCallback != null) {
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
-        emitter.onComplete();
-      } else {
-        emitter.onError(new IllegalArgumentException("producer's scanner callback is null"));
-      }
+      mBluetoothAdapter.stopLeScan(mLeScanCallback);
+      emitter.onComplete();
     });
   }
 
   /**
-   * Generates a reactive BluetoothAdapter.LeScanCallback to be used in
-   * {@link BluetoothAdapter#startLeScan(BluetoothAdapter.LeScanCallback)}
-   *
-   * @param emitter instance of {@link FlowableEmitter<Peripheral>} source
    * @return instance of reactive {@link BluetoothAdapter.LeScanCallback}
    */
   @NonNull
-  private BluetoothAdapter.LeScanCallback getLeCallback(FlowableEmitter<Peripheral> emitter) {
-    if (mLeScanCallback == null) {
-      mLeScanCallback = (device, rssi, scanRecord) -> {
-        Peripheral peripheral = new Peripheral();
-        peripheral.setBluetoothDevice(checkNotNull(device, "device can't be null"));
-        peripheral.setRssi(rssi);
-        peripheral.setScanRecord(scanRecord);
-        peripheral.setUid(device.getAddress());
-        emitter.onNext(peripheral);
-      };
-    }
-    return mLeScanCallback;
+  private BluetoothAdapter.LeScanCallback getLeCallback() {
+    return (device, rssi, scanRecord) -> {
+      Peripheral peripheral = new Peripheral();
+      peripheral.setBluetoothDevice(checkNotNull(device, "device can't be null"));
+      peripheral.setRssi(rssi);
+      peripheral.setScanRecord(scanRecord);
+      peripheral.setUid(device.getAddress());
+      mPeripheralSource.onNext(peripheral);
+      Timber.d("got Peripheral: %s", peripheral.getUid());
+    };
   }
 }

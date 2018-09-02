@@ -185,7 +185,6 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
         ScannerService.ServiceBinder binder = (ScannerService.ServiceBinder) service;
         mScannerService = binder.getService();
         mScannerService.setAuthority(ScannerActivity.this);
-        mScannerService.startService();
         mScannerServiceBound = true;
         Timber.d("Authority View connected and bound to ScannerService.");
       }
@@ -203,6 +202,7 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     Timber.d("received user start scan command.");
     if (mScannerService != null && mScannerServiceBound){
       Timber.d("delegate start scan work to ScannerService.");
+      mScannerService.startService();
       mScannerService.startScan();
     }else{
       Timber.w("unable to handle start scan command.");
@@ -214,7 +214,6 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     Timber.d("received user stop scan command.");
     if (mScannerService != null && mScannerServiceBound){
       Timber.d("delegate stop scan work to ScannerService.");
-      mScannerService.stopScan();
       mScannerService.stopService();
     }else{
       Timber.w("unable to handle stop scan command.");

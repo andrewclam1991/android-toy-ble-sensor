@@ -39,6 +39,9 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   @BindView(R.id.scanner_start_scan_btn)
   Button mButtonStartScanner;
 
+  @BindView(R.id.scanner_stop_scan_btn)
+  Button mButtonStopScanner;
+
   @Inject
   public ScannerFragment() {
     // Required empty public constructor
@@ -70,9 +73,15 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     // Inflate the layout for this fragment
     View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
     ButterKnife.bind(this, rootView);
-    mButtonStartScanner.setOnClickListener(view -> {
+    mButtonStartScanner.setOnClickListener(v -> {
       if (mHandler != null) {
         mHandler.onUserStartScan();
+      }
+    });
+
+    mButtonStopScanner.setOnClickListener(v -> {
+      if (mHandler != null) {
+        mHandler.onUserStopScan();
       }
     });
     return rootView;
