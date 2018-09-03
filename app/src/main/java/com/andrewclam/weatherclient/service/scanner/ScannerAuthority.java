@@ -1,9 +1,12 @@
 package com.andrewclam.weatherclient.service.scanner;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -96,17 +99,26 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode) {
       case REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER:
-        if (resultCode == RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
           finish();
         } else {
           requestEnableBluetoothAdapter();
         }
         break;
+      default:
+        Timber.w("Invalid request code.");
+        finish();
+    }
+    super.onActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    switch (requestCode) {
       case REQUEST_CODE_BLUETOOTH_PERMISSIONS:
-        if (resultCode == RESULT_OK) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           finish();
         } else {
           requestBluetoothPermissions();
@@ -116,5 +128,6 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
         Timber.w("Invalid request code.");
         finish();
     }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 }

@@ -100,13 +100,16 @@ public final class ScannerService extends DaggerService implements ScannerContra
       Timber.d("SDK Version > Android O, post foreground notification to keep service alive.");
       startForeground(ScannerNotification.SCANNER_NOTIFICATION_ID, ScannerNotification.build(getApplicationContext()));
     }
-    // TODO implement handle handle work by intent actions
     return super.onStartCommand(intent, flags, startId);
   }
 
   @Override
   public void startScan() {
-    mController.startScan();
+    if (isScanDependenciesSatisfied()) {
+      mController.startScan();
+    } else {
+      stopService();
+    }
   }
 
   @Override
@@ -149,7 +152,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
     if (!hasPermissions()) {
       Timber.w("Abort scan, permission(s) not granted.");
-      Intent authorityIntent = new Intent(this, ScannerAuthority.class);
+      Intent authorityIntent = new Intent(getApplicationContext(), ScannerAuthority.class);
       authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS);
       authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(authorityIntent);
@@ -158,14 +161,13 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
     if (!hasValidSettings()) {
       Timber.w("Abort scan, setting(s) not satisfied, ask Authority for setting(s).");
-      Intent authorityIntent = new Intent(this, ScannerAuthority.class);
+      Intent authorityIntent = new Intent(getApplicationContext(), ScannerAuthority.class);
       authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER);
       authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(authorityIntent);
       return false;
     }
 
-    // pass procedural test
     return true;
   }
 
