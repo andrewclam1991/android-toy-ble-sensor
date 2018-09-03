@@ -95,23 +95,18 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     Timber.d("Service onStartCommand() called, service started by framework.");
+    // Check android version for foreground notification requirement
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      Timber.d("SDK Version > Android O, post foreground notification to keep service alive.");
+      startForeground(ScannerNotification.SCANNER_NOTIFICATION_ID, ScannerNotification.build(getApplicationContext()));
+    }
     // TODO implement handle handle work by intent actions
     return super.onStartCommand(intent, flags, startId);
   }
 
   @Override
   public void startScan() {
-    if (isScanDependenciesSatisfied()) {
-      Timber.d("Start scan, all requirements satisfied.");
-      // Check android version for foreground notification requirement
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        Timber.d("SDK Version > Android O, post foreground notification to keep service alive.");
-        startForeground(ScannerNotification.SCANNER_NOTIFICATION_ID, ScannerNotification.build(getApplicationContext()));
-      }
-      mController.startScan();
-    }else{
-      Timber.w("Abort scan, at least one requirement is not satisfied.");
-    }
+    mController.startScan();
   }
 
   @Override
@@ -156,6 +151,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
       Timber.w("Abort scan, permission(s) not granted.");
       Intent authorityIntent = new Intent(this, ScannerAuthority.class);
       authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS);
+      authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(authorityIntent);
       return false;
     }
@@ -164,6 +160,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
       Timber.w("Abort scan, setting(s) not satisfied, ask Authority for setting(s).");
       Intent authorityIntent = new Intent(this, ScannerAuthority.class);
       authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER);
+      authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(authorityIntent);
       return false;
     }

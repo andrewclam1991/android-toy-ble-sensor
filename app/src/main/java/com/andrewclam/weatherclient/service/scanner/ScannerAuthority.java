@@ -5,7 +5,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
 
 import com.andrewclam.weatherclient.R;
 import com.google.common.base.Strings;
@@ -69,10 +71,15 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
     if (ActivityCompat.shouldShowRequestPermissionRationale(this,
         Manifest.permission.ACCESS_COARSE_LOCATION)) {
       Timber.d("should show request permission rationale.");
-      // Show an explanation to the user *asynchronously* -- don't block
-      // this thread waiting for the user's response! After the user
-      // sees the explanation, try again to request the permission.
-      // TODO implement snackbar showing user of coarse location is required for ble
+      View rootView = findViewById(R.id.fragment_container);
+      Snackbar.make(rootView, "Must enable bluetooth adapter", Snackbar.LENGTH_INDEFINITE)
+          .setAction("Enable", v -> {
+            Timber.d("call to request permissions.");
+            ActivityCompat.requestPermissions(ScannerAuthority.this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                REQUEST_CODE_BLUETOOTH_PERMISSIONS);
+          })
+          .show();
     } else {
       // No explanation needed; request the permission
       Timber.d("call to request permissions.");
@@ -92,13 +99,22 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
     super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode) {
       case REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER:
-        requestEnableBluetoothAdapter();
+        if (resultCode == RESULT_OK) {
+          finish();
+        } else {
+          requestEnableBluetoothAdapter();
+        }
         break;
       case REQUEST_CODE_BLUETOOTH_PERMISSIONS:
-        requestBluetoothPermissions();
+        if (resultCode == RESULT_OK) {
+          finish();
+        } else {
+          requestBluetoothPermissions();
+        }
         break;
       default:
         Timber.w("Invalid request code.");
+        finish();
     }
   }
 }
