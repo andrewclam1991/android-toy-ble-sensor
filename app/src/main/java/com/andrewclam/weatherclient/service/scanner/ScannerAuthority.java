@@ -2,25 +2,14 @@ package com.andrewclam.weatherclient.service.scanner;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract.Service;
-import com.andrewclam.weatherclient.view.scanner.ScannerFragment;
-import com.andrewclam.weatherclient.view.scanner.ScannerViewContract;
-import com.andrewclam.weatherclient.view.util.ActivityUtils;
+import com.google.common.base.Strings;
 
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import timber.log.Timber;
 
@@ -32,20 +21,47 @@ import timber.log.Timber;
  */
 public class ScannerAuthority extends DaggerAppCompatActivity implements ScannerContract.Authority {
 
+  // Intent Actions
+  static final String INTENT_ACTION_PREFIX = "ScannerAuthority.INTENT_ACTION.";
+  static final String INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER =
+      INTENT_ACTION_PREFIX + "request_enable_bluetooth_adapter";
+  static final String INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS =
+      INTENT_ACTION_PREFIX + "request_bluetooth_permissions";
+
   // Request Codes
-  private static final int REQUEST_ENABLE_BT = 1001;
-  private static final int REQUEST_BT_PERMISSION = 1002;
+  private static final int REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER = 1001;
+  private static final int REQUEST_CODE_BLUETOOTH_PERMISSIONS = 1002;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_scanner);
+
+    Intent intent = getIntent();
+    String action = intent.getAction();
+    if (Strings.isNullOrEmpty(action)) {
+      Timber.e("Authority started without any action, terminate.");
+      finish();
+    } else {
+      switch (action) {
+        case INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER:
+          requestEnableBluetoothAdapter();
+          break;
+        case INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS:
+          requestBluetoothPermissions();
+          break;
+        default:
+          Timber.e("Unknown action, terminate.");
+          finish();
+          break;
+      }
+    }
   }
 
   @Override
-  public void requestBluetoothAdapterSettings() {
+  public void requestEnableBluetoothAdapter() {
     Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-    startActivityForResult(bluetoothIntent, REQUEST_ENABLE_BT);
+    startActivityForResult(bluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER);
   }
 
   @Override
@@ -62,7 +78,7 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
       Timber.d("call to request permissions.");
       ActivityCompat.requestPermissions(this,
           new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-          REQUEST_BT_PERMISSION);
+          REQUEST_CODE_BLUETOOTH_PERMISSIONS);
     }
   }
 
@@ -75,10 +91,10 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode) {
-      case REQUEST_ENABLE_BT:
-        requestBluetoothAdapterSettings();
+      case REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER:
+        requestEnableBluetoothAdapter();
         break;
-      case REQUEST_BT_PERMISSION:
+      case REQUEST_CODE_BLUETOOTH_PERMISSIONS:
         requestBluetoothPermissions();
         break;
       default:

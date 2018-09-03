@@ -18,8 +18,6 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
-import android.bluetooth.BluetoothAdapter;
-
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.service.BaseController;
 import com.andrewclam.weatherclient.service.BaseService;
@@ -29,7 +27,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.annotation.Nonnull;
 import javax.inject.Qualifier;
 
 import io.reactivex.Completable;
@@ -51,7 +48,7 @@ public interface ScannerContract {
    */
   interface Authority extends BaseView {
 
-    void requestBluetoothAdapterSettings();
+    void requestEnableBluetoothAdapter();
 
     void requestBluetoothPermissions();
 
@@ -62,10 +59,6 @@ public interface ScannerContract {
    * Reactive Service handles keeping components alive
    */
   interface Service extends BaseService, State {
-
-    void setAuthority(@Nonnull Authority authority);
-
-    void dropAuthority();
 
   }
 
@@ -92,7 +85,7 @@ public interface ScannerContract {
    * - handles how scanner behaves depending on its internal {@link State}
    * - interfaces with data layer to store discovered devices.
    */
-  interface Controller extends BaseController<Service>, State, Context {
+  interface Controller extends BaseController, State, Context {
 
   }
 

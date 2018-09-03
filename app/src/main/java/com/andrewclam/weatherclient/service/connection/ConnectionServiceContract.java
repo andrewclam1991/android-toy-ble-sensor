@@ -59,7 +59,7 @@ public interface ConnectionServiceContract {
 
   }
 
-  interface Controller extends BaseController<Service> {
+  interface Controller extends BaseController {
 
     void sendCommand();
 

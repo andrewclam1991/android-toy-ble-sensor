@@ -27,12 +27,10 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -53,9 +51,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Nonnull
   private final ServiceBinder mBinder = new ServiceBinder();
-
-  @Nullable
-  private ScannerContract.Authority mAuthority;
 
   @Inject
   public ScannerService() {
@@ -105,16 +100,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
   }
 
   @Override
-  public void setAuthority(@Nonnull ScannerContract.Authority authority) {
-    mAuthority = authority;
-  }
-
-  @Override
-  public void dropAuthority() {
-    mAuthority = null;
-  }
-
-  @Override
   public void startScan() {
     if (isScanDependenciesSatisfied()) {
       Timber.d("Start scan, all requirements satisfied.");
@@ -136,7 +121,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void stopService() {
-    mController.dropService();
     stopScan();
     stopForeground(true);
     stopSelf();
@@ -170,28 +154,17 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
     if (!hasPermissions()) {
       Timber.w("Abort scan, permission(s) not granted.");
-      if (mAuthority != null) {
-        Timber.d("Authority available, ask for permission(s)");
-        mAuthority.requestBluetoothPermissions();
-      } else {
-        // TODO start authority activity with request bluetooth permissions intent
-        Intent authorityIntent = new Intent(this, ScannerAuthority.class);
-        authorityIntent.setAction("request_bluetooth_permissions");
-        startActivity(authorityIntent);
-      }
+      Intent authorityIntent = new Intent(this, ScannerAuthority.class);
+      authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS);
+      startActivity(authorityIntent);
       return false;
     }
 
     if (!hasValidSettings()) {
       Timber.w("Abort scan, setting(s) not satisfied, ask Authority for setting(s).");
-      if (mAuthority != null){
-        mAuthority.requestBluetoothAdapterSettings();
-      } else {
-        // TODO start authority activity with request bluetooth adapter settings change intent
-        Intent authorityIntent = new Intent(this, ScannerAuthority.class);
-        authorityIntent.setAction("request_bluetooth_adapter_settings");
-        startActivity(authorityIntent);
-      }
+      Intent authorityIntent = new Intent(this, ScannerAuthority.class);
+      authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER);
+      startActivity(authorityIntent);
       return false;
     }
 

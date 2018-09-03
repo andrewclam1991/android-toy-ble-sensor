@@ -30,9 +30,26 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+        debug{
+            minifyEnabled true
+            useProguard false
+        }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "stage"
+    productFlavors {
+        dev {
+            dimension "stage"
+            versionNameSuffix "-dev"
+            applicationIdSuffix '.dev'
+            resConfigs "en", "xxhdpi"
+        }
+
+        prod {
+            dimension "stage"
         }
     }
     compileOptions {
@@ -56,8 +73,6 @@ dependencies {
 
     // Android architecture lifecycle components dependencies
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
-    implementation 'com.android.support:support-v4:28.0.0-rc01'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
 
     // Room components dependencies

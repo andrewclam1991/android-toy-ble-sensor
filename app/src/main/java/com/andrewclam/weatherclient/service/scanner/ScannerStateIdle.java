@@ -1,24 +1,16 @@
 package com.andrewclam.weatherclient.service.scanner;
 
+import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.di.ServiceScoped;
-import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
-
-import java.util.Observable;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.processors.PublishProcessor;
 import timber.log.Timber;
 
 /**
@@ -51,8 +43,8 @@ final class ScannerStateIdle implements ScannerContract.State {
 
   ScannerStateIdle(@Nonnull ScannerContract.Context context,
                    @Nonnull ScannerContract.Producer producer,
-                   @Nonnull PeripheralsDataSource repository,
-                   @Nonnull StateSource<ScannerState> stateRepository,
+                   @Nonnull @Repo PeripheralsDataSource repository,
+                   @Nonnull @Repo StateSource<ScannerState> stateRepository,
                    @Nonnull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
@@ -73,10 +65,9 @@ final class ScannerStateIdle implements ScannerContract.State {
 
     Disposable disposable = mStateRepository.set(state)
         .andThen(mProducer.start())
-        .doOnNext(mRepository::add)
         .doOnComplete(this::handleOnScanTerminated)
         .subscribeOn(mSchedulerProvider.io())
-        .subscribe();
+        .forEach(mRepository::add);
 
     mCompositeDisposable.add(disposable);
   }

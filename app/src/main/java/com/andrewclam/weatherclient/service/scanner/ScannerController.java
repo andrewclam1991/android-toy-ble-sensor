@@ -8,7 +8,6 @@ import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -27,9 +26,6 @@ class ScannerController implements ScannerContract.Controller {
   @Nonnull
   private final ScannerContract.State mActiveState;
 
-  @Nullable
-  private ScannerContract.Service mService;
-
   @Nonnull
   private ScannerContract.State mCurrentState;
 
@@ -41,16 +37,6 @@ class ScannerController implements ScannerContract.Controller {
     mIdleState = new ScannerStateIdle(this, producer, repository, stateRepository, schedulerProvider);
     mActiveState = new ScannerStateActive(this, producer, schedulerProvider);
     mCurrentState = mIdleState;
-  }
-
-  @Override
-  public void setService(@Nonnull ScannerContract.Service service) {
-    mService = service;
-  }
-
-  @Override
-  public void dropService() {
-    mService = null;
   }
 
   @Override
