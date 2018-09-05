@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.andrewclam.weatherclient.R;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
@@ -44,8 +45,6 @@ import timber.log.Timber;
  */
 public final class ScannerService extends DaggerService implements ScannerContract.Service {
 
-  // Intent Actions
-
   @Inject
   ScannerContract.Controller mController;
 
@@ -55,23 +54,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Inject
   public ScannerService() {
     // Required no-arg constructor
-  }
-
-  /**
-   * Helper Static call to framework to start service and handle work with intent actions
-   * Note: Handles work only though intent actions
-   *
-   * @param applicationContext required application context
-   */
-  public static void startService(@Nonnull Context applicationContext) {
-    Timber.d("static startService() called to start foreground service");
-    Intent intent = new Intent(applicationContext, ScannerService.class);
-    // Check android version for foreground notification requirement
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      applicationContext.startForegroundService(intent);
-    } else {
-      applicationContext.startService(intent);
-    }
   }
 
   @Nonnull
@@ -103,6 +85,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
     return super.onStartCommand(intent, flags, startId);
   }
 
+
   @Override
   public void startScan() {
     if (isScanDependenciesSatisfied()) {
@@ -129,6 +112,12 @@ public final class ScannerService extends DaggerService implements ScannerContra
     mController.cleanup();
   }
 
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    stopScan();
+  }
+
   /**
    * Class used for the client Binder.  Because we know this service always
    * runs in the same process as its clients, we don't need to deal with IPC.
@@ -152,6 +141,9 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
     if (!hasPermissions()) {
       Timber.w("Abort scan, permission(s) not granted.");
+      // TODO have the binding activity to check and request permission
+      // TODO in-case of user deny permission/change user post notification instead of starting authority activity
+
       Intent authorityIntent = new Intent(getApplicationContext(), ScannerAuthority.class);
       authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS);
       authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
