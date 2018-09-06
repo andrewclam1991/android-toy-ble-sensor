@@ -27,10 +27,10 @@ import timber.log.Timber;
 public class ScannerAuthority extends DaggerAppCompatActivity implements ScannerContract.Authority {
 
   // Intent Actions
-  static final String INTENT_ACTION_PREFIX = "ScannerAuthority.INTENT_ACTION.";
-  static final String INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER =
+  public static final String INTENT_ACTION_PREFIX = "ScannerAuthority.INTENT_ACTION.";
+  public static final String INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER =
       INTENT_ACTION_PREFIX + "request_enable_bluetooth_adapter";
-  static final String INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS =
+  public static final String INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS =
       INTENT_ACTION_PREFIX + "request_bluetooth_permissions";
 
   // Request Codes

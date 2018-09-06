@@ -51,6 +51,9 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Nonnull
   private final ServiceBinder mBinder = new ServiceBinder();
 
+  @Nullable
+  private ScannerContract.Authority mAuthority;
+
   @Inject
   public ScannerService() {
     // Required no-arg constructor
@@ -60,6 +63,16 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public IBinder onBind(Intent intent) {
     return mBinder;
+  }
+
+  @Override
+  public void setAuthority(@Nonnull ScannerContract.Authority authority) {
+    mAuthority = authority;
+  }
+
+  @Override
+  public void dropAuthority() {
+    mAuthority = null;
   }
 
   @Override
@@ -85,14 +98,37 @@ public final class ScannerService extends DaggerService implements ScannerContra
     return super.onStartCommand(intent, flags, startId);
   }
 
-
   @Override
   public void startScan() {
-    if (isScanDependenciesSatisfied()) {
-      mController.startScan();
-    } else {
+    if (!hasBleFeature()) {
+      Timber.w("Device doesn't have necessary bluetooth adapter.");
       stopService();
+      return;
     }
+
+    if (!hasPermissions()) {
+      // TODO implement post notification requesting user to request necessary permissions.
+      Timber.w("Service doesn't have necessary permission.");
+      if (mAuthority != null && mAuthority.isActive()) {
+        Timber.d("Authority available to request permission.");
+        mAuthority.requestBluetoothPermissions();
+      }
+      stopService();
+      return;
+    }
+
+    if (!hasValidSettings()) {
+      // TODO implement post notification requesting user to enable bluetooth adapter
+      Timber.w("Device doesn't have valid setting.");
+      if (mAuthority != null && mAuthority.isActive()) {
+        Timber.d("Authority available to request enable adapter.");
+        mAuthority.requestEnableBluetoothAdapter();
+      }
+      stopService();
+      return;
+    }
+
+    mController.startScan();
   }
 
   @Override
@@ -126,41 +162,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
     public ScannerContract.Service getService() {
       return ScannerService.this;
     }
-  }
-
-  /**
-   * Internal
-   * Checks if framework dependencies are satisfied for scanning
-   * @return flag that indicate if runtime dependencies are satisfied
-   */
-  private boolean isScanDependenciesSatisfied() {
-    if (!hasBleFeature()) {
-      Timber.w("Abort scan, required device hardware ble feature is missing.");
-      return false;
-    }
-
-    if (!hasPermissions()) {
-      Timber.w("Abort scan, permission(s) not granted.");
-      // TODO have the binding activity to check and request permission
-      // TODO in-case of user deny permission/change user post notification instead of starting authority activity
-
-      Intent authorityIntent = new Intent(getApplicationContext(), ScannerAuthority.class);
-      authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_BLUETOOTH_PERMISSIONS);
-      authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(authorityIntent);
-      return false;
-    }
-
-    if (!hasValidSettings()) {
-      Timber.w("Abort scan, setting(s) not satisfied, ask Authority for setting(s).");
-      Intent authorityIntent = new Intent(getApplicationContext(), ScannerAuthority.class);
-      authorityIntent.setAction(ScannerAuthority.INTENT_ACTION_REQUEST_ENABLE_BLUETOOTH_ADAPTER);
-      authorityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(authorityIntent);
-      return false;
-    }
-
-    return true;
   }
 
   /**

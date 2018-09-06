@@ -31,6 +31,12 @@ public class ScannerActivity extends DaggerAppCompatActivity implements Fragment
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_scanner);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    // TODO check dependencies here and load permission fragment
     loadViewScannerFragment();
   }
 

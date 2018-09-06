@@ -11,7 +11,6 @@ public interface ScannerViewContract {
     void onUserStartScan();
 
     void onUserStopScan();
-
   }
 
   interface Presenter extends BasePresenter<View> {

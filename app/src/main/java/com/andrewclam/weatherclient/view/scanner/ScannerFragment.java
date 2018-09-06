@@ -1,14 +1,21 @@
 package com.andrewclam.weatherclient.view.scanner;
 
 
+import android.Manifest;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +45,11 @@ import timber.log.Timber;
  * - let user choose a {@link Peripheral} to pair.
  */
 @ActivityScoped
-public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View {
+public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View, ScannerContract.Authority {
+
+  // Request Codes
+  private static final int REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER = 1001;
+  private static final int REQUEST_CODE_BLUETOOTH_PERMISSIONS = 1002;
 
   @Nonnull
   private final ServiceConnection mScannerServiceConnection = getServiceConnection();
@@ -103,6 +114,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     super.onPause();
     mPresenter.dropView(this);
     if (mServiceBinder != null && mScannerService != null && mScannerServiceBound) {
+      mScannerService.dropAuthority();
       mServiceBinder.onRequestUnbindService(mScannerServiceConnection);
       mScannerServiceBound = false;
     }
@@ -160,6 +172,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
       public void onServiceConnected(ComponentName name, IBinder service) {
         ScannerService.ServiceBinder binder = (ScannerService.ServiceBinder) service;
         mScannerService = binder.getService();
+        mScannerService.setAuthority(ScannerFragment.this);
         mScannerServiceBound = true;
         Timber.d("View connected and bound to ScannerService.");
       }
@@ -172,4 +185,63 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
     };
   }
 
+  @Override
+  public void requestEnableBluetoothAdapter() {
+    Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    startActivityForResult(bluetoothIntent, REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER);
+  }
+
+  @Override
+  public void requestBluetoothPermissions() {
+    FragmentActivity activity = getActivity();
+    if (activity != null) {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+          Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        Timber.d("should show request permission rationale.");
+        // TODO implement permission request screens #9
+      } else {
+        // No explanation needed; request the permission
+        Timber.d("call to request permissions.");
+        ActivityCompat.requestPermissions(activity,
+            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+            REQUEST_CODE_BLUETOOTH_PERMISSIONS);
+      }
+    } else {
+      Timber.e("Unable to request permission, parent not available");
+    }
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    switch (requestCode) {
+      case REQUEST_CODE_ENABLE_BLUETOOTH_ADAPTER:
+        if (resultCode == Activity.RESULT_OK) {
+          Timber.d("User turned on bluetooth adapter");
+        } else {
+          Timber.w("User deny turning on bluetooth adapter, request again.");
+          requestEnableBluetoothAdapter();
+        }
+        break;
+      default:
+        Timber.w("Invalid request code.");
+    }
+    super.onActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case REQUEST_CODE_BLUETOOTH_PERMISSIONS:
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          Timber.d("User gave bluetooth permissions");
+        } else {
+          Timber.w("User denied permissions, request again.");
+          requestBluetoothPermissions();
+        }
+        break;
+      default:
+        Timber.w("Invalid request code.");
+    }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
 }
