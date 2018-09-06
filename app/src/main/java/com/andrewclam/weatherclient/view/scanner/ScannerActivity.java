@@ -1,53 +1,28 @@
 package com.andrewclam.weatherclient.view.scanner;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract.Service;
-import com.andrewclam.weatherclient.service.scanner.ScannerService;
 import com.andrewclam.weatherclient.view.util.ActivityUtils;
+import com.andrewclam.weatherclient.view.util.FragmentServiceBinder;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import timber.log.Timber;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * Framework {@link DaggerAppCompatActivity} that acts as the Authority
+ * Framework {@link DaggerAppCompatActivity} that acts as the parent to child View classes
+ * <p>
  * Responsibilities:
- * - interfacing with framework {@link ScannerContract.Service}.
- * - handles framework service request for authorization.
- * - encapsulate the framework permission logics.
+ * - binds child-views.
+ * - binds service for child-views.
  */
-public class ScannerActivity extends DaggerAppCompatActivity implements ScannerContract.Authority, ScannerViewContract.Handler {
-
-  private static final int REQUEST_ENABLE_BT = 1234;
-
-  @Nonnull
-  private final ServiceConnection mScannerServiceConnection = getServiceConnection();
-
-  @Nullable
-  private Service mScannerService;
-
-  private boolean mScannerServiceBound = false;
+public class ScannerActivity extends DaggerAppCompatActivity implements FragmentServiceBinder {
 
   @Inject
   Lazy<ScannerFragment> mScannerFragmentProvider;
@@ -56,104 +31,13 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_scanner);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    // TODO check dependencies here and load permission fragment
     loadViewScannerFragment();
-  }
-
-  @Override
-  protected void onStart() {
-    super.onStart();
-    Timber.d("Authority View started, call to bind View to ScannerService");
-    Intent service = new Intent(this, ScannerService.class);
-    bindService(service,mScannerServiceConnection,Context.BIND_AUTO_CREATE);
-  }
-
-  @Override
-  protected void onStop() {
-    super.onStop();
-    Timber.d("Authority View stopped, call to unbind View from ScannerService");
-    if (mScannerService != null && mScannerServiceBound){
-      mScannerService.dropAuthority();
-      unbindService(mScannerServiceConnection);
-      mScannerServiceBound = false;
-    }
-  }
-
-  @Override
-  public void checkBluetoothAdapterSettings() {
-    // Use this check to determine whether BLE is supported on the device. Then
-    // you can selectively disable BLE-related features.
-    if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-      Timber.w("Bluetooth Low Energy (BLE) is not supported with this device.");
-      Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
-      finish();
-    }
-
-    // Initializes Bluetooth adapter for checking settings
-    final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-    checkNotNull(bluetoothManager, "Requires valid bluetooth manager");
-    BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-
-    // Ensures Bluetooth is available on the device and it is enabled. If not,
-    // displays a dialog requesting user permission to enable Bluetooth.
-    if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-      Timber.w("Bluetooth adapter is not available or is disabled, request user to enable bluetooth");
-      Intent bluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-      startActivityForResult(bluetoothIntent, REQUEST_ENABLE_BT);
-    } else {
-      Timber.d("Bluetooth adapter is available and turned on.");
-      if (mScannerService != null && mScannerServiceBound){
-        mScannerService.startService();
-        mScannerService.startScan();
-      }
-    }
-  }
-
-  /**
-   * Check if user has given the app the necessary permissions
-   */
-  private static final int REQUEST_COARSE_LOCATION_PERMISSION = 1001;
-
-  @Override
-  public void checkBluetoothPermissions() {
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-      // Permission is not granted
-      // Should we show an explanation?
-      if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-          Manifest.permission.ACCESS_COARSE_LOCATION)) {
-        // Show an explanation to the user *asynchronously* -- don't block
-        // this thread waiting for the user's response! After the user
-        // sees the explanation, try again to request the permission.
-        // TODO implement snackbar showing user of coarse location is required for ble
-      } else {
-        // No explanation needed; request the permission
-        ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-            REQUEST_COARSE_LOCATION_PERMISSION);
-      }
-    } else {
-      // Permission has already been granted
-      checkBluetoothAdapterSettings();
-    }
-  }
-
-  @Override
-  public boolean isActive() {
-    return true;
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    switch (requestCode) {
-      case REQUEST_ENABLE_BT:
-          checkBluetoothAdapterSettings();
-        break;
-      case REQUEST_COARSE_LOCATION_PERMISSION:
-          checkBluetoothPermissions();
-        break;
-      default:
-        Timber.w("Invalid request code.");
-    }
   }
 
   /**
@@ -172,51 +56,18 @@ public class ScannerActivity extends DaggerAppCompatActivity implements ScannerC
     }
   }
 
-  /**
-   * Internal
-   * Defines behaviors on service connection events
-   * @return an instance of {@link ServiceConnection}
-   */
-  @Nonnull
-  private ServiceConnection getServiceConnection(){
-    return new ServiceConnection() {
-      @Override
-      public void onServiceConnected(ComponentName name, IBinder service) {
-        ScannerService.ServiceBinder binder = (ScannerService.ServiceBinder) service;
-        mScannerService = binder.getService();
-        mScannerService.setAuthority(ScannerActivity.this);
-        mScannerServiceBound = true;
-        Timber.d("Authority View connected and bound to ScannerService.");
-      }
-
-      @Override
-      public void onServiceDisconnected(ComponentName name) {
-        mScannerServiceBound = false;
-        Timber.d("Authority View disconnected and unbound from ScannerService.");
-      }
-    };
+  @Override
+  public <S extends android.app.Service> void onRequestBindService(@NonNull Class<S> serviceClass,
+                                                                   @NonNull ServiceConnection serviceConnection,
+                                                                   int flags) {
+    Timber.d("Request to bind this View to Service: %s", serviceClass.getSimpleName());
+    Intent serviceIntent = new Intent(ScannerActivity.this, serviceClass);
+    bindService(serviceIntent, serviceConnection, flags);
   }
 
   @Override
-  public void onUserStartScan() {
-    Timber.d("received user start scan command.");
-    if (mScannerService != null && mScannerServiceBound){
-      Timber.d("delegate start scan work to ScannerService.");
-      mScannerService.startService();
-      mScannerService.startScan();
-    }else{
-      Timber.w("unable to handle start scan command.");
-    }
-  }
-
-  @Override
-  public void onUserStopScan() {
-    Timber.d("received user stop scan command.");
-    if (mScannerService != null && mScannerServiceBound){
-      Timber.d("delegate stop scan work to ScannerService.");
-      mScannerService.stopService();
-    }else{
-      Timber.w("unable to handle stop scan command.");
-    }
+  public void onRequestUnbindService(@NonNull ServiceConnection serviceConnection) {
+    Timber.d("Request to unbind this View from Service.");
+    unbindService(serviceConnection);
   }
 }

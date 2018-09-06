@@ -7,19 +7,15 @@ public interface ScannerViewContract {
 
   interface View extends BaseView {
     void showScannerInProgress(boolean isVisible);
-  }
 
-  interface Handler {
     void onUserStartScan();
 
     void onUserStopScan();
   }
 
   interface Presenter extends BasePresenter<View> {
-    void refresh();
+    void loadScannerState();
 
     void loadPeripherals();
-
-    void loadScannerState();
   }
 }

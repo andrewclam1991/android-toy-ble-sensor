@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 
 /**
  * Fragment interaction listener that delegates bind/unbind service request to
- * its attach parent.
+ * its attached parent.
  * <p>
  * Note: Simple pattern that instead of checking and using getActivity()
  * uses standard Android Fragment -> Activity listener based communication
  */
-public interface FragmentServiceBinderListener {
+public interface FragmentServiceBinder {
   /**
    * Delegates bind service request
    *

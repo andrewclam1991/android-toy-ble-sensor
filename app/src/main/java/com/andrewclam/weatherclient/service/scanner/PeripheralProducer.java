@@ -9,7 +9,6 @@ import com.andrewclam.weatherclient.model.Peripheral;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;

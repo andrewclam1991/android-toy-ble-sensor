@@ -20,6 +20,7 @@ package com.andrewclam.weatherclient.di.modules;
 
 import com.andrewclam.weatherclient.di.ActivityScoped;
 import com.andrewclam.weatherclient.di.ServiceScoped;
+import com.andrewclam.weatherclient.service.scanner.ScannerAuthority;
 import com.andrewclam.weatherclient.service.scanner.ScannerService;
 import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
 import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
@@ -52,4 +53,9 @@ public abstract class ActivityBindingModule {
   @ServiceScoped
   @ContributesAndroidInjector(modules = {ScannerServiceModule.class})
   abstract ScannerService bindsScannerService();
+
+  @NonNull
+  @ActivityScoped
+  @ContributesAndroidInjector
+  abstract ScannerAuthority bindsScannerAuthority();
 }

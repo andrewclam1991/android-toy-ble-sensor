@@ -27,10 +27,13 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
+import com.andrewclam.weatherclient.R;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
@@ -56,6 +59,12 @@ public final class ScannerService extends DaggerService implements ScannerContra
     // Required no-arg constructor
   }
 
+  @Nonnull
+  @Override
+  public IBinder onBind(Intent intent) {
+    return mBinder;
+  }
+
   @Override
   public void setAuthority(@Nonnull ScannerContract.Authority authority) {
     mAuthority = authority;
@@ -67,43 +76,8 @@ public final class ScannerService extends DaggerService implements ScannerContra
   }
 
   @Override
-  public void startScan() {
-    if (mAuthority != null) {
-      if (!hasPermissions()) {
-        Timber.d("Abort scan, permission(s) not granted, ask Authority for permission(s).");
-        mAuthority.checkBluetoothPermissions();
-        return;
-      }
-
-      if (!hasValidSettings()){
-        Timber.d("Abort scan, setting(s) not satisfied, ask Authority for setting(s).");
-        mAuthority.checkBluetoothAdapterSettings();
-        return;
-      }
-
-      Timber.d("Start scan, permission(s) granted and setting(s) are valid.");
-      mController.startScan();
-    } else {
-      Timber.e("Authority not available to start scan.");
-    }
-  }
-
-  @Override
-  public void stopScan() {
-    mController.stopScan();
-  }
-
-  @Nonnull
-  @Override
-  public IBinder onBind(Intent intent) {
-    return mBinder;
-  }
-
-  @Override
   public void startService() {
-    // TODO implement framework start service and start foreground notification
-    Timber.d("startService() called to start foreground service");
-
+    Timber.d("startService() called to start foreground service.");
     Intent intent = new Intent(getApplicationContext(), ScannerService.class);
     // Check android version for foreground notification requirement
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -115,19 +89,55 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Timber.d("Service onStartCommand() called, service started");
+    Timber.d("Service onStartCommand() called, service started by framework.");
     // Check android version for foreground notification requirement
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      Timber.d("> Android O, post foreground notification to keep service alive.");
+      Timber.d("SDK Version > Android O, post foreground notification to keep service alive.");
       startForeground(ScannerNotification.SCANNER_NOTIFICATION_ID, ScannerNotification.build(getApplicationContext()));
     }
-    mController.setService(this);
     return super.onStartCommand(intent, flags, startId);
   }
 
   @Override
+  public void startScan() {
+    if (!hasBleFeature()) {
+      Timber.w("Device doesn't have necessary bluetooth adapter.");
+      stopService();
+      return;
+    }
+
+    if (!hasPermissions()) {
+      // TODO implement post notification requesting user to request necessary permissions.
+      Timber.w("Service doesn't have necessary permission.");
+      if (mAuthority != null && mAuthority.isActive()) {
+        Timber.d("Authority available to request permission.");
+        mAuthority.requestBluetoothPermissions();
+      }
+      stopService();
+      return;
+    }
+
+    if (!hasValidSettings()) {
+      // TODO implement post notification requesting user to enable bluetooth adapter
+      Timber.w("Device doesn't have valid setting.");
+      if (mAuthority != null && mAuthority.isActive()) {
+        Timber.d("Authority available to request enable adapter.");
+        mAuthority.requestEnableBluetoothAdapter();
+      }
+      stopService();
+      return;
+    }
+
+    mController.startScan();
+  }
+
+  @Override
+  public void stopScan() {
+    mController.stopScan();
+  }
+
+  @Override
   public void stopService() {
-    mController.dropService();
     stopScan();
     stopForeground(true);
     stopSelf();
@@ -136,6 +146,12 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void cleanup() {
     mController.cleanup();
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    stopScan();
   }
 
   /**
@@ -150,18 +166,49 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   /**
    * Internal
+   * Checks if the Service can use ble features
+   *
+   * @return flags whether the device supports Bluetooth Low Energy (BLE)
+   */
+  private boolean hasBleFeature() {
+    // Use this check to determine whether BLE is supported on the device. Then
+    // you can selectively disable BLE-related features.
+    if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+      Timber.w("Bluetooth Low Energy (BLE) is not supported with this device.");
+      Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+      return false;
+    } else {
+      Timber.d("Bluetooth Low Energy (BLE) is supported with this device.");
+      return true;
+    }
+  }
+
+  /**
+   * Internal
    * Checks if the current application has all the permissions to do the required operations
-   * @return flags whether the app has all the necessary permissions.
+   *
+   * @return flags whether the app currently has the necessary permissions.
    */
   private boolean hasPermissions() {
     return ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED  &&
+        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
         ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
   }
 
-  private boolean hasValidSettings(){
-    BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-    BluetoothAdapter adapter = bluetoothManager.getAdapter();
-    return adapter != null && adapter.isEnabled();
+  /**
+   * Internal
+   * Checks if the Service has the correct settings to do the required operation(s)
+   *
+   * @return flags whether the app currently has the necessary settings.
+   */
+  private boolean hasValidSettings() {
+    final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+    if (bluetoothManager != null) {
+      final BluetoothAdapter adapter = bluetoothManager.getAdapter();
+      return adapter != null && adapter.isEnabled();
+    } else {
+      Timber.w("BluetoothManager not available, device doesn't support bluetooth?");
+      return false;
+    }
   }
 }

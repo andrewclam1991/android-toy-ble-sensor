@@ -64,6 +64,7 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
       return; // no observers
     }
     mViews.remove(view);
+    mCompositeDisposable.clear();
   }
 
   @Override
@@ -78,6 +79,8 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
 
   @Override
   public void loadPeripherals() {
+    mPeripheralsRepository.refresh();
+
     Disposable disposable = mPeripheralsRepository.getAll()
         .subscribeOn(mSchedulerProvider.io())
         .observeOn(mSchedulerProvider.ui())
@@ -108,10 +111,5 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
 
   private void onGetPeripheralsError(@Nonnull Throwable throwable) {
     Timber.e(throwable, "Error getting peripherals.");
-  }
-
-  @Override
-  public void refresh() {
-    mPeripheralsRepository.refresh();
   }
 }

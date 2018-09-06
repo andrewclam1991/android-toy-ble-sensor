@@ -18,19 +18,6 @@
 
 package com.andrewclam.weatherclient.service;
 
-import android.support.annotation.NonNull;
+public interface BaseController {
 
-public interface BaseController<S extends BaseService> {
-  /**
-   * Command to set reference to the {@code Service}
-   *
-   * @param service instance of {@link BaseService}
-   */
-  void setService(@NonNull S service);
-
-  /**
-   * Command to drop reference of the {@link BaseService}
-   * prevents memory leak
-   */
-  void dropService();
 }
