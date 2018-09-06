@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
-
 import com.andrewclam.weatherclient.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -20,9 +19,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 final class ScannerNotification {
 
-  // Prevent instantiations from clients
   private ScannerNotification() {
-
+    // Prevent instantiations from clients
   }
 
   // Tracking notification constants

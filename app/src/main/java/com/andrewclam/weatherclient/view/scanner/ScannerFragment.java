@@ -43,6 +43,10 @@ import timber.log.Timber;
  * - commands {@link ScannerContract.Service} to do background work.
  * - shows user a list of nearby {@link Peripheral}s.
  * - let user choose a {@link Peripheral} to pair.
+ *
+ * Authority class responsible for
+ * - request permission and setting from users
+ * - handle on permission and setting changed
  */
 @ActivityScoped
 public class ScannerFragment extends DaggerFragment implements ScannerViewContract.View, ScannerContract.Authority {
