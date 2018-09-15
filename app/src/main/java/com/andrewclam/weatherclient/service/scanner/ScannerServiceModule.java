@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.di.modules.SharedPreferenceModule
+ * ScannerServiceModule.java
+ *
  */
 
 package com.andrewclam.weatherclient.service.scanner;

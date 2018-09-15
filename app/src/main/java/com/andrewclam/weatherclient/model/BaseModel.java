@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.model.BaseModel
+ * BaseModel.java
+ *
  */
 
 package com.andrewclam.weatherclient.model;

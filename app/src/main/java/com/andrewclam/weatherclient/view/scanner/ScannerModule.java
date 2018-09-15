@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.di.modules.SharedPreferenceModule
+ * ScannerModule.java
+ *
  */
 
 package com.andrewclam.weatherclient.view.scanner;
 
 import com.andrewclam.weatherclient.di.ActivityScoped;
 import com.andrewclam.weatherclient.di.FragmentScoped;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract;
-
-import java.util.Scanner;
 
 import javax.annotation.Nonnull;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import io.reactivex.annotations.NonNull;
 

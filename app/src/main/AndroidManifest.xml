@@ -13,8 +13,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   ~
-  ~ C:/Users/lamch/StudioProjects/android-toy-ble-sensor/app/src/main/AndroidManifest.xml
--->
+  ~ AndroidManifest.xml
+  ~
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.andrewclam.weatherclient">
 

@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.service.connection.ConnectionService
+ * ConnectionService.java
+ *
  */
 
 package com.andrewclam.weatherclient.service.connection;
 
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.model.Peripheral;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import dagger.android.DaggerService;
 

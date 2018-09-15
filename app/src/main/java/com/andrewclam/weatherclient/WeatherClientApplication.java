@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.WeatherClientApplication
+ * WeatherClientApplication.java
+ *
  */
 
 package com.andrewclam.weatherclient;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.multidex.MultiDex;
 
@@ -58,7 +60,7 @@ public class WeatherClientApplication extends DaggerApplication {
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree() {
         @Override
-        protected String createStackElementTag(StackTraceElement element) {
+        protected String createStackElementTag(@NonNull StackTraceElement element) {
           return String.format("(%s:%s)#%s",
               element.getFileName(),
               element.getLineNumber(),

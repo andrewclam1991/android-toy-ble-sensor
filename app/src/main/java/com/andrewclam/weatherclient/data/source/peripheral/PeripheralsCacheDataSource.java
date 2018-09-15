@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsCacheDataSource
+ * PeripheralsCacheDataSource.java
+ *
  */
 
 package com.andrewclam.weatherclient.data.source.peripheral;
@@ -24,7 +25,6 @@ import android.support.annotation.VisibleForTesting;
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
-import java.io.PushbackInputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

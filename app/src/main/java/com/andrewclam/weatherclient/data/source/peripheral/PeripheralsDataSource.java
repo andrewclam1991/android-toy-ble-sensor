@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource
+ * PeripheralsDataSource.java
+ *
  */
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.DataSource;
 import com.andrewclam.weatherclient.model.Peripheral;
-
-import java.util.List;
-
-import io.reactivex.Flowable;
 
 /**
  * API exposes {@link Peripheral} model specific data source requirements
