@@ -82,4 +82,11 @@ public class Peripheral implements BaseModel {
   public void setScanRecord(byte[] scanRecord) {
     this.scanRecord = scanRecord;
   }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 31 * hash + uid.hashCode();
+    return hash;
+  }
 }

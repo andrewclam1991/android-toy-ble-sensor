@@ -61,8 +61,8 @@ final class PeripheralProducer implements ScannerContract.Producer {
   @NonNull
   @Override
   public Flowable<Peripheral> start() {
-    return mPeripheralSource.doOnSubscribe(subscription ->
-        mBluetoothAdapter.startLeScan(mLeScanCallback));
+    return mPeripheralSource
+        .doOnSubscribe(subscription -> mBluetoothAdapter.startLeScan(mLeScanCallback));
   }
 
   @NonNull

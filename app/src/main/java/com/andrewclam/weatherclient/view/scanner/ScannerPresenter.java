@@ -98,8 +98,6 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
 
   @Override
   public void loadPeripherals() {
-    mPeripheralsRepository.refresh();
-
     Disposable disposable = mPeripheralsRepository.getAll()
         .subscribeOn(mSchedulerProvider.io())
         .observeOn(mSchedulerProvider.ui())
@@ -124,7 +122,9 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
   }
 
   private void onGetPeripheralsNext(@Nonnull List<Peripheral> peripherals) {
-    Timber.d("Got peripherals updated, %s", peripherals.toString());
+    for (Peripheral item : peripherals) {
+      Timber.d("Got peripherals updated, %s", item.getUid());
+    }
     // TODO implement showing a list of peripherals to rv adapter
   }
 

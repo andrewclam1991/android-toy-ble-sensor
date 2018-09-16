@@ -19,7 +19,10 @@
 
 package com.andrewclam.weatherclient.service.scanner;
 
+import com.andrewclam.weatherclient.data.source.Repo;
+import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.di.ServiceScoped;
+import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
@@ -43,6 +46,9 @@ final class ScannerStateActive implements ScannerContract.State {
   private final ScannerContract.Producer mProducer;
 
   @Nonnull
+  private final StateSource<ScannerState> mStateRepository;
+
+  @Nonnull
   private final BaseSchedulerProvider mSchedulerProvider;
 
   @NonNull
@@ -50,9 +56,11 @@ final class ScannerStateActive implements ScannerContract.State {
 
   ScannerStateActive(@Nonnull ScannerContract.Context context,
                      @Nonnull ScannerContract.Producer producer,
+                     @Nonnull @Repo StateSource<ScannerState> stateRepository,
                      @Nonnull BaseSchedulerProvider schedulerProvider) {
     mContext = context;
     mProducer = producer;
+    mStateRepository = stateRepository;
     mSchedulerProvider = schedulerProvider;
     mCompositeDisposable = new CompositeDisposable();
   }
@@ -65,8 +73,10 @@ final class ScannerStateActive implements ScannerContract.State {
 
   @Override
   public void stopScan() {
-    Timber.d("scan stopping...");
+    mCompositeDisposable.clear();
+
     Disposable disposable = mProducer.stop()
+        .andThen(mStateRepository.set(ScannerState.getInActiveState()))
         .subscribeOn(mSchedulerProvider.io())
         .subscribe(this::handleOnScanStopped);
 

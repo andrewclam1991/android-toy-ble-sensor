@@ -27,17 +27,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
+import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 /**
@@ -49,15 +52,28 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Inject
   ScannerContract.Controller mController;
 
+  @Inject
+  BaseSchedulerProvider mSchedulerProvider;
+
+  @Nonnull
+  private final CompositeDisposable mCompositeDisposable;
+
   @Nonnull
   private final ServiceBinder mBinder = new ServiceBinder();
 
   @Nullable
   private ScannerContract.Authority mAuthority;
 
+  @Nonnull
+  private final Handler mHandler;
+
+  private final static int SCAN_PERIOD = 10000;
+
   @Inject
   public ScannerService() {
     // Required no-arg constructor
+    mCompositeDisposable = new CompositeDisposable();
+    mHandler = new Handler();
   }
 
   @Nonnull
@@ -130,6 +146,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
     }
 
     mController.startScan();
+    mHandler.postDelayed(this::stopService, SCAN_PERIOD);
   }
 
   @Override
@@ -139,6 +156,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void stopService() {
+    Timber.d("handle stop service cleanup.");
     stopScan();
     stopForeground(true);
     stopSelf();
@@ -152,7 +170,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void onDestroy() {
     super.onDestroy();
-    stopScan();
+    cleanup();
   }
 
   /**

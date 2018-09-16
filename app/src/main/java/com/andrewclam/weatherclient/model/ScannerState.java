@@ -28,6 +28,10 @@ public class ScannerState implements BaseModel {
   private String stateId;
   private boolean isActive;
 
+  private ScannerState() {
+
+  }
+
   public String getStateId() {
     return stateId;
   }
@@ -53,5 +57,17 @@ public class ScannerState implements BaseModel {
   @Override
   public String getUid() {
     return stateId;
+  }
+
+  public static ScannerState getActiveState() {
+    ScannerState activeState = new ScannerState();
+    activeState.setActive(true);
+    return activeState;
+  }
+
+  public static ScannerState getInActiveState() {
+    ScannerState inactiveState = new ScannerState();
+    inactiveState.setActive(false);
+    return inactiveState;
   }
 }

@@ -54,7 +54,7 @@ class ScannerController implements ScannerContract.Controller {
                     @Nonnull @Repo StateSource<ScannerState> stateRepository,
                     @Nonnull BaseSchedulerProvider schedulerProvider) {
     mIdleState = new ScannerStateIdle(this, producer, repository, stateRepository, schedulerProvider);
-    mActiveState = new ScannerStateActive(this, producer, schedulerProvider);
+    mActiveState = new ScannerStateActive(this, producer, stateRepository, schedulerProvider);
     mCurrentState = mIdleState;
   }
 

@@ -26,8 +26,6 @@ import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -59,9 +57,6 @@ final class ScannerStateIdle implements ScannerContract.State {
   @Nonnull
   private final CompositeDisposable mCompositeDisposable;
 
-  // Defines time span to actively scan for device
-  private static final long SCAN_PERIOD_SECONDS = 5;
-
   ScannerStateIdle(@Nonnull ScannerContract.Context context,
                    @Nonnull ScannerContract.Producer producer,
                    @Nonnull @Repo PeripheralsDataSource repository,
@@ -77,46 +72,25 @@ final class ScannerStateIdle implements ScannerContract.State {
 
   @Override
   public void startScan() {
-    ScannerState state = new ScannerState();
-    state.setUid(String.valueOf(this.hashCode()));
-    state.setActive(true);
+    mCompositeDisposable.clear();
 
-    Disposable startDisposable = mStateRepository.set(state)
+    Disposable disposable = mStateRepository.set(ScannerState.getActiveState())
+        .andThen(mProducer.start())
+        .flatMapCompletable(mRepository::add)
         .doOnSubscribe(subscription -> {
           Timber.d("scan started");
           mContext.setCurrentState(mContext.getActiveState());
-          setAutoStop();
         })
-        .andThen(mProducer.start())
-        .map(mRepository::add)
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 
-    mCompositeDisposable.add(startDisposable);
+    mCompositeDisposable.add(disposable);
   }
 
   @Override
   public void stopScan() {
     // no implementation, illegal state, scanner is idle
     Timber.d("Scan is already idle, stopScan() request ignored.");
-  }
-
-  private void setAutoStop() {
-    ScannerState state = new ScannerState();
-    state.setUid(String.valueOf(this.hashCode()));
-    state.setActive(false);
-
-    Disposable disposable = mStateRepository.set(state)
-        .doOnSubscribe(subscription -> {
-          Timber.d("scan terminated");
-          mContext.setCurrentState(mContext.getIdleState());
-        })
-        .delay(SCAN_PERIOD_SECONDS, TimeUnit.SECONDS)
-        .andThen(mProducer.stop())
-        .subscribeOn(mSchedulerProvider.io())
-        .subscribe();
-
-    mCompositeDisposable.add(disposable);
   }
 
   @Override
