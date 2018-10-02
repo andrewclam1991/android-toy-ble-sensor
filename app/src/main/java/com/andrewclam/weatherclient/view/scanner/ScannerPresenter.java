@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * ScannerPresenter.java
- *
  */
 
 package com.andrewclam.weatherclient.view.scanner;
@@ -29,8 +26,10 @@ import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -44,7 +43,7 @@ import timber.log.Timber;
  * Presenter class responsible for listening to the data layer
  */
 @ActivityScoped
-class ScannerPresenter implements ScannerViewContract.Presenter {
+class ScannerPresenter implements ScannerViewContract.Presenter, ScannerViewContract.ListPresenter {
 
   @Nonnull
   private final StateSource<ScannerState> mStateRepository;
@@ -61,6 +60,11 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
   @Nonnull
   private final Set<ScannerViewContract.View> mViews;
 
+  @NonNull
+  private final List<Peripheral> mPeripherals;
+
+  private boolean mFirstLoad;
+
   @Inject
   ScannerPresenter(@Nonnull @Repo StateSource<ScannerState> stateRepository,
                    @Nonnull @Repo PeripheralsDataSource peripheralsRepository,
@@ -70,6 +74,8 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
     mSchedulerProvider = schedulerProvider;
     mCompositeDisposable = new CompositeDisposable();
     mViews = new LinkedHashSet<>();
+    mPeripherals = new ArrayList<>();
+    mFirstLoad = true;
   }
 
   @Override
@@ -84,6 +90,7 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
     }
     mViews.remove(view);
     mCompositeDisposable.clear();
+    mPeripherals.clear();
   }
 
   @Override
@@ -91,22 +98,27 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
     Disposable disposable = mStateRepository.get()
         .subscribeOn(mSchedulerProvider.io())
         .observeOn(mSchedulerProvider.ui())
-        .subscribe(this::handleOnGetSuccess, this::handleOnGetError);
+        .subscribe(this::onScannerStateChanged, this::onScannerStateError);
 
     mCompositeDisposable.add(disposable);
   }
 
   @Override
-  public void loadPeripherals() {
+  public void loadPeripherals(boolean forceRefresh) {
+    if (mFirstLoad || forceRefresh) {
+      mPeripheralsRepository.refresh();
+      mFirstLoad = false;
+    }
+
     Disposable disposable = mPeripheralsRepository.getAll()
         .subscribeOn(mSchedulerProvider.io())
         .observeOn(mSchedulerProvider.ui())
-        .subscribe(this::onGetPeripheralsNext, this::onGetPeripheralsError);
+        .subscribe(this::onNextPeripheral, this::onGetPeripheralError);
 
     mCompositeDisposable.add(disposable);
   }
 
-  private void handleOnGetSuccess(@Nonnull ScannerState state) {
+  private void onScannerStateChanged(@Nonnull ScannerState state) {
     Timber.d("Got scanner state update");
     for (ScannerViewContract.View view : mViews) {
       if (view != null && view.isActive()) {
@@ -117,18 +129,56 @@ class ScannerPresenter implements ScannerViewContract.Presenter {
     }
   }
 
-  private void handleOnGetError(@Nonnull Throwable throwable) {
+  private void onScannerStateError(@Nonnull Throwable throwable) {
     Timber.e(throwable, "Error getting the scanner state.");
   }
 
-  private void onGetPeripheralsNext(@Nonnull List<Peripheral> peripherals) {
+  private void onNextPeripheral(@Nonnull List<Peripheral> peripherals) {
+
     for (Peripheral item : peripherals) {
       Timber.d("Got peripherals updated, %s", item.getUid());
+      if (!mPeripherals.contains(item)) {
+        mPeripherals.add(item);
+        for (ScannerViewContract.View view : mViews) {
+          if (view != null && view.isActive()) {
+            view.notifyItemInserted(mPeripherals.size() - 1);
+          } else {
+            Timber.w("view unavailable, ignore notify.");
+          }
+        }
+      }
     }
-    // TODO implement showing a list of peripherals to rv adapter
+
   }
 
-  private void onGetPeripheralsError(@Nonnull Throwable throwable) {
+  private void onGetPeripheralError(@Nonnull Throwable throwable) {
     Timber.e(throwable, "Error getting peripherals.");
+  }
+
+  @Override
+  public void onAdapterItemClicked(int adapterPosition) {
+    if (adapterPosition < 0 || mPeripherals.get(adapterPosition) == null) {
+      Timber.e("Invalid position or item at position is gone.");
+      return;
+    }
+    Peripheral item = mPeripherals.get(adapterPosition);
+    Timber.d("item mac address clicked: %s", item.getBluetoothDevice().getAddress());
+  }
+
+  @Override
+  public void onAdapterBindViewHolder(@NonNull ScannerViewContract.ViewHolder viewHolder, int adapterPosition) {
+    if (adapterPosition < 0 || mPeripherals.get(adapterPosition) == null) {
+      Timber.e("Invalid position or item at position is gone.");
+      return;
+    }
+    Peripheral item = mPeripherals.get(adapterPosition);
+    viewHolder.showDeviceMacAddress(item.getBluetoothDevice().getAddress());
+    viewHolder.showDeviceName(item.getBluetoothDevice().getName());
+    viewHolder.showDeviceSignalStrength(String.format(Locale.getDefault(), "%.1f ", item.getRssi()));
+  }
+
+  @Override
+  public int onAdapterRequestItemCount() {
+    return mPeripherals.size();
   }
 }

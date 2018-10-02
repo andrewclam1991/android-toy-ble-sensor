@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * PeripheralProducer.java
- *
  */
 
 package com.andrewclam.weatherclient.service.scanner;
@@ -62,16 +59,14 @@ final class PeripheralProducer implements ScannerContract.Producer {
   @Override
   public Flowable<Peripheral> start() {
     return mPeripheralSource
-        .doOnSubscribe(subscription -> mBluetoothAdapter.startLeScan(mLeScanCallback));
+        .doOnSubscribe(subscription -> mBluetoothAdapter.startLeScan(mLeScanCallback))
+        .doFinally(() -> mBluetoothAdapter.stopLeScan(mLeScanCallback));
   }
 
   @NonNull
   @Override
   public Completable stop() {
-    return Completable.create(emitter -> {
-      mBluetoothAdapter.stopLeScan(mLeScanCallback);
-      emitter.onComplete();
-    });
+    return Completable.fromAction(() -> mBluetoothAdapter.stopLeScan(mLeScanCallback));
   }
 
   /**

@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * ScannerStateIdle.java
- *
  */
 
 package com.andrewclam.weatherclient.service.scanner;
@@ -79,6 +76,7 @@ final class ScannerStateIdle implements ScannerContract.State {
         .flatMapCompletable(mRepository::add)
         .doOnSubscribe(subscription -> {
           Timber.d("scan started");
+          mRepository.refresh();
           mContext.setCurrentState(mContext.getActiveState());
         })
         .subscribeOn(mSchedulerProvider.io())

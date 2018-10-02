@@ -12,15 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Peripheral.java
- *
  */
 
 package com.andrewclam.weatherclient.model;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Models a bluetooth peripheral device data
@@ -88,5 +86,26 @@ public class Peripheral implements BaseModel {
     int hash = 7;
     hash = 31 * hash + uid.hashCode();
     return hash;
+  }
+
+  @Override
+  public boolean equals(@Nullable Object obj) {
+    if (obj == null) {
+      return false;
+    }
+
+    if (!(obj instanceof Peripheral)) {
+      return false;
+    }
+
+    if (obj == this) {
+      return true;
+    }
+
+    Peripheral peripheralRight = (Peripheral) obj;
+    String addressRight = peripheralRight.getBluetoothDevice().getAddress();
+    String addressLeft = this.getBluetoothDevice().getAddress();
+    boolean isSameAddress = addressLeft.equals(addressRight);
+    return isSameAddress;
   }
 }

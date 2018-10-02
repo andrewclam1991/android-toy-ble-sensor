@@ -12,9 +12,6 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
-  ~
-  ~ fragment_scanner.xml
-  ~
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,15 +22,22 @@
     tools:context=".view.scanner.ScannerFragment">
 
     <Button
+        android:visibility="gone"
         android:id="@+id/scanner_start_scan_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_scanner_btn" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/scanner_stop_scan_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stop_scanner_btn" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/scanner_device_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

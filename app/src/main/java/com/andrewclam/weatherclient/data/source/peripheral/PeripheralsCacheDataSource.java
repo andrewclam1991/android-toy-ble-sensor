@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * PeripheralsCacheDataSource.java
- *
  */
 
 package com.andrewclam.weatherclient.data.source.peripheral;
@@ -72,8 +69,8 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @Override
   public Completable add(@NonNull Peripheral item) {
     return Completable.create(emitter -> {
-      Timber.d("Add item: %s", item.getUid());
       if (!mCachePeripherals.contains(item)) {
+        Timber.d("Add item: %s", item.getUid());
         mCachePeripherals.add(item);
         mCachePeripheralsPublisher.onNext(mCachePeripherals);
       }

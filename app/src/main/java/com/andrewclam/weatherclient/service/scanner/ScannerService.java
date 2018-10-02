@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * ScannerService.java
- *
  */
 
 package com.andrewclam.weatherclient.service.scanner;
@@ -33,14 +30,12 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
-import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 /**
@@ -51,12 +46,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Inject
   ScannerContract.Controller mController;
-
-  @Inject
-  BaseSchedulerProvider mSchedulerProvider;
-
-  @Nonnull
-  private final CompositeDisposable mCompositeDisposable;
 
   @Nonnull
   private final ServiceBinder mBinder = new ServiceBinder();
@@ -72,7 +61,6 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Inject
   public ScannerService() {
     // Required no-arg constructor
-    mCompositeDisposable = new CompositeDisposable();
     mHandler = new Handler();
   }
 
