@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * com.andrewclam.weatherclient.service.pairing.PairingService
  */
 
 package com.andrewclam.weatherclient.service.scanner;
@@ -26,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -54,9 +53,15 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Nullable
   private ScannerContract.Authority mAuthority;
 
+  @Nonnull
+  private final Handler mHandler;
+
+  private final static int SCAN_PERIOD = 10000;
+
   @Inject
   public ScannerService() {
     // Required no-arg constructor
+    mHandler = new Handler();
   }
 
   @Nonnull
@@ -129,6 +134,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
     }
 
     mController.startScan();
+    mHandler.postDelayed(this::stopService, SCAN_PERIOD);
   }
 
   @Override
@@ -138,6 +144,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void stopService() {
+    Timber.d("handle stop service cleanup.");
     stopScan();
     stopForeground(true);
     stopSelf();
@@ -151,7 +158,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
   @Override
   public void onDestroy() {
     super.onDestroy();
-    stopScan();
+    cleanup();
   }
 
   /**

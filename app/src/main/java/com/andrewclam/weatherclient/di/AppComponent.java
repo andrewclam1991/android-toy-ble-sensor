@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * com.andrewclam.weatherclient.di.AppComponent
  */
 
 package com.andrewclam.weatherclient.di;
@@ -83,6 +81,7 @@ public interface AppComponent extends AndroidInjector<WeatherClientApplication> 
 
     @BindsInstance
     AppComponent.Builder application(Application application);
+
     AppComponent build();
   }
 }

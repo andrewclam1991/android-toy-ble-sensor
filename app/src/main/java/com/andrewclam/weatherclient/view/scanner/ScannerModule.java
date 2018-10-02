@@ -12,23 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * com.andrewclam.weatherclient.di.modules.SharedPreferenceModule
  */
 
 package com.andrewclam.weatherclient.view.scanner;
 
 import com.andrewclam.weatherclient.di.ActivityScoped;
 import com.andrewclam.weatherclient.di.FragmentScoped;
-import com.andrewclam.weatherclient.service.scanner.ScannerContract;
-
-import java.util.Scanner;
 
 import javax.annotation.Nonnull;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import io.reactivex.annotations.NonNull;
 
@@ -43,4 +37,9 @@ public abstract class ScannerModule {
   @ActivityScoped
   @Binds
   abstract ScannerViewContract.Presenter providesPresenter(@Nonnull ScannerPresenter presenter);
+
+  @NonNull
+  @ActivityScoped
+  @Binds
+  abstract ScannerViewContract.ListPresenter providesListPresenter(@Nonnull ScannerPresenter presenter);
 }

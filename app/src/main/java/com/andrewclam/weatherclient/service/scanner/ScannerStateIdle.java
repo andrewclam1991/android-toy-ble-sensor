@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Andrew Chi Heng Lam
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.andrewclam.weatherclient.service.scanner;
 
 import com.andrewclam.weatherclient.data.source.Repo;
@@ -38,9 +54,6 @@ final class ScannerStateIdle implements ScannerContract.State {
   @Nonnull
   private final CompositeDisposable mCompositeDisposable;
 
-  // Defines time span to actively scan for device
-  private static final long SCAN_PERIOD_SECONDS = 10;
-
   ScannerStateIdle(@Nonnull ScannerContract.Context context,
                    @Nonnull ScannerContract.Producer producer,
                    @Nonnull @Repo PeripheralsDataSource repository,
@@ -56,18 +69,18 @@ final class ScannerStateIdle implements ScannerContract.State {
 
   @Override
   public void startScan() {
-    Timber.d("scan started");
-    mContext.setCurrentState(mContext.getActiveState());
+    mCompositeDisposable.clear();
 
-    ScannerState state = new ScannerState();
-    state.setUid(String.valueOf(this.hashCode()));
-    state.setActive(true);
-
-    Disposable disposable = mStateRepository.set(state)
+    Disposable disposable = mStateRepository.set(ScannerState.getActiveState())
         .andThen(mProducer.start())
-        .doOnComplete(this::handleOnScanTerminated)
+        .flatMapCompletable(mRepository::add)
+        .doOnSubscribe(subscription -> {
+          Timber.d("scan started");
+          mRepository.refresh();
+          mContext.setCurrentState(mContext.getActiveState());
+        })
         .subscribeOn(mSchedulerProvider.io())
-        .forEach(mRepository::add);
+        .subscribe();
 
     mCompositeDisposable.add(disposable);
   }
@@ -76,22 +89,6 @@ final class ScannerStateIdle implements ScannerContract.State {
   public void stopScan() {
     // no implementation, illegal state, scanner is idle
     Timber.d("Scan is already idle, stopScan() request ignored.");
-  }
-
-  private void handleOnScanTerminated() {
-    Timber.d("scan terminated");
-    mContext.setCurrentState(mContext.getIdleState());
-
-    ScannerState state = new ScannerState();
-    state.setUid(String.valueOf(this.hashCode()));
-    state.setActive(false);
-
-    Disposable disposable = mProducer.stop()
-        .andThen(mStateRepository.set(state))
-        .subscribeOn(mSchedulerProvider.io())
-        .subscribe();
-
-    mCompositeDisposable.add(disposable);
   }
 
   @Override

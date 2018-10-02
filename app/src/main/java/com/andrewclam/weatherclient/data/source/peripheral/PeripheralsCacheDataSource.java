@@ -12,22 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * com.andrewclam.weatherclient.data.source.peripheral.PeripheralsCacheDataSource
  */
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
-import java.io.PushbackInputStream;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -45,37 +40,40 @@ import timber.log.Timber;
 @Singleton
 class PeripheralsCacheDataSource implements PeripheralsDataSource {
 
-  @VisibleForTesting
   @NonNull
-  final Map<String, Peripheral> mCachePeripherals;
+  private final List<Peripheral> mCachePeripherals;
 
   @Nonnull
-  private final PublishProcessor<Map<String, Peripheral>> mCachePeripheralsPublisher;
+  private final PublishProcessor<List<Peripheral>> mCachePeripheralsPublisher;
 
   @Inject
   PeripheralsCacheDataSource() {
-    mCachePeripherals = new LinkedHashMap<>();
+    mCachePeripherals = new ArrayList<>();
     mCachePeripheralsPublisher = PublishProcessor.create();
   }
 
   @NonNull
   @Override
   public Flowable<Optional<Peripheral>> get(@NonNull String id) {
-    final Peripheral cachedItem = mCachePeripherals.get(id);
-    return Flowable.just(cachedItem != null ? Optional.of(cachedItem) : Optional.absent());
+    Timber.w("Data source doesn't support get by id");
+    return Flowable.empty();
   }
 
   @NonNull
   @Override
   public Flowable<List<Peripheral>> getAll() {
-    return Flowable.fromIterable(mCachePeripherals.values()).toList().toFlowable();
+    return mCachePeripheralsPublisher;
   }
 
   @NonNull
   @Override
   public Completable add(@NonNull Peripheral item) {
     return Completable.create(emitter -> {
-      mCachePeripherals.put(item.getUid(), item);
+      if (!mCachePeripherals.contains(item)) {
+        Timber.d("Add item: %s", item.getUid());
+        mCachePeripherals.add(item);
+        mCachePeripheralsPublisher.onNext(mCachePeripherals);
+      }
       emitter.onComplete();
     });
   }
@@ -84,9 +82,8 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @Override
   public Completable add(@NonNull List<Peripheral> items) {
     return Completable.create(emitter -> {
-      for (Peripheral item : items) {
-        mCachePeripherals.put(item.getUid(), item);
-      }
+      mCachePeripherals.addAll(items);
+      mCachePeripheralsPublisher.onNext(mCachePeripherals);
       emitter.onComplete();
     });
   }
@@ -100,15 +97,8 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @NonNull
   @Override
   public Completable delete(@NonNull String id) {
-    return Completable.create(emitter -> {
-      if (!mCachePeripherals.isEmpty() && mCachePeripherals.containsKey(id)) {
-        mCachePeripherals.remove(id);
-        Timber.d("Cached peripheral removed: %s", id);
-      } else {
-        Timber.d("Cache peripherals doesn't contain item with id: %s", id);
-      }
-      emitter.onComplete();
-    });
+    Timber.w("Data source doesn't support delete by id");
+    return Completable.complete();
   }
 
   @NonNull
@@ -116,6 +106,7 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   public Completable deleteAll() {
     return Completable.create(emitter -> {
       refresh();
+      mCachePeripheralsPublisher.onNext(mCachePeripherals);
       emitter.onComplete();
     });
   }

@@ -12,15 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * com.andrewclam.weatherclient.service.BaseService
  */
 
 package com.andrewclam.weatherclient.service;
-
-import android.support.annotation.NonNull;
-
-import com.andrewclam.weatherclient.view.BaseView;
 
 public interface BaseService {
   /**
