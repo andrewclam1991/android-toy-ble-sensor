@@ -22,4 +22,6 @@
     <string name="scanner_notification_description">Scans and pairs with nearby bluetooth capable devices.</string>
     <string name="tracking_notification_content">Finding devices.</string>
     <string name="stop_scanner_btn">Stop Scanner</string>
+    <string name="connection_state_default_message">Connection State</string>
+    <string name="connection_notification_description">Current device connection state</string>
 </resources>

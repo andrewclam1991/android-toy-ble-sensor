@@ -19,23 +19,26 @@ package com.andrewclam.weatherclient.service.connection;
 import android.support.annotation.NonNull;
 
 import com.andrewclam.weatherclient.model.Peripheral;
-import com.andrewclam.weatherclient.model.Sensor;
-import com.andrewclam.weatherclient.service.BaseController;
 import com.andrewclam.weatherclient.service.BaseService;
 import com.andrewclam.weatherclient.view.BaseView;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 /**
  * Responsible for starting, maintaining and ending the connection
  * between {@link com.andrewclam.weatherclient.model.Peripheral} devices
  * and the central device.
  */
-public interface ConnectionServiceContract {
+public interface ConnectionContract {
 
   interface View extends BaseView {
 
-    void checkBluetoothAdapterSettings();
+    @NonNull
+    Completable checkSettingsSatisfied();
 
-    void checkBluetoothPermissions();
+    @NonNull
+    Completable checkBluetoothPermissions();
 
   }
 
@@ -49,26 +52,21 @@ public interface ConnectionServiceContract {
 
   interface ServiceState {
 
-    void connect(Peripheral peripheral);
+    @NonNull
+    Flowable<ConnectionState> connect(Peripheral peripheral);
 
-    void reconnect(Peripheral peripheral);
+    @NonNull
+    Flowable<ConnectionState> reconnect(Peripheral peripheral);
 
-    void disconnect(Peripheral peripheral);
+    @NonNull
+    Flowable<ConnectionState> disconnect(Peripheral peripheral);
 
   }
 
-  interface Controller extends BaseController {
+  interface ConnectionState {
+    boolean isConnected();
 
-    void sendCommand();
-
-    void onCommandReceived();
-
-    void onCommandFailed();
-
-    void onDataReceived(@NonNull Sensor Sensor);
-
-    void onInvalidDataReceived(@NonNull Throwable throwable);
-
+    boolean isCalibrated();
   }
 
 }

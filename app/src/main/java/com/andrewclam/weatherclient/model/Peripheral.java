@@ -82,13 +82,6 @@ public class Peripheral implements BaseModel {
   }
 
   @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 31 * hash + uid.hashCode();
-    return hash;
-  }
-
-  @Override
   public boolean equals(@Nullable Object obj) {
     if (obj == null) {
       return false;

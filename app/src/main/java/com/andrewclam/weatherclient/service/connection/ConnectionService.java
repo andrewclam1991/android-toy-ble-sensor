@@ -17,28 +17,125 @@
 package com.andrewclam.weatherclient.service.connection;
 
 import android.content.Intent;
+import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.model.Peripheral;
 
+import javax.inject.Inject;
+
 import dagger.android.DaggerService;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.processors.BehaviorProcessor;
+import timber.log.Timber;
 
-public class ConnectionService extends DaggerService implements ConnectionServiceContract.Service {
+/**
+ * Framework service implementation of {@link ConnectionContract.Service}
+ */
+public class ConnectionService extends DaggerService implements ConnectionContract.Service {
 
+  @NonNull
+  private final ServiceBinder mBinder;
+
+  @NonNull
+  private final CompositeDisposable mCompositeDisposable;
+
+  @Nullable
+  private ConnectionContract.View mView;
+
+  @NonNull
+  private final BehaviorProcessor<ConnectionContract.ConnectionState> mStatePublisher;
+
+  @Inject
   public ConnectionService() {
-
+    // Required no arg constructor
+    mBinder = new ServiceBinder();
+    mCompositeDisposable = new CompositeDisposable();
+    mStatePublisher = BehaviorProcessor.create();
   }
 
   @Nullable
   @Override
   public IBinder onBind(Intent intent) {
-    return null;
+    return mBinder;
+  }
+
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    Timber.d("Service onStartCommand() called, service started by framework.");
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      Timber.d("SDK Version > Android O, post foreground notification to keep service alive.");
+      startForeground(ConnectionNotification.CONNECTION_NOTIFICATION_ID,
+          ConnectionNotification.build(getApplicationContext()));
+    }
+    return super.onStartCommand(intent, flags, startId);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    mView = null;
+    mCompositeDisposable.clear();
+  }
+
+  @Override
+  public void startService() {
+    Timber.d("startService() called to start foreground service.");
+    Intent intent = new Intent(getApplicationContext(), ConnectionService.class);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      startForegroundService(intent);
+    } else {
+      startService(intent);
+    }
+  }
+
+  @Override
+  public void stopService() {
+    mView = null;
+    mCompositeDisposable.clear();
+    stopForeground(true);
+    stopSelf();
+  }
+
+  @NonNull
+  @Override
+  public Flowable<ConnectionContract.ConnectionState> connect(Peripheral peripheral) {
+    if (mView != null) {
+      Disposable disposable = mView.checkSettingsSatisfied()
+          .andThen(mView.checkBluetoothPermissions())
+          .doOnComplete(() -> Timber.w("Has settings and permissions"))
+          .doOnEvent(event -> {
+
+          })
+          .doOnError(Timber::e)
+          .subscribe();
+      mCompositeDisposable.add(disposable);
+    } else {
+      Timber.d("Unable to check for settings and permissions");
+    }
+    return mStatePublisher;
+  }
+
+  @NonNull
+  @Override
+  public Flowable<ConnectionContract.ConnectionState> reconnect(Peripheral peripheral) {
+    return mStatePublisher;
+  }
+
+  @NonNull
+  @Override
+  public Flowable<ConnectionContract.ConnectionState> disconnect(Peripheral peripheral) {
+    return mStatePublisher;
   }
 
   @Override
   public void postNotification() {
-
+    ConnectionNotification.build(this);
   }
 
   @Override
@@ -46,34 +143,38 @@ public class ConnectionService extends DaggerService implements ConnectionServic
 
   }
 
-  @Override
-  public void startService() {
 
+  final class ServiceBinder extends Binder {
+    ConnectionContract.Service getService(@NonNull ConnectionContract.View view) {
+      mView = view;
+      return ConnectionService.this;
+    }
   }
 
-  @Override
-  public void stopService() {
-    cleanUp();
-    stopForeground(true);
-    stopSelf();
-  }
+  private final class ConnectionState implements ConnectionContract.ConnectionState {
 
-  @Override
-  public void connect(Peripheral peripheral) {
+    private boolean mIsConnected;
+    private boolean mIsCalibrated;
 
-  }
+    protected ConnectionState() {
+    }
 
-  @Override
-  public void reconnect(Peripheral peripheral) {
+    void setConnected(boolean isConnected) {
+      mIsConnected = isConnected;
+    }
 
-  }
+    void setCalibrated(boolean isCalibrated) {
+      mIsCalibrated = isCalibrated;
+    }
 
-  @Override
-  public void disconnect(Peripheral peripheral) {
+    @Override
+    public boolean isConnected() {
+      return mIsConnected;
+    }
 
-  }
-
-  private void cleanUp() {
-
+    @Override
+    public boolean isCalibrated() {
+      return mIsCalibrated;
+    }
   }
 }

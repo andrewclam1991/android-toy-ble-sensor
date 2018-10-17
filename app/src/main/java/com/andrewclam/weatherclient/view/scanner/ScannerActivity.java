@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.view.util.ActivityUtils;
@@ -47,22 +49,13 @@ public class ScannerActivity extends DaggerAppCompatActivity implements Fragment
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_scanner);
-    loadViewScannerFragment();
-  }
 
-  /**
-   * Internal
-   * Loads the View class
-   */
-  private void loadViewScannerFragment() {
-    ScannerFragment fragment = (ScannerFragment) getSupportFragmentManager()
-        .findFragmentById(R.id.fragment_container);
+    FragmentManager fm = getSupportFragmentManager();
+    Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
     if (fragment == null) {
-      // Create the fragment
       fragment = mScannerFragmentProvider.get();
-      ActivityUtils.addFragmentToActivity(
-          getSupportFragmentManager(), fragment, R.id.fragment_container);
+      ActivityUtils.addFragmentToActivity(fm, fragment, R.id.fragment_container);
     }
   }
 
