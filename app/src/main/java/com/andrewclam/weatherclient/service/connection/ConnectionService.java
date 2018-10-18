@@ -24,13 +24,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.model.Peripheral;
+import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.BehaviorProcessor;
 import timber.log.Timber;
 
@@ -39,14 +40,17 @@ import timber.log.Timber;
  */
 public class ConnectionService extends DaggerService implements ConnectionContract.Service {
 
+  @Nullable
+  private ConnectionContract.View mView;
+
+  @Inject
+  BaseSchedulerProvider mSchedulerProvider;
+
   @NonNull
   private final ServiceBinder mBinder;
 
   @NonNull
   private final CompositeDisposable mCompositeDisposable;
-
-  @Nullable
-  private ConnectionContract.View mView;
 
   @NonNull
   private final BehaviorProcessor<ConnectionContract.ConnectionState> mStatePublisher;
@@ -105,47 +109,72 @@ public class ConnectionService extends DaggerService implements ConnectionContra
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> connect(Peripheral peripheral) {
-    if (mView != null) {
-      Disposable disposable = mView.checkSettingsSatisfied()
-          .andThen(mView.checkBluetoothPermissions())
-          .doOnComplete(() -> Timber.w("Has settings and permissions"))
-          .doOnEvent(event -> {
+    checkRequirements()
+        .subscribeOn(mSchedulerProvider.ui())
+        .observeOn(mSchedulerProvider.io())
+        .doOnSubscribe(mCompositeDisposable::add)
+        .doOnComplete(() -> Timber.d("Do connection here "))
+        .doOnError(Timber::e) // TODO notify user unable to connect
+        .subscribe();
 
-          })
-          .doOnError(Timber::e)
-          .subscribe();
-      mCompositeDisposable.add(disposable);
-    } else {
-      Timber.d("Unable to check for settings and permissions");
-    }
     return mStatePublisher;
   }
 
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> reconnect(Peripheral peripheral) {
+    checkRequirements()
+        .subscribeOn(mSchedulerProvider.ui())
+        .observeOn(mSchedulerProvider.io())
+        .doOnSubscribe(mCompositeDisposable::add)
+        .doOnComplete(() -> Timber.d("Do reconnection here "))
+        .doOnError(Timber::e) // TODO notify user unable to reconnect
+        .subscribe();
+
     return mStatePublisher;
   }
 
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> disconnect(Peripheral peripheral) {
+    checkRequirements()
+        .subscribeOn(mSchedulerProvider.ui())
+        .observeOn(mSchedulerProvider.io())
+        .doOnSubscribe(mCompositeDisposable::add)
+        .doOnComplete(() -> Timber.d("Do disconnection here "))
+        .doOnError(Timber::e) // TODO notify user unable to disconnect
+        .subscribe();
+
     return mStatePublisher;
   }
 
   @Override
   public void postNotification() {
-    ConnectionNotification.build(this);
+    ConnectionNotification.showUpdate(getApplicationContext());
   }
 
   @Override
   public void postNotificationUpdate() {
-
+    ConnectionNotification.showUpdate(getApplicationContext());
   }
 
+  /**
+   * Note: run this functional check before any work is done
+   *
+   * @return a completable when complete, means requirements are satisfied.
+   */
+  private Completable checkRequirements() {
+    if (mView != null && mView.isActive()) {
+      return mView.checkSettingsSatisfied()
+          .andThen(mView.checkBluetoothPermissions())
+          .doOnComplete(() -> Timber.w("Has settings and permissions"));
+    } else {
+      return Completable.error(new Throwable("Authority not available to check requirements"));
+    }
+  }
 
-  final class ServiceBinder extends Binder {
-    ConnectionContract.Service getService(@NonNull ConnectionContract.View view) {
+  public final class ServiceBinder extends Binder {
+    public ConnectionContract.Service getService(@NonNull ConnectionContract.View view) {
       mView = view;
       return ConnectionService.this;
     }

@@ -90,9 +90,21 @@ final class ConnectionNotification {
     // If the build version is greater than JELLY_BEAN and lower than OREO,
     // set the notification's priority to PRIORITY_HIGH.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-      builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+      builder.setPriority(NotificationCompat.PRIORITY_MIN);
     }
 
     return builder.build();
+  }
+
+  static void showNotification(@NonNull Context context) {
+    NotificationManager nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+    assert nm != null;
+    nm.notify(CONNECTION_NOTIFICATION_ID, build(context));
+  }
+
+  static void showUpdate(@NonNull Context context) {
+    NotificationManager nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+    assert nm != null;
+    nm.notify(CONNECTION_NOTIFICATION_ID, build(context));
   }
 }
