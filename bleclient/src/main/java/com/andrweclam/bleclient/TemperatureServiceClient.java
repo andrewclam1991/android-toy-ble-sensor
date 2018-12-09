@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-include ':app', ':bleclient'
+package com.andrweclam.bleclient;
+
+public class TemperatureServiceClient extends ServiceClient {
+  @Override
+  public void writeCharacteristic() {
+
+  }
+}

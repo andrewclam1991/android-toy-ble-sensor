@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
+import com.andrweclam.bleclient.BleConnectionClient;
 
 import javax.inject.Inject;
 
@@ -41,10 +42,13 @@ import timber.log.Timber;
 public class ConnectionService extends DaggerService implements ConnectionContract.Service {
 
   @Nullable
-  private ConnectionContract.View mView;
+  private ConnectionContract.View mAuthority;
 
   @Inject
   BaseSchedulerProvider mSchedulerProvider;
+
+  @Inject
+  BleConnectionClient mBleConnectionClient;
 
   @NonNull
   private final ServiceBinder mBinder;
@@ -83,7 +87,7 @@ public class ConnectionService extends DaggerService implements ConnectionContra
   @Override
   public void onDestroy() {
     super.onDestroy();
-    mView = null;
+    mAuthority = null;
     mCompositeDisposable.clear();
   }
 
@@ -100,7 +104,7 @@ public class ConnectionService extends DaggerService implements ConnectionContra
 
   @Override
   public void stopService() {
-    mView = null;
+    mAuthority = null;
     mCompositeDisposable.clear();
     stopForeground(true);
     stopSelf();
@@ -109,11 +113,18 @@ public class ConnectionService extends DaggerService implements ConnectionContra
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> connect(Peripheral peripheral) {
+    // if the same peripheral is connected, ignore this request
+    // else if connected with another peripheral, disconnects from current peripheral THEN connects to new peripheral
+    // else connects to new peripheral
+
     checkRequirements()
         .subscribeOn(mSchedulerProvider.ui())
         .observeOn(mSchedulerProvider.io())
         .doOnSubscribe(mCompositeDisposable::add)
-        .doOnComplete(() -> Timber.d("Do connection here "))
+        .doOnComplete(() -> mBleConnectionClient.connect(peripheral.getBluetoothDevice()))
+        // TODO compose write request flowable, zip them and
+
+
         .doOnError(Timber::e) // TODO notify user unable to connect
         .subscribe();
 
@@ -123,6 +134,10 @@ public class ConnectionService extends DaggerService implements ConnectionContra
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> reconnect(Peripheral peripheral) {
+    // if the current peripheral is connected, ignore this request
+    // else if connected with another peripheral, ignore this request
+    // else if the current peripheral is disconnected, reconnects to current peripheral
+
     checkRequirements()
         .subscribeOn(mSchedulerProvider.ui())
         .observeOn(mSchedulerProvider.io())
@@ -137,6 +152,9 @@ public class ConnectionService extends DaggerService implements ConnectionContra
   @NonNull
   @Override
   public Flowable<ConnectionContract.ConnectionState> disconnect(Peripheral peripheral) {
+    // if the current peripheral is connected, disconnect this peripheral
+    // else if connected with another peripheral, ignore this request
+
     checkRequirements()
         .subscribeOn(mSchedulerProvider.ui())
         .observeOn(mSchedulerProvider.io())
@@ -164,9 +182,9 @@ public class ConnectionService extends DaggerService implements ConnectionContra
    * @return a completable when complete, means requirements are satisfied.
    */
   private Completable checkRequirements() {
-    if (mView != null && mView.isActive()) {
-      return mView.checkSettingsSatisfied()
-          .andThen(mView.checkBluetoothPermissions())
+    if (mAuthority != null && mAuthority.isActive()) {
+      return mAuthority.checkSettingsSatisfied()
+          .andThen(mAuthority.checkBluetoothPermissions())
           .doOnComplete(() -> Timber.w("Has settings and permissions"));
     } else {
       return Completable.error(new Throwable("Authority not available to check requirements"));
@@ -175,7 +193,7 @@ public class ConnectionService extends DaggerService implements ConnectionContra
 
   public final class ServiceBinder extends Binder {
     public ConnectionContract.Service getService(@NonNull ConnectionContract.View view) {
-      mView = view;
+      mAuthority = view;
       return ConnectionService.this;
     }
   }

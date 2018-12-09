@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.data.source.peripheral;
+package com.andrweclam.bleclient;
 
+import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
-import com.andrewclam.weatherclient.data.source.DataSource;
-import com.andrewclam.weatherclient.model.Peripheral;
-import com.google.common.base.Optional;
+public interface BleConnectionClient {
 
-import org.intellij.lang.annotations.Flow;
-
-import java.util.Collection;
-
-import io.reactivex.Flowable;
-
-/**
- * API exposes {@link Peripheral} model specific data source requirements
- */
-public interface PeripheralsDataSource extends DataSource<Peripheral> {
-
-  /* Allows for future extensibility */
   @NonNull
-  Flowable<Optional<Peripheral>> get();
+  BluetoothDevice getBleDevice(@NonNull String macAddress);
+
+  /**
+   * Connects to a specific device
+   *
+   * @param device
+   */
+  void connect(@NonNull BluetoothDevice device);
+
+  /**
+   * Disconnects a specific device
+   *
+   * @param device a {@link BluetoothDevice}
+   */
+  void disconnect(@NonNull BluetoothDevice device);
+
+  /**
+   * Disconnect all existing connections
+   */
+  void disconnectAll();
+
 }

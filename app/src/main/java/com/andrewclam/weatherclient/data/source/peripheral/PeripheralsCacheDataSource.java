@@ -22,6 +22,9 @@ import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -41,14 +44,14 @@ import timber.log.Timber;
 class PeripheralsCacheDataSource implements PeripheralsDataSource {
 
   @NonNull
-  private final List<Peripheral> mCachePeripherals;
+  private final List<Peripheral> mPeripherals;
 
   @Nonnull
-  private final PublishProcessor<List<Peripheral>> mCachePeripheralsPublisher;
+  private final PublishProcessor<Peripheral> mCachePeripheralsPublisher;
 
   @Inject
   PeripheralsCacheDataSource() {
-    mCachePeripherals = new ArrayList<>();
+    mPeripherals = new LinkedList<>();
     mCachePeripheralsPublisher = PublishProcessor.create();
   }
 
@@ -62,18 +65,17 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @NonNull
   @Override
   public Flowable<List<Peripheral>> getAll() {
-    return mCachePeripheralsPublisher;
+    Timber.w("Data source doesn't support get all by collection");
+    return Flowable.empty();
   }
 
   @NonNull
   @Override
   public Completable add(@NonNull Peripheral item) {
     return Completable.create(emitter -> {
-      if (!mCachePeripherals.contains(item)) {
-        Timber.d("Add item: %s", item.getUid());
-        mCachePeripherals.add(item);
-        mCachePeripheralsPublisher.onNext(mCachePeripherals);
-      }
+      Timber.d("Add item: %s", item.getUid());
+      mPeripherals.add(item);
+      mCachePeripheralsPublisher.onNext(item);
       emitter.onComplete();
     });
   }
@@ -81,11 +83,8 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @NonNull
   @Override
   public Completable add(@NonNull List<Peripheral> items) {
-    return Completable.create(emitter -> {
-      mCachePeripherals.addAll(items);
-      mCachePeripheralsPublisher.onNext(mCachePeripherals);
-      emitter.onComplete();
-    });
+    Timber.w("Data source doesn't support bulk insert");
+    return Completable.complete();
   }
 
   @NonNull
@@ -104,15 +103,18 @@ class PeripheralsCacheDataSource implements PeripheralsDataSource {
   @NonNull
   @Override
   public Completable deleteAll() {
-    return Completable.create(emitter -> {
-      refresh();
-      mCachePeripheralsPublisher.onNext(mCachePeripherals);
-      emitter.onComplete();
-    });
+    Timber.w("Data source doesn't support delete all");
+    return Completable.complete();
   }
 
   @Override
   public void refresh() {
-    mCachePeripherals.clear();
+
+  }
+
+  @NonNull
+  @Override
+  public Flowable<Optional<Peripheral>> get() {
+    return null;
   }
 }

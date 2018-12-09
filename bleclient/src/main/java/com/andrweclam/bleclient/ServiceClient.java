@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-include ':app', ':bleclient'
+package com.andrweclam.bleclient;
+
+import android.bluetooth.BluetoothGattCallback;
+
+public abstract class ServiceClient extends BluetoothGattCallback {
+  public abstract void writeCharacteristic();
+
+}

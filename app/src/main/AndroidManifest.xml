@@ -12,14 +12,14 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
-  -->
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.andrewclam.weatherclient">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -45,6 +45,7 @@
 
         <service android:name=".service.scanner.ScannerService" />
         <service android:name=".service.connection.ConnectionService" />
+        <activity android:name=".service.scanner2.Scanner2Activity"></activity>
     </application>
 
 </manifest>

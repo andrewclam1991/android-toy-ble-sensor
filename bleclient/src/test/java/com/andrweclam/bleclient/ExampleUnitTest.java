@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.data.source.peripheral;
+package com.andrweclam.bleclient;
 
-import android.support.annotation.NonNull;
+import org.junit.Test;
 
-import com.andrewclam.weatherclient.data.source.DataSource;
-import com.andrewclam.weatherclient.model.Peripheral;
-import com.google.common.base.Optional;
-
-import org.intellij.lang.annotations.Flow;
-
-import java.util.Collection;
-
-import io.reactivex.Flowable;
+import static org.junit.Assert.*;
 
 /**
- * API exposes {@link Peripheral} model specific data source requirements
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public interface PeripheralsDataSource extends DataSource<Peripheral> {
-
-  /* Allows for future extensibility */
-  @NonNull
-  Flowable<Optional<Peripheral>> get();
+public class ExampleUnitTest {
+  @Test
+  public void addition_isCorrect() {
+    assertEquals(4, 2 + 2);
+  }
 }
