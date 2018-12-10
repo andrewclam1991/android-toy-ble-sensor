@@ -23,8 +23,11 @@ import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.ScannerState;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -82,7 +85,15 @@ final class ScannerStateIdle implements ScannerContract.State {
         .subscribeOn(mSchedulerProvider.io())
         .subscribe();
 
+    Disposable autoStopDisposable = Completable.complete()
+        .delay(10, TimeUnit.SECONDS)
+        .andThen(mProducer.stop())
+        .andThen(mStateRepository.set(ScannerState.getInActiveState()))
+        .subscribeOn(mSchedulerProvider.io())
+        .subscribe();
+
     mCompositeDisposable.add(disposable);
+    mCompositeDisposable.add(autoStopDisposable);
   }
 
   @Override

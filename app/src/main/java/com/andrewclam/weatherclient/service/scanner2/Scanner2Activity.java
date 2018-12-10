@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 
 import javax.inject.Inject;
 
@@ -18,9 +17,6 @@ public class Scanner2Activity extends AppCompatActivity implements ScannerContra
 
   @Inject
   ScannerContract.ViewModel mViewModel;
-
-  @Inject
-  BaseSchedulerProvider mSchedulerProvider;
 
   @NonNull
   private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
@@ -38,16 +34,12 @@ public class Scanner2Activity extends AppCompatActivity implements ScannerContra
     mViewModel.scanCommandPublisher().onNext(true);
 
     Disposable devicesDisposable = mViewModel.getDevices()
-        .subscribeOn(mSchedulerProvider.io())
-        .observeOn(mSchedulerProvider.ui())
         .subscribe(device -> {
         }, this::showScanError);
 
     mCompositeDisposable.add(devicesDisposable);
 
     Disposable disposable = mViewModel.getIsScanning()
-        .subscribeOn(mSchedulerProvider.io())
-        .observeOn(mSchedulerProvider.ui())
         .subscribe(this::showIsScanning, this::showScanError);
 
     mCompositeDisposable.add(disposable);
@@ -73,6 +65,6 @@ public class Scanner2Activity extends AppCompatActivity implements ScannerContra
 
   @Override
   public void showScanError(Throwable throwable) {
-
+    Toast.makeText(this, throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
   }
 }
