@@ -42,18 +42,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 
 @Singleton
-public class SensorDataPointsRepository extends Repository<SensorDataPoint> implements SensorDataPointsDataSource {
+public class SensorDataPointRepository extends Repository<SensorDataPoint> implements SensorDataPointDataSource {
 
   @NonNull
-  private final SensorDataPointsDataSource mLocalDataSource;
+  private final SensorDataPointDataSource mLocalDataSource;
 
   @NonNull
-  private final SensorDataPointsDataSource mRemoteDataSource;
+  private final SensorDataPointDataSource mRemoteDataSource;
 
   @VisibleForTesting
   @Inject
-  SensorDataPointsRepository(@NonNull @Local SensorDataPointsDataSource localDataSource,
-                             @NonNull @Remote SensorDataPointsDataSource remoteDataSource) {
+  SensorDataPointRepository(@NonNull @Local SensorDataPointDataSource localDataSource,
+                            @NonNull @Remote SensorDataPointDataSource remoteDataSource) {
     super(localDataSource, remoteDataSource);
     mLocalDataSource = checkNotNull(localDataSource);
     mRemoteDataSource = checkNotNull(remoteDataSource);

@@ -18,6 +18,7 @@ package com.andrewclam.weatherclient.data.source.sensordatapoint;
 
 import android.support.annotation.NonNull;
 
+import com.andrewclam.weatherclient.data.source.Cache;
 import com.andrewclam.weatherclient.data.source.Local;
 import com.andrewclam.weatherclient.data.source.Remote;
 import com.andrewclam.weatherclient.data.source.Repo;
@@ -28,27 +29,33 @@ import dagger.Binds;
 import dagger.Module;
 
 /**
- * This is used by Dagger to inject the required arguments into the {@link SensorDataPointsRepository}.
+ * This is used by Dagger to inject the required arguments into the {@link SensorDataPointRepository}.
  */
 @Module
-public abstract class SensorDataPointsRepositoryModule {
+public abstract class SensorDataPointModule {
 
   @NonNull
   @Singleton
   @Binds
   @Repo
-  abstract SensorDataPointsDataSource providesRepository(@NonNull SensorDataPointsRepository repository);
+  abstract SensorDataPointDataSource providesRepository(@NonNull SensorDataPointRepository repository);
+
+  @NonNull
+  @Singleton
+  @Binds
+  @Cache
+  abstract SensorDataPointDataSource providesCacheDataSource(@NonNull SensorDataPointCacheDataSource repository);
 
   @NonNull
   @Singleton
   @Binds
   @Local
-  abstract SensorDataPointsDataSource providesLocalDataSource(@NonNull SensorDataPointsLocalDataSource dataSource);
+  abstract SensorDataPointDataSource providesLocalDataSource(@NonNull SensorDataPointLocalDataSource dataSource);
 
   @NonNull
   @Singleton
   @Binds
   @Remote
-  abstract SensorDataPointsDataSource providesRemoteDataSource(@NonNull SensorDataPointsLocalDataSource dataSource);
+  abstract SensorDataPointDataSource providesRemoteDataSource(@NonNull SensorDataPointLocalDataSource dataSource);
 
 }

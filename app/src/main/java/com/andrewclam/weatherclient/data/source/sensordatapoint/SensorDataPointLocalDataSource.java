@@ -36,13 +36,13 @@ import io.reactivex.Flowable;
  * Concrete implementation of a data source as a db.
  */
 @Singleton
-class SensorDataPointsLocalDataSource extends LocalDataSource<SensorDataPoint> implements SensorDataPointsDataSource {
+class SensorDataPointLocalDataSource extends LocalDataSource<SensorDataPoint> implements SensorDataPointDataSource {
 
   @NonNull
   private final SensorDataPointDao mSensorDataPointDao;
 
   @Inject
-  SensorDataPointsLocalDataSource(@NonNull SensorDataPointDao sensorDataPointDao) {
+  SensorDataPointLocalDataSource(@NonNull SensorDataPointDao sensorDataPointDao) {
     super(sensorDataPointDao);
     this.mSensorDataPointDao = sensorDataPointDao;
   }

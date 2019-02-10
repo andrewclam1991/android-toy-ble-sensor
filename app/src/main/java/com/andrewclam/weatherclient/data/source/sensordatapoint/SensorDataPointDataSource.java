@@ -31,7 +31,7 @@ import io.reactivex.Flowable;
 /**
  * API exposes {@link SensorDataPoint} model specific data source requirements
  */
-public interface SensorDataPointsDataSource extends DataSource<SensorDataPoint> {
+public interface SensorDataPointDataSource extends DataSource<SensorDataPoint> {
 
   /* Allows for future extensibility */
 
