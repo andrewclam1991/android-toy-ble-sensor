@@ -1,18 +1,14 @@
 package com.andrweclam.bluetoothstate.service;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.andrweclam.bluetoothstate.Connection;
 
 import javax.inject.Inject;
 
-import dagger.android.DaggerService;
 import io.reactivex.Flowable;
 
-public class ServiceContext extends DaggerService implements Connection.Context {
+public class ServiceContext implements Connection.Context {
   private Connection.State mCurrentState;
 
   // Platform broadcast receiver
@@ -22,33 +18,11 @@ public class ServiceContext extends DaggerService implements Connection.Context 
   Connection.State mMissingBluetoothAdapterState;
   @Inject
   Connection.State mMissingLocationAdapterState;
+  @Inject
+  Connection.State mIdleState;
 
   public ServiceContext() {
-
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
     setContext(this);
-    mMissingNetworkState.setContext(this);
-    mMissingBluetoothAdapterState.setContext(this);
-    mMissingLocationAdapterState.setContext(this);
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    dropContext();
-    mMissingNetworkState.dropContext();
-    mMissingBluetoothAdapterState.dropContext();
-    mMissingLocationAdapterState.dropContext();
-  }
-
-  @Nullable
-  @Override
-  public IBinder onBind(Intent intent) {
-    throw new UnsupportedOperationException("Not implemented yet");
   }
 
   @Override
@@ -73,7 +47,7 @@ public class ServiceContext extends DaggerService implements Connection.Context 
 
   @Override
   public Connection.State getIdleState() {
-    return null;
+    return mIdleState;
   }
 
   @Override
@@ -108,12 +82,16 @@ public class ServiceContext extends DaggerService implements Connection.Context 
 
   @Override
   public void setContext(Connection.Context context) {
-    // No implementation, this is the context implementation
+    mMissingNetworkState.setContext(context);
+    mMissingBluetoothAdapterState.setContext(context);
+    mMissingLocationAdapterState.setContext(context);
   }
 
   @Override
   public void dropContext() {
-    // No implementation, this is the context implementation
+    mMissingNetworkState.dropContext();
+    mMissingBluetoothAdapterState.dropContext();
+    mMissingLocationAdapterState.dropContext();
   }
 
   @Override
@@ -122,12 +100,12 @@ public class ServiceContext extends DaggerService implements Connection.Context 
   }
 
   @Override
-  public Flowable<Connection> connect() {
-    return mCurrentState.connect();
+  public Flowable<Connection.Model> connect(String macAddress) {
+    return mCurrentState.connect(macAddress);
   }
 
   @Override
-  public Flowable<Connection> disconnect() {
+  public Flowable<Connection.Model> disconnect() {
     return mCurrentState.disconnect();
   }
 }

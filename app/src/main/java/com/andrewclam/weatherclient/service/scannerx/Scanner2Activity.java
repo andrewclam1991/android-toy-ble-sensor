@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.service.scanner2;
+package com.andrewclam.weatherclient.service.scannerx;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;

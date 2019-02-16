@@ -1,14 +1,32 @@
 package com.andrweclam.bluetoothstate.service;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.content.Context;
 
 import com.andrweclam.bluetoothstate.Connection;
 
+import javax.inject.Inject;
+
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
 
 public class IdleState implements Connection.State {
 
   private Connection.Context mContext;
+
+  @NonNull
+  private final Context mApplicationContext;
+
+  @Inject
+  public IdleState(@NonNull Context applicationContext){
+    mApplicationContext = applicationContext;
+  }
 
   @Override
   public void setContext(Connection.Context context) {
@@ -27,13 +45,13 @@ public class IdleState implements Connection.State {
   }
 
   @Override
-  public Flowable<Connection> connect() {
-    mContext.setState(mContext.getConnectingState());
-    return mContext.connect();
+  public Flowable<Connection.Model> connect(String macAddress) {
+    return Flowable.create(emitter -> {
+    }, BackpressureStrategy.LATEST);
   }
 
   @Override
-  public Flowable<Connection> disconnect() {
-    return Flowable.error(new UnsupportedOperationException("Disconnect in idle state is non-sense"));
+  public Flowable<Connection.Model> disconnect() {
+    return Flowable.error(new UnsupportedOperationException("Disconnecting in no device state is non-sense"));
   }
 }

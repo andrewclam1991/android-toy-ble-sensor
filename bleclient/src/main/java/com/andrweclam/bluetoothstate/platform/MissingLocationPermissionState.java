@@ -31,12 +31,12 @@ public class MissingLocationPermissionState implements Connection.State {
   }
 
   @Override
-  public Flowable<Connection> connect() {
+  public Flowable<Connection.Model> connect(String macAddress) {
     return Flowable.error(new MissingLocationPermissionException());
   }
 
   @Override
-  public Flowable<Connection> disconnect() {
+  public Flowable<Connection.Model> disconnect() {
     return Flowable.error(new MissingLocationPermissionException());
   }
 }

@@ -119,7 +119,7 @@ public interface ScannerContract {
     void stopScan();
 
     /**
-     * Command to cleanup resources
+     * Command to stop resources
      */
     void cleanup();
   }

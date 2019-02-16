@@ -1,12 +1,8 @@
-package com.andrewclam.weatherclient.service.scanner2;
+package com.andrewclam.weatherclient.service.scannerx;
 
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanResult;
-
-import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;
 

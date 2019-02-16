@@ -144,7 +144,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
 
   @Override
   public void stopService() {
-    Timber.d("handle stop service cleanup.");
+    Timber.d("handle stop service stop.");
     stopScan();
     stopForeground(true);
     stopSelf();

@@ -1,10 +1,9 @@
-package com.andrewclam.weatherclient.service.scanner2;
+package com.andrewclam.weatherclient.service.scannerx;
 
 import android.bluetooth.BluetoothDevice;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
 
 /**
