@@ -1,6 +1,6 @@
-package com.andrewclam.weatherclient.feature.scanner.data.event;
+package com.andrewclam.weatherclient.feature.scannerx.data.event;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 
 import javax.inject.Inject;
 
@@ -22,7 +22,7 @@ class ScannerEventCacheDataSource implements ScannerEventDataSource {
   }
 
   @Override
-  public void put(@NonNull @ScannerEvent String model) {
+  public void put(@NonNull @ScannerXEvent String model) {
     mEventSource.onNext(model);
   }
 

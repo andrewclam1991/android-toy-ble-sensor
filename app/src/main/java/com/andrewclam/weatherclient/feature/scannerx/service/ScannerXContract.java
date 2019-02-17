@@ -1,12 +1,12 @@
-package com.andrewclam.weatherclient.feature.scanner.service;
+package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.bluetooth.BluetoothDevice;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
 import io.reactivex.Flowable;
 
-class ScannerContract {
+class ScannerXContract {
   interface Service {
     void showInProgress();
 
@@ -19,7 +19,7 @@ class ScannerContract {
 
   interface Controller {
 
-    Flowable<ScannerResult> getModel();
+    Flowable<ScannerXResult> getModel();
 
     void start();
 

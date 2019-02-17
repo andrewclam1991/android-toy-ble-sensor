@@ -1,13 +1,13 @@
-package com.andrewclam.weatherclient.feature.scanner.view;
+package com.andrewclam.weatherclient.feature.scannerx.view;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.View;
 import android.widget.Button;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.feature.scanner.data.event.ScannerEventDataSource;
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
 import javax.inject.Inject;
 
@@ -16,13 +16,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.exceptions.OnErrorNotImplementedException;
 
-public class ScannerView extends DaggerAppCompatActivity implements ScannerContract.View, View.OnClickListener {
+public class ScannerXView extends DaggerAppCompatActivity implements ScannerXContract.View, View.OnClickListener {
 
   @Inject
   ScannerEventDataSource mEventDataSource;
 
   @Inject
-  ScannerContract.Presenter mPresenter;
+  ScannerXContract.Presenter mPresenter;
 
   private final CompositeDisposable mCompositeDisposable;
 
@@ -31,7 +31,7 @@ public class ScannerView extends DaggerAppCompatActivity implements ScannerContr
   private Button mStopScanButton;
 
   @Inject
-  public ScannerView() {
+  public ScannerXView() {
     mCompositeDisposable = new CompositeDisposable();
   }
 
@@ -74,15 +74,15 @@ public class ScannerView extends DaggerAppCompatActivity implements ScannerContr
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.scanner_start_scan_btn:
-        mEventDataSource.put(ScannerEvent.START_SCAN);
+        mEventDataSource.put(ScannerXEvent.START_SCAN);
         break;
       case R.id.scanner_stop_scan_btn:
-        mEventDataSource.put(ScannerEvent.STOP_SCAN);
+        mEventDataSource.put(ScannerXEvent.STOP_SCAN);
         break;
     }
   }
 
-  private void onNextResult(ScannerResult model) {
+  private void onNextResult(ScannerXResult model) {
     showInProgress(model.isInProgress());
     showIsComplete(model.isComplete());
     showIsError(model.isError());

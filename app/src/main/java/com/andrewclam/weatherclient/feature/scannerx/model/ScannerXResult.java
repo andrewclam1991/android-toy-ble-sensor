@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.model;
+package com.andrewclam.weatherclient.feature.scannerx.model;
 
 import android.bluetooth.BluetoothDevice;
 
@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice;
  * eg. data changes and updates
  * data -> controller -> view
  */
-public class ScannerResult {
+public class ScannerXResult {
   private final boolean isInProgress;
   private final boolean isResult;
   private final boolean isComplete;
@@ -15,12 +15,12 @@ public class ScannerResult {
   private final String errorMessage;
   private final BluetoothDevice device;
 
-  private ScannerResult(boolean isInProgress,
-                        boolean isResult,
-                        boolean isComplete,
-                        boolean isError,
-                        String errorMessage,
-                        BluetoothDevice device) {
+  private ScannerXResult(boolean isInProgress,
+                         boolean isResult,
+                         boolean isComplete,
+                         boolean isError,
+                         String errorMessage,
+                         BluetoothDevice device) {
     this.isInProgress = isInProgress;
     this.isResult = isResult;
     this.isComplete = isComplete;
@@ -29,20 +29,20 @@ public class ScannerResult {
     this.device = device;
   }
 
-  public static ScannerResult inProgress() {
-    return new ScannerResult(true, false, false, false, "no_error", null);
+  public static ScannerXResult inProgress() {
+    return new ScannerXResult(true, false, false, false, "no_error", null);
   }
 
-  public static ScannerResult result(BluetoothDevice device) {
-    return new ScannerResult(true, true, false, false, "no_error", device);
+  public static ScannerXResult result(BluetoothDevice device) {
+    return new ScannerXResult(true, true, false, false, "no_error", device);
   }
 
-  public static ScannerResult complete() {
-    return new ScannerResult(false, false, true, false, "no_error", null);
+  public static ScannerXResult complete() {
+    return new ScannerXResult(false, false, true, false, "no_error", null);
   }
 
-  public static ScannerResult error(String errorMessage) {
-    return new ScannerResult(false, false,false, true, errorMessage, null);
+  public static ScannerXResult error(String errorMessage) {
+    return new ScannerXResult(false, false,false, true, errorMessage, null);
   }
 
   public boolean isResult() {

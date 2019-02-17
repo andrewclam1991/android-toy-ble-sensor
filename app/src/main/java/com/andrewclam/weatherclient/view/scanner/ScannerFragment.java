@@ -262,7 +262,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   private void onUserStartScan() {
     Timber.d("Received user start scan command.");
     if (mScannerService != null && mScannerServiceBound) {
-      Timber.d("Delegate start scan work to ScannerService.");
+      Timber.d("Delegate start scan work to ScannerXService.");
       mScannerService.startService();
       mScannerService.startScan();
     } else {
@@ -278,7 +278,7 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
   private void onUserStopScan() {
     Timber.d("Received user stop scan command.");
     if (mScannerService != null && mScannerServiceBound) {
-      Timber.d("Delegate stop scan work to ScannerService.");
+      Timber.d("Delegate stop scan work to ScannerXService.");
       mScannerService.stopService();
     } else {
       Timber.e("Service disconnected, unable to handle stop scan command.");
@@ -302,13 +302,13 @@ public class ScannerFragment extends DaggerFragment implements ScannerViewContra
         mScannerService.startService();
         mScannerService.startScan();
         mScannerServiceBound = true;
-        Timber.d("View connected and bound to ScannerService.");
+        Timber.d("View connected and bound to ScannerXService.");
       }
 
       @Override
       public void onServiceDisconnected(ComponentName name) {
         mScannerServiceBound = false;
-        Timber.d("View disconnected and unbound from ScannerService.");
+        Timber.d("View disconnected and unbound from ScannerXService.");
       }
     };
   }

@@ -1,6 +1,6 @@
-package com.andrewclam.weatherclient.feature.scanner.data.result;
+package com.andrewclam.weatherclient.feature.scannerx.data.result;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
 import javax.inject.Inject;
 
@@ -11,7 +11,7 @@ import io.reactivex.processors.BehaviorProcessor;
 class ScannerResultCacheDataSource implements ScannerResultDataSource {
 
   @NonNull
-  private final BehaviorProcessor<ScannerResult> mResultSource;
+  private final BehaviorProcessor<ScannerXResult> mResultSource;
 
   @Inject
   ScannerResultCacheDataSource() {
@@ -19,12 +19,12 @@ class ScannerResultCacheDataSource implements ScannerResultDataSource {
   }
 
   @Override
-  public void add(ScannerResult model) {
+  public void add(ScannerXResult model) {
     mResultSource.onNext(model);
   }
 
   @Override
-  public Flowable<ScannerResult> get() {
+  public Flowable<ScannerXResult> get() {
     return mResultSource.onBackpressureBuffer(10);
   }
 }

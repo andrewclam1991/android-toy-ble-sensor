@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.service;
+package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.app.Notification;
 import android.bluetooth.BluetoothDevice;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.google.common.base.Strings;
 
 import java.util.Objects;
@@ -19,23 +19,23 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-import static com.andrewclam.weatherclient.feature.scanner.service.ScannerNotification.SCANNER_NOTIFICATION_ID;
+import static com.andrewclam.weatherclient.feature.scannerx.service.ScannerXNotification.SCANNER_NOTIFICATION_ID;
 
 /**
- * Framework Service {@link DaggerService} implementation of {@link ScannerContract.Service}
+ * Framework Service {@link DaggerService} implementation of {@link ScannerXContract.Service}
  */
-public class ScannerService extends DaggerService implements ScannerContract.Service {
+public class ScannerXService extends DaggerService implements ScannerXContract.Service {
 
   public static int SCANNER_SERVICE_REQUEST_CODE = 5558;
 
   @Inject
-  ScannerContract.Controller mController;
+  ScannerXContract.Controller mController;
 
   @NonNull
   private final CompositeDisposable mCompositeDisposable;
 
   @Inject
-  public ScannerService() {
+  public ScannerXService() {
     mCompositeDisposable = new CompositeDisposable();
   }
 
@@ -46,7 +46,7 @@ public class ScannerService extends DaggerService implements ScannerContract.Ser
     mCompositeDisposable.add(mController.getModel()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(model -> {
-          Notification notification = ScannerNotification.build(ScannerService.this, model);
+          Notification notification = ScannerXNotification.build(ScannerXService.this, model);
           startForeground(SCANNER_NOTIFICATION_ID, notification);
 
           if (model.isComplete()) {
@@ -65,12 +65,12 @@ public class ScannerService extends DaggerService implements ScannerContract.Ser
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     if (isStartCommandWithActionValid(intent, flags, startId)) {
-      @ScannerEvent String event = intent.getAction();
+      @ScannerXEvent String event = intent.getAction();
       Objects.requireNonNull(event, "event is empty or null");
       switch (event) {
-        case ScannerEvent.START_SCAN:
+        case ScannerXEvent.START_SCAN:
           mController.start();
-        case ScannerEvent.STOP_SCAN:
+        case ScannerXEvent.STOP_SCAN:
           mController.stop();
         default:
           throw new UnsupportedOperationException("Unrecognized action" + event);

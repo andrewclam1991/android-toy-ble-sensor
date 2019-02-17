@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.data.result;
+package com.andrewclam.weatherclient.feature.scannerx.data.result;
 
 import javax.inject.Singleton;
 

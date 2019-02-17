@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.data.event;
+package com.andrewclam.weatherclient.feature.scannerx.data.event;
 
 import javax.inject.Singleton;
 

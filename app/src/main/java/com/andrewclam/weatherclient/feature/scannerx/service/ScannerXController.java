@@ -1,12 +1,12 @@
-package com.andrewclam.weatherclient.feature.scanner.service;
+package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.UiThread;
 
-import com.andrewclam.weatherclient.feature.scanner.data.event.ScannerEventDataSource;
-import com.andrewclam.weatherclient.feature.scanner.data.result.ScannerResultDataSource;
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
-import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerResultDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
+import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-class ScannerController implements ScannerContract.Controller {
+class ScannerXController implements ScannerXContract.Controller {
 
   private final ScannerEventDataSource mEventDataSource;
 
@@ -35,16 +35,16 @@ class ScannerController implements ScannerContract.Controller {
   private int mScanState;
 
   @Inject
-  ScannerController(@NonNull ScannerEventDataSource eventDataSource,
-                    @NonNull ScannerResultDataSource resultDataSource) {
+  ScannerXController(@NonNull ScannerEventDataSource eventDataSource,
+                     @NonNull ScannerResultDataSource resultDataSource) {
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
     mCompositeDisposable = new CompositeDisposable();
-    mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ScannerResult.result(device));
+    mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ScannerXResult.result(device));
   }
 
   @Override
-  public Flowable<ScannerResult> getModel() {
+  public Flowable<ScannerXResult> getModel() {
     return mResultDataSource.get();
   }
 
@@ -62,12 +62,12 @@ class ScannerController implements ScannerContract.Controller {
   }
 
   @UiThread
-  private void onEvent(@ScannerEvent String event) {
+  private void onEvent(@ScannerXEvent String event) {
     switch (event) {
-      case ScannerEvent.START_SCAN:
+      case ScannerXEvent.START_SCAN:
         startScan();
         break;
-      case ScannerEvent.STOP_SCAN:
+      case ScannerXEvent.STOP_SCAN:
         stopScan();
         break;
     }
@@ -85,7 +85,7 @@ class ScannerController implements ScannerContract.Controller {
     }
     mScanState = SCAN_STATE_IN_PROGRESS;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-    mResultDataSource.add(ScannerResult.inProgress());
+    mResultDataSource.add(ScannerXResult.inProgress());
     adapter.startLeScan(mScanCallback);
 
     mCompositeDisposable.add(Completable.fromAction(this::stopScan)
@@ -103,6 +103,6 @@ class ScannerController implements ScannerContract.Controller {
     mScanState = SCAN_STATE_IDLE;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     adapter.stopLeScan(mScanCallback);
-    mResultDataSource.add(ScannerResult.complete());
+    mResultDataSource.add(ScannerXResult.complete());
   }
 }
