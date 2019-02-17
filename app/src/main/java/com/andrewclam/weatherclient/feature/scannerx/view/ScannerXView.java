@@ -52,6 +52,13 @@ public class ScannerXView extends DaggerAppCompatActivity implements ScannerXCon
     ButterKnife.bind(this);
     mStartScannerBtn.setOnClickListener(this);
     mStopScannerBtn.setOnClickListener(this);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    Intent intent = new Intent(this, ScannerXService.class);
+    startService(intent);
 
     mCompositeDisposable.add(mPresenter.getModel()
         .observeOn(AndroidSchedulers.mainThread())
@@ -60,10 +67,9 @@ public class ScannerXView extends DaggerAppCompatActivity implements ScannerXCon
   }
 
   @Override
-  protected void onResume() {
-    super.onResume();
-    Intent intent = new Intent(this, ScannerXService.class);
-    startService(intent);
+  protected void onPause() {
+    super.onPause();
+    mCompositeDisposable.clear();
   }
 
   @Override
