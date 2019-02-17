@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.andrewclam.weatherclient.BuildConfig;
 import com.andrewclam.weatherclient.R;
+import com.andrewclam.weatherclient.feature.scannerx.view.ScannerXView;
 import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
 
 import timber.log.Timber;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     if (BuildConfig.DEBUG) {
       Timber.d("Launch scanner instance.");
-      Intent intent = new Intent(this, ScannerActivity.class);
+      Intent intent = new Intent(this, ScannerXView.class);
       startActivity(intent);
     }
   }
