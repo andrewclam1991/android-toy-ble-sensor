@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.feature.scanner.data.event.ServiceEventDataSource;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
 import javax.inject.Inject;
@@ -72,10 +72,10 @@ class ScannerView implements ScannerContract.View, View.OnClickListener {
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.scanner_start_scan_btn:
-        mEventDataSource.put(ServiceEventModel.START_SCAN);
+        mEventDataSource.put(ScannerEvent.START_SCAN);
         break;
       case R.id.scanner_stop_scan_btn:
-        mEventDataSource.put(ServiceEventModel.STOP_SCAN);
+        mEventDataSource.put(ScannerEvent.STOP_SCAN);
         break;
     }
   }

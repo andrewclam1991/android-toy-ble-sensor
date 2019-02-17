@@ -1,6 +1,6 @@
 package com.andrewclam.weatherclient.feature.scanner.data.event;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,7 @@ import io.reactivex.processors.BehaviorProcessor;
 class ServiceEventCacheDataSource implements ServiceEventDataSource {
 
   @NonNull
-  private final BehaviorProcessor<ServiceEventModel> mEventSource;
+  private final BehaviorProcessor<String> mEventSource;
 
   @Inject
   ServiceEventCacheDataSource() {
@@ -22,12 +22,12 @@ class ServiceEventCacheDataSource implements ServiceEventDataSource {
   }
 
   @Override
-  public void put(ServiceEventModel model) {
+  public void put(@NonNull @ScannerEvent String model) {
     mEventSource.onNext(model);
   }
 
   @Override
-  public Flowable<ServiceEventModel> get() {
+  public Flowable<String> get() {
     return mEventSource.onBackpressureLatest();
   }
 }

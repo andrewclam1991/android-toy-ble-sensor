@@ -5,7 +5,7 @@ import android.support.annotation.UiThread;
 
 import com.andrewclam.weatherclient.feature.scanner.data.event.ServiceEventDataSource;
 import com.andrewclam.weatherclient.feature.scanner.data.result.ServiceResultDataSource;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
 import java.util.concurrent.TimeUnit;
@@ -43,11 +43,6 @@ class ScannerController implements ScannerContract.Controller {
     mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ServiceResultModel.result(device));
   }
 
-//  @Override
-//  public BehaviorProcessor<ServiceEventModel> getEventSource() {
-//    return null;
-//  }
-
   @Override
   public Flowable<ServiceResultModel> getModel() {
     return mResultDataSource.get();
@@ -67,12 +62,12 @@ class ScannerController implements ScannerContract.Controller {
   }
 
   @UiThread
-  private void onEvent(ServiceEventModel event) {
+  private void onEvent(@ScannerEvent String event) {
     switch (event) {
-      case START_SCAN:
+      case ScannerEvent.START_SCAN:
         startScan();
         break;
-      case STOP_SCAN:
+      case ScannerEvent.STOP_SCAN:
         stopScan();
         break;
     }
