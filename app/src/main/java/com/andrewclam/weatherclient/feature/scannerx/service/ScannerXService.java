@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.google.common.base.Strings;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -27,6 +29,9 @@ import static com.andrewclam.weatherclient.feature.scannerx.service.ScannerXNoti
 public class ScannerXService extends DaggerService implements ScannerXContract.Service {
 
   public static int SCANNER_SERVICE_REQUEST_CODE = 5558;
+
+  @Inject
+  ScannerEventDataSource mEventDataSource;
 
   @Inject
   ScannerXContract.Controller mController;
@@ -55,6 +60,7 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
             showInProgress();
           } else if (model.isError()) {
             showError(model.getErrorMessage());
+            stopForeground(false);
           }
           if (model.isResult()) {
             showDevice(model.getDevice());
@@ -64,16 +70,18 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    if (isStartCommandWithActionValid(intent, flags, startId)) {
+    if (isStartCommandWithActionValid(intent)) {
       @ScannerXEvent String event = intent.getAction();
       Objects.requireNonNull(event, "event is empty or null");
       switch (event) {
         case ScannerXEvent.START_SCAN:
-          mController.start();
+          mEventDataSource.put(ScannerXEvent.START_SCAN);
+          break;
         case ScannerXEvent.STOP_SCAN:
-          mController.stop();
+          mEventDataSource.put(ScannerXEvent.STOP_SCAN);
+          break;
         default:
-          throw new UnsupportedOperationException("Unrecognized action" + event);
+          throw new UnsupportedOperationException("Unrecognized action: " + event);
       }
     }
     return super.onStartCommand(intent, flags, startId);
@@ -116,19 +124,11 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
    * Runtime sanity check for a valid service start command
    *
    * @param intent android intent
-   * @param flags android flags
-   * @param startId request code, check for {@link #SCANNER_SERVICE_REQUEST_CODE}
    * @return true if valid, false otherwise.
    */
-  private boolean isStartCommandWithActionValid(Intent intent, int flags, int startId) {
+  private boolean isStartCommandWithActionValid(Intent intent) {
     if (intent == null) {
       Timber.w("Intent is null");
-      return false;
-    }
-
-    if (startId != SCANNER_SERVICE_REQUEST_CODE) {
-      Timber.d("Expected [%s] but got [%s] instead.", SCANNER_SERVICE_REQUEST_CODE, startId);
-      Timber.w("Unsupported request code %s", startId);
       return false;
     }
 

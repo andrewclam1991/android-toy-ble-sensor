@@ -2,6 +2,8 @@ package com.andrewclam.weatherclient.feature.scannerx.data.result;
 
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
@@ -25,6 +27,6 @@ class ScannerResultCacheDataSource implements ScannerResultDataSource {
 
   @Override
   public Flowable<ScannerXResult> get() {
-    return mResultSource.onBackpressureBuffer(10);
+    return mResultSource.throttleLast(1, TimeUnit.SECONDS);
   }
 }

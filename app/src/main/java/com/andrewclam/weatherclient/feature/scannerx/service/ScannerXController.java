@@ -76,6 +76,7 @@ class ScannerXController implements ScannerXContract.Controller {
   @UiThread
   private void onError(Throwable throwable) {
     Timber.e(throwable, "Error in service event source.");
+    mResultDataSource.add(ScannerXResult.error(throwable.getMessage()));
   }
 
   private void startScan() {
@@ -83,16 +84,17 @@ class ScannerXController implements ScannerXContract.Controller {
       Timber.w("Scan is already in progress, start scan ignored.");
       return;
     }
-    mScanState = SCAN_STATE_IN_PROGRESS;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     mResultDataSource.add(ScannerXResult.inProgress());
     adapter.startLeScan(mScanCallback);
 
-    mCompositeDisposable.add(Completable.fromAction(this::stopScan)
-        .delay(10, TimeUnit.SECONDS)
+    mCompositeDisposable.add(Completable.timer(10, TimeUnit.SECONDS)
+        .andThen(Completable.fromAction(this::stopScan))
         .subscribeOn(Schedulers.io())
         .subscribe()
     );
+
+    mScanState = SCAN_STATE_IN_PROGRESS;
   }
 
   private void stopScan() {
@@ -100,9 +102,9 @@ class ScannerXController implements ScannerXContract.Controller {
       Timber.w("Scan is already idle, stop scan makes no sense.");
       return;
     }
-    mScanState = SCAN_STATE_IDLE;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     adapter.stopLeScan(mScanCallback);
     mResultDataSource.add(ScannerXResult.complete());
+    mScanState = SCAN_STATE_IDLE;
   }
 }

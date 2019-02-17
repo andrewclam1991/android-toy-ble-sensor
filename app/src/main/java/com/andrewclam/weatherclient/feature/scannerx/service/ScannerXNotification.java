@@ -110,8 +110,7 @@ final class ScannerXNotification {
   private static PendingIntent getPendingIntent(Context context, @ScannerXEvent String event) {
     Intent intent = new Intent(context, ScannerXService.class);
     intent.setAction(event);
-    return PendingIntent.getService(context, ScannerXService.SCANNER_SERVICE_REQUEST_CODE,
-        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
 }

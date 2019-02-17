@@ -1,6 +1,7 @@
 package com.andrewclam.weatherclient.feature.scannerx.view;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
+import com.andrewclam.weatherclient.feature.scannerx.service.ScannerXService;
 
 import javax.inject.Inject;
 
@@ -46,7 +48,7 @@ public class ScannerXView extends DaggerAppCompatActivity implements ScannerXCon
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_scanner);
+    setContentView(R.layout.fragment_scanner);
     ButterKnife.bind(this);
     mStartScannerBtn.setOnClickListener(this);
     mStopScannerBtn.setOnClickListener(this);
@@ -55,6 +57,13 @@ public class ScannerXView extends DaggerAppCompatActivity implements ScannerXCon
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::onNextResult, this::onError)
     );
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    Intent intent = new Intent(this, ScannerXService.class);
+    startService(intent);
   }
 
   @Override

@@ -2,6 +2,8 @@ package com.andrewclam.weatherclient.feature.scannerx.data.event;
 
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
@@ -28,6 +30,6 @@ class ScannerEventCacheDataSource implements ScannerEventDataSource {
 
   @Override
   public Flowable<String> get() {
-    return mEventSource.onBackpressureLatest();
+    return mEventSource.throttleLast(1, TimeUnit.SECONDS);
   }
 }
