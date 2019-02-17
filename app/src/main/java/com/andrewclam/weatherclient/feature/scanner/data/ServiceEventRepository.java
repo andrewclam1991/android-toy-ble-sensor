@@ -5,24 +5,26 @@ import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
 
 class ServiceEventRepository implements ServiceEventDataSource {
 
-  private final BehaviorProcessor<ServiceEventModel> mStream;
+  @NonNull
+  private final BehaviorProcessor<ServiceEventModel> mEventSource;
 
   @Inject
   ServiceEventRepository() {
-    mStream = BehaviorProcessor.create();
+    mEventSource = BehaviorProcessor.create();
   }
 
   @Override
   public void put(ServiceEventModel model) {
-    mStream.onNext(model);
+    mEventSource.onNext(model);
   }
 
   @Override
   public Flowable<ServiceEventModel> get() {
-    return mStream;
+    return mEventSource;
   }
 }

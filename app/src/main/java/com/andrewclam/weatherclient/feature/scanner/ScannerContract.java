@@ -17,11 +17,12 @@ public class ScannerContract {
 
   interface Controller {
     // NOTE only exposes the event source with platform intent action approach
-    BehaviorProcessor<ServiceEventModel> getEventSource();
+    // BehaviorProcessor<ServiceEventModel> getEventSource();
 
     Flowable<ServiceModel> getModel();
 
     void start();
+
     void stop();
   }
 }

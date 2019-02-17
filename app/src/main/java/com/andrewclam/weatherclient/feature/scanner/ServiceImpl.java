@@ -47,6 +47,10 @@ class ServiceImpl implements ScannerContract.Service {
       } else if (model.isError()) {
         showError(model.getErrorMessage());
       }
+
+      if (model.isResult()) {
+        model.getDevice();
+      }
     }));
   }
 
