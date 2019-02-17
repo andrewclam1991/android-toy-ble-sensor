@@ -7,12 +7,12 @@ import dagger.Module;
 import io.reactivex.annotations.NonNull;
 
 /**
- * Dagger module for injecting a {@link ScannerEventDataSource}
+ * Dagger module for injecting a {@link ScannerXEventDataSource}
  */
 @Module
-public abstract class ScannerEventDataSourceModule {
+public abstract class ScannerXEventDataSourceModule {
   @NonNull
   @Singleton
   @Binds
-  abstract ScannerEventDataSource providesDataSource(ScannerEventCacheDataSource dataSource);
+  abstract ScannerXEventDataSource providesDataSource(ScannerXXEventCacheDataSource dataSource);
 }

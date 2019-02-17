@@ -11,13 +11,13 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
 import io.reactivex.schedulers.Schedulers;
 
-class ScannerResultCacheDataSource implements ScannerResultDataSource {
+class ScannerXResultCacheDataSource implements ScannerXResultDataSource {
 
   @NonNull
   private final BehaviorProcessor<ScannerXResult> mResultSource;
 
   @Inject
-  ScannerResultCacheDataSource() {
+  ScannerXResultCacheDataSource() {
     mResultSource = BehaviorProcessor.create();
   }
 

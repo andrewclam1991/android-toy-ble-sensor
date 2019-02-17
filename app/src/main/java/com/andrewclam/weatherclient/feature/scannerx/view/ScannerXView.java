@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 import com.andrewclam.weatherclient.feature.scannerx.service.ScannerXService;
@@ -25,7 +25,7 @@ import io.reactivex.exceptions.OnErrorNotImplementedException;
 public class ScannerXView extends DaggerAppCompatActivity implements ScannerXContract.View, View.OnClickListener {
 
   @Inject
-  ScannerEventDataSource mEventDataSource;
+  ScannerXEventDataSource mEventDataSource;
 
   @Inject
   ScannerXContract.Presenter mPresenter;

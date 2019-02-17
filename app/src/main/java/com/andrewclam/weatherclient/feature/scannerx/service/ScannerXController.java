@@ -3,8 +3,8 @@ package com.andrewclam.weatherclient.feature.scannerx.service;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.UiThread;
 
-import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
-import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerResultDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
@@ -22,9 +22,9 @@ import timber.log.Timber;
 
 class ScannerXController implements ScannerXContract.Controller {
 
-  private final ScannerEventDataSource mEventDataSource;
+  private final ScannerXEventDataSource mEventDataSource;
 
-  private final ScannerResultDataSource mResultDataSource;
+  private final ScannerXResultDataSource mResultDataSource;
 
   private final CompositeDisposable mEventDisposables;
 
@@ -37,8 +37,8 @@ class ScannerXController implements ScannerXContract.Controller {
   private int mScanState;
 
   @Inject
-  ScannerXController(@NonNull ScannerEventDataSource eventDataSource,
-                     @NonNull ScannerResultDataSource resultDataSource) {
+  ScannerXController(@NonNull ScannerXEventDataSource eventDataSource,
+                     @NonNull ScannerXResultDataSource resultDataSource) {
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
     mEventDisposables = new CompositeDisposable();

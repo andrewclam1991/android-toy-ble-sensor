@@ -1,6 +1,6 @@
 package com.andrewclam.weatherclient.feature.scannerx.view;
 
-import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerResultDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
 import javax.inject.Inject;
@@ -10,10 +10,10 @@ import io.reactivex.annotations.NonNull;
 
 class ScannerXPresenter implements ScannerXContract.Presenter {
 
-  private final ScannerResultDataSource mDataSource;
+  private final ScannerXResultDataSource mDataSource;
 
   @Inject
-  ScannerXPresenter(@NonNull ScannerResultDataSource dataSource){
+  ScannerXPresenter(@NonNull ScannerXResultDataSource dataSource){
     mDataSource = dataSource;
   }
 

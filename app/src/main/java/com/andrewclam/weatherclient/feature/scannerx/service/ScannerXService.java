@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerEventDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.google.common.base.Strings;
 
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -29,7 +28,7 @@ import static com.andrewclam.weatherclient.feature.scannerx.service.ScannerXNoti
 public class ScannerXService extends DaggerService implements ScannerXContract.Service {
 
   @Inject
-  ScannerEventDataSource mEventDataSource;
+  ScannerXEventDataSource mEventDataSource;
 
   @Inject
   ScannerXContract.Controller mController;

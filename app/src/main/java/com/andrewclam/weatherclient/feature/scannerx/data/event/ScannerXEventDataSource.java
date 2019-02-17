@@ -8,7 +8,7 @@ import io.reactivex.annotations.NonNull;
 /**
  * User event data source
  */
-public interface ScannerEventDataSource {
+public interface ScannerXEventDataSource {
   void put(@NonNull @ScannerXEvent String model);
 
   @ScannerXEvent

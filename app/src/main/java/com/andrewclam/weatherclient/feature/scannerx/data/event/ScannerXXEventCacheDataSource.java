@@ -10,18 +10,17 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
-import io.reactivex.schedulers.Schedulers;
 
 /**
- * In memory implementation of a {@link ScannerEventDataSource}
+ * In memory implementation of a {@link ScannerXEventDataSource}
  */
-class ScannerEventCacheDataSource implements ScannerEventDataSource {
+class ScannerXXEventCacheDataSource implements ScannerXEventDataSource {
 
   @NonNull
   private final BehaviorProcessor<String> mEventSource;
 
   @Inject
-  ScannerEventCacheDataSource() {
+  ScannerXXEventCacheDataSource() {
     mEventSource = BehaviorProcessor.create();
   }
 
