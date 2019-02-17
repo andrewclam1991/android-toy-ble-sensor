@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner;
+package com.andrewclam.weatherclient.feature.scanner.service;
 
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.UiThread;
@@ -8,13 +8,16 @@ import com.andrewclam.weatherclient.feature.scanner.data.result.ServiceResultDat
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.processors.BehaviorProcessor;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 class ScannerController implements ScannerContract.Controller {
@@ -89,6 +92,12 @@ class ScannerController implements ScannerContract.Controller {
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     mResultDataSource.add(ServiceResultModel.inProgress());
     adapter.startLeScan(mScanCallback);
+
+    mCompositeDisposable.add(Completable.fromAction(this::stopScan)
+        .delay(10, TimeUnit.SECONDS)
+        .subscribeOn(Schedulers.io())
+        .subscribe()
+    );
   }
 
   private void stopScan() {

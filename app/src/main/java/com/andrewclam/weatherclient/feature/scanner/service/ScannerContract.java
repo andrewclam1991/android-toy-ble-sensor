@@ -1,4 +1,6 @@
-package com.andrewclam.weatherclient.feature.scanner;
+package com.andrewclam.weatherclient.feature.scanner.service;
+
+import android.bluetooth.BluetoothDevice;
 
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
@@ -11,11 +13,11 @@ public class ScannerContract {
     void showComplete();
 
     void showError(String message);
+
+    void showDevice(BluetoothDevice device);
   }
 
   interface Controller {
-    // NOTE only exposes the event source with platform intent action approach
-    // BehaviorProcessor<ServiceEventModel> getEventSource();
 
     Flowable<ServiceResultModel> getModel();
 

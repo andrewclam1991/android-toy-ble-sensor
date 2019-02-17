@@ -1,12 +1,21 @@
-package com.andrewclam.weatherclient.feature.scanner;
+package com.andrewclam.weatherclient.feature.scanner.service;
+
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
 
+import dagger.android.DaggerService;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-class ScannerService implements ScannerContract.Service {
+/**
+ * Framework Service {@link DaggerService} implementation of {@link ScannerContract.Service}
+ */
+public class ScannerService extends DaggerService implements ScannerContract.Service {
 
   @Inject
   ScannerContract.Controller mController;
@@ -19,25 +28,8 @@ class ScannerService implements ScannerContract.Service {
     mCompositeDisposable = new CompositeDisposable();
   }
 
-//  NOTE get user actions by platform intent action approach
-//  public void onStartCommand(Intent intent){
-//    String action = intent.getAction();
-//    if (Strings.isNullOrEmpty(action)){
-//      throw new IllegalArgumentException("Intent action is null or empty");
-//    }
-//    ServiceEventModel model = ServiceEventModel.valueOf(action);
-//    switch (model){
-//      case START_SCAN:
-//        mController.getEventSource().onNext(ServiceEventModel.START_SCAN);
-//        break;
-//      case STOP_SCAN:
-//        mController.getEventSource().onNext(ServiceEventModel.STOP_SCAN);
-//        break;
-//    }
-//  }
-
-
-  public void onStart() {
+  @Override
+  public void onCreate() {
     mController.start();
 
     mCompositeDisposable.add(mController.getModel().subscribe(model -> {
@@ -48,17 +40,24 @@ class ScannerService implements ScannerContract.Service {
       } else if (model.isError()) {
         showError(model.getErrorMessage());
       }
-
       if (model.isResult()) {
-        model.getDevice();
+        showDevice(model.getDevice());
       }
     }));
+    super.onCreate();
   }
 
-  public void onStop() {
-    // Cleanup subscription
+  @Nullable
+  @Override
+  public IBinder onBind(Intent intent) {
+    return null;
+  }
+
+  @Override
+  public void onDestroy() {
     mController.stop();
     mCompositeDisposable.clear();
+    super.onDestroy();
   }
 
   @Override
@@ -74,5 +73,10 @@ class ScannerService implements ScannerContract.Service {
   @Override
   public void showError(String error) {
     Timber.e("Is error. %s", error);
+  }
+
+  @Override
+  public void showDevice(BluetoothDevice device) {
+    Timber.d("Device found %s", device.getAddress());
   }
 }

@@ -45,6 +45,8 @@
 
         <service android:name=".service.scanner.ScannerService" />
         <service android:name=".service.connection.ConnectionService" />
+        <service android:name=".feature.scanner.service.ScannerService" />
+
         <activity android:name=".service.scannerx.Scanner2Activity"></activity>
     </application>
 
