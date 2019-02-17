@@ -27,6 +27,6 @@ class ScannerResultCacheDataSource implements ScannerResultDataSource {
 
   @Override
   public Flowable<ScannerXResult> get() {
-    return mResultSource.throttleLast(1, TimeUnit.SECONDS);
+    return mResultSource.throttleLast(250, TimeUnit.MILLISECONDS);
   }
 }

@@ -28,8 +28,6 @@ import static com.andrewclam.weatherclient.feature.scannerx.service.ScannerXNoti
  */
 public class ScannerXService extends DaggerService implements ScannerXContract.Service {
 
-  public static int SCANNER_SERVICE_REQUEST_CODE = 5558;
-
   @Inject
   ScannerEventDataSource mEventDataSource;
 
@@ -50,6 +48,7 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
     mController.start();
     mCompositeDisposable.add(mController.getModel()
         .observeOn(AndroidSchedulers.mainThread())
+        .distinctUntilChanged()
         .subscribe(model -> {
           Notification notification = ScannerXNotification.build(ScannerXService.this, model);
           startForeground(SCANNER_NOTIFICATION_ID, notification);

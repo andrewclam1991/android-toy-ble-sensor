@@ -30,6 +30,6 @@ class ScannerEventCacheDataSource implements ScannerEventDataSource {
 
   @Override
   public Flowable<String> get() {
-    return mEventSource.throttleLast(1, TimeUnit.SECONDS);
+    return mEventSource.throttleLast(250, TimeUnit.MILLISECONDS);
   }
 }

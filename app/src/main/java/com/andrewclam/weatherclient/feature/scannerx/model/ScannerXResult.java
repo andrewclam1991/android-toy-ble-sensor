@@ -2,6 +2,8 @@ package com.andrewclam.weatherclient.feature.scannerx.model;
 
 import android.bluetooth.BluetoothDevice;
 
+import java.util.Objects;
+
 /**
  * Model for UI consumer (users)
  * eg. data changes and updates
@@ -67,5 +69,35 @@ public class ScannerXResult {
 
   public String getErrorMessage() {
     return errorMessage;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ScannerXResult)) return false;
+    ScannerXResult that = (ScannerXResult) o;
+    return isInProgress() == that.isInProgress() &&
+        isResult() == that.isResult() &&
+        isComplete() == that.isComplete() &&
+        isError() == that.isError() &&
+        Objects.equals(getErrorMessage(), that.getErrorMessage()) &&
+        Objects.equals(getDevice(), that.getDevice());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(isInProgress(), isResult(), isComplete(), isError(), getErrorMessage(), getDevice());
+  }
+
+  @Override
+  public String toString() {
+    return "ScannerXResult{" +
+        "isInProgress=" + isInProgress +
+        ", isResult=" + isResult +
+        ", isComplete=" + isComplete +
+        ", isError=" + isError +
+        ", errorMessage='" + errorMessage + '\'' +
+        ", device=" + device +
+        '}';
   }
 }
