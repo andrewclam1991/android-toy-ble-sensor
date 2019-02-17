@@ -59,7 +59,7 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
             showInProgress();
           } else if (model.isError()) {
             showError(model.getErrorMessage());
-            stopForeground(false);
+            stopSelf();
           }
           if (model.isResult()) {
             showDevice(model.getDevice());
