@@ -16,12 +16,12 @@
 
 package com.andrewclam.weatherclient.data.roomdb;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
-
 import com.andrewclam.weatherclient.model.DataPoint;
 import com.andrewclam.weatherclient.model.Sensor;
 import com.andrewclam.weatherclient.model.SensorDataPoint;
+
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 /**
  * Base class for Android Room to generate an App SQLite database.

@@ -16,10 +16,10 @@
 
 package com.andrewclam.weatherclient.view.scanner;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.view.BasePresenter;
 import com.andrewclam.weatherclient.view.BaseView;
+
+import androidx.annotation.NonNull;
 
 public interface ScannerViewContract {
 

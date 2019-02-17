@@ -18,7 +18,8 @@ package com.andrewclam.weatherclient.view.util;
 
 import android.app.Service;
 import android.content.ServiceConnection;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Fragment interaction listener that delegates bind/unbind service request to

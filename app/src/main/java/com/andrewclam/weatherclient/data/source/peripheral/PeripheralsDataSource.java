@@ -16,16 +16,11 @@
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.DataSource;
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
-import org.intellij.lang.annotations.Flow;
-
-import java.util.Collection;
-
+import androidx.annotation.NonNull;
 import io.reactivex.Flowable;
 
 /**

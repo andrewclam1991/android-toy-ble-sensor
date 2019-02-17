@@ -16,9 +16,9 @@
 
 package com.andrewclam.weatherclient.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
 /**
  * Models the association between {@link Sensor} and its {@link DataPoint}s

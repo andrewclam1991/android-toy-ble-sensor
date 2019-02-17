@@ -16,7 +16,7 @@
 
 package com.andrewclam.weatherclient.view;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Base Presenter class

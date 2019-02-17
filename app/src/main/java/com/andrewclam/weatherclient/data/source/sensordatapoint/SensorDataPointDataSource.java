@@ -16,8 +16,6 @@
 
 package com.andrewclam.weatherclient.data.source.sensordatapoint;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.DataSource;
 import com.andrewclam.weatherclient.model.DataPoint;
 import com.andrewclam.weatherclient.model.Sensor;
@@ -25,6 +23,7 @@ import com.andrewclam.weatherclient.model.SensorDataPoint;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 

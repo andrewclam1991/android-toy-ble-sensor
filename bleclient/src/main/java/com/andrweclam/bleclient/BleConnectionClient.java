@@ -17,7 +17,8 @@
 package com.andrweclam.bleclient;
 
 import android.bluetooth.BluetoothDevice;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 public interface BleConnectionClient {
 

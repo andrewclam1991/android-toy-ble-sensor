@@ -16,8 +16,6 @@
 
 package com.andrewclam.weatherclient.view.scanner;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.source.peripheral.PeripheralsDataSource;
 import com.andrewclam.weatherclient.data.state.StateSource;
@@ -35,6 +33,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;

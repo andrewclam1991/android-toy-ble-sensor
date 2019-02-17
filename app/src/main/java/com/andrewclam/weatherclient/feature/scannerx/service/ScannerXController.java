@@ -1,7 +1,6 @@
 package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.bluetooth.BluetoothAdapter;
-import android.support.annotation.UiThread;
 
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
@@ -12,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.UiThread;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

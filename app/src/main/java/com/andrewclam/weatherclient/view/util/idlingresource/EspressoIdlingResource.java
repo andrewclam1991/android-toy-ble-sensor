@@ -16,8 +16,8 @@
 
 package com.andrewclam.weatherclient.view.util.idlingresource;
 
-import android.support.annotation.NonNull;
-import android.support.test.espresso.IdlingResource;
+import androidx.annotation.NonNull;
+import androidx.test.espresso.IdlingResource;
 
 /**
  * Contains a static reference to {@link IdlingResource}, only available in the 'mock' buildAs type.

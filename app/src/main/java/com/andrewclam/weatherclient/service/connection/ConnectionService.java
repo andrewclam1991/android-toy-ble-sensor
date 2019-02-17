@@ -20,8 +20,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
@@ -29,6 +27,8 @@ import com.andrweclam.bleclient.BleConnectionClient;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dagger.android.DaggerService;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;

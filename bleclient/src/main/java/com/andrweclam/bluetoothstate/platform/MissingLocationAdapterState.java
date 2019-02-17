@@ -5,8 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import com.andrweclam.bluetoothstate.Connection;
 import com.andrweclam.bluetoothstate.exceptions.MissingLocationAdapterException;
 
-import javax.annotation.Nullable;
-
+import androidx.annotation.Nullable;
 import io.reactivex.Flowable;
 
 public class MissingLocationAdapterState implements Connection.State {

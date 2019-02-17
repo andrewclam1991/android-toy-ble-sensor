@@ -18,13 +18,12 @@ package com.andrewclam.weatherclient.view.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.andrewclam.weatherclient.BuildConfig;
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.feature.scannerx.view.ScannerXView;
-import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {

@@ -18,15 +18,15 @@ package com.andrewclam.weatherclient;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.multidex.MultiDex;
 
 import com.andrewclam.weatherclient.data.source.sensor.SensorsRepository;
 import com.andrewclam.weatherclient.di.DaggerAppComponent;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.multidex.MultiDex;
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
 import timber.log.Timber;

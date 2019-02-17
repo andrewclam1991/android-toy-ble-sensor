@@ -16,14 +16,9 @@
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.google.common.base.Optional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;

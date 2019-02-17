@@ -16,14 +16,13 @@
 
 package com.andrewclam.weatherclient.data.source.sensor;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.Local;
 import com.andrewclam.weatherclient.data.source.Remote;
 import com.andrewclam.weatherclient.data.source.Repo;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Binds;
 import dagger.Module;
 

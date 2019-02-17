@@ -16,12 +16,11 @@
 
 package com.andrewclam.weatherclient.service.connection;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.model.Peripheral;
 import com.andrewclam.weatherclient.service.BaseService;
 import com.andrewclam.weatherclient.view.BaseView;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 

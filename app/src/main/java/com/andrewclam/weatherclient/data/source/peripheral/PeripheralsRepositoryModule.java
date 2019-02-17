@@ -16,12 +16,11 @@
 
 package com.andrewclam.weatherclient.data.source.peripheral;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.Repo;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Binds;
 import dagger.Module;
 

@@ -4,16 +4,15 @@ import android.app.Notification;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
-import com.google.common.base.Strings;
 
 import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
 import dagger.android.DaggerService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -131,7 +130,7 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
     }
 
     String action = intent.getAction();
-    if (Strings.isNullOrEmpty(action)) {
+    if (action == null || action.isEmpty()) {
       Timber.w("Intent contains no action.");
       return false;
     }

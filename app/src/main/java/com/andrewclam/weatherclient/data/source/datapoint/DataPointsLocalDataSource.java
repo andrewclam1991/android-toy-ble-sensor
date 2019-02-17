@@ -16,14 +16,14 @@
 
 package com.andrewclam.weatherclient.data.source.datapoint;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.roomdb.DataPointDao;
 import com.andrewclam.weatherclient.data.source.LocalDataSource;
 import com.andrewclam.weatherclient.model.DataPoint;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import androidx.annotation.NonNull;
 
 
 /**

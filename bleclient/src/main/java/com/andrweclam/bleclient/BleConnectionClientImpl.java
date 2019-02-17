@@ -24,7 +24,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -32,6 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 /**
  * Multi-client implementation

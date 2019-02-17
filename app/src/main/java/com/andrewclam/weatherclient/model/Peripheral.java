@@ -17,8 +17,9 @@
 package com.andrewclam.weatherclient.model;
 
 import android.bluetooth.BluetoothDevice;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Models a bluetooth peripheral device data

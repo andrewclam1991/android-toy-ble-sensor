@@ -16,9 +16,6 @@
 
 package com.andrewclam.weatherclient.data.source.sensordatapoint;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-
 import com.andrewclam.weatherclient.data.source.Local;
 import com.andrewclam.weatherclient.data.source.Remote;
 import com.andrewclam.weatherclient.data.source.Repository;
@@ -31,6 +28,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 

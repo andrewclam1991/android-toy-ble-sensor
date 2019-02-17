@@ -26,7 +26,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.andrewclam.weatherclient.R;
@@ -35,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import androidx.core.content.ContextCompat;
 import dagger.android.DaggerService;
 import timber.log.Timber;
 

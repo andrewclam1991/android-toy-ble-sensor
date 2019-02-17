@@ -19,9 +19,6 @@ package com.andrewclam.weatherclient.view.scanner;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.view.util.ActivityUtils;
@@ -29,6 +26,9 @@ import com.andrewclam.weatherclient.view.util.FragmentServiceBinder;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import timber.log.Timber;

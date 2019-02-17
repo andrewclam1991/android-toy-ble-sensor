@@ -16,9 +16,6 @@
 
 package com.andrewclam.weatherclient.data.source.sensor;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-
 import com.andrewclam.weatherclient.data.source.Local;
 import com.andrewclam.weatherclient.data.source.Remote;
 import com.andrewclam.weatherclient.data.source.Repository;
@@ -26,6 +23,9 @@ import com.andrewclam.weatherclient.model.Sensor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

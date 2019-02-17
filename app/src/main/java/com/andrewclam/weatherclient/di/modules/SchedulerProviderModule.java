@@ -16,13 +16,12 @@
 
 package com.andrewclam.weatherclient.di.modules;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.scheduler.BaseSchedulerProvider;
 import com.andrewclam.weatherclient.scheduler.SchedulerProvider;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 

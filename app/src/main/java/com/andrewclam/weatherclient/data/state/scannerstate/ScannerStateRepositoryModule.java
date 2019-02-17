@@ -16,14 +16,13 @@
 
 package com.andrewclam.weatherclient.data.state.scannerstate;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.source.Repo;
 import com.andrewclam.weatherclient.data.state.StateSource;
 import com.andrewclam.weatherclient.model.ScannerState;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Binds;
 import dagger.Module;
 

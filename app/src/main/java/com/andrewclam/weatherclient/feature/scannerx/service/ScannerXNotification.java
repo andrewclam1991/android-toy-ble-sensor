@@ -7,14 +7,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXResult;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import io.reactivex.annotations.NonNull;
 
 import static android.content.Context.NOTIFICATION_SERVICE;

@@ -16,14 +16,14 @@
 
 package com.andrewclam.weatherclient.data.source.sensor;
 
-import android.support.annotation.NonNull;
-
 import com.andrewclam.weatherclient.data.roomdb.SensorDao;
 import com.andrewclam.weatherclient.data.source.LocalDataSource;
 import com.andrewclam.weatherclient.model.Sensor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import androidx.annotation.NonNull;
 
 
 /**

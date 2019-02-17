@@ -17,7 +17,6 @@
 package com.andrewclam.weatherclient.service.scanner;
 
 import android.bluetooth.BluetoothAdapter;
-import android.support.annotation.NonNull;
 
 import com.andrewclam.weatherclient.di.ServiceScoped;
 import com.andrewclam.weatherclient.model.Peripheral;
@@ -25,12 +24,12 @@ import com.andrewclam.weatherclient.model.Peripheral;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
 import timber.log.Timber;
 
-import static com.google.android.gms.common.internal.Preconditions.checkNotNull;
 
 /**
  * Framework level peripheral producer, handles just start and stop production
@@ -75,8 +74,12 @@ final class PeripheralProducer implements ScannerContract.Producer {
   @NonNull
   private BluetoothAdapter.LeScanCallback getLeCallback() {
     return (device, rssi, scanRecord) -> {
+      if (device == null) {
+        Timber.d("Device is null");
+        return;
+      }
       Peripheral peripheral = new Peripheral();
-      peripheral.setBluetoothDevice(checkNotNull(device, "device can't be null"));
+      peripheral.setBluetoothDevice(device);
       peripheral.setRssi(rssi);
       peripheral.setScanRecord(scanRecord);
       peripheral.setUid(device.getAddress());

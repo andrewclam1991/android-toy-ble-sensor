@@ -17,11 +17,11 @@
 package com.andrewclam.weatherclient.data.roomdb;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 
 import javax.inject.Singleton;
 
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import dagger.Module;
 import dagger.Provides;
 

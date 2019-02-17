@@ -16,7 +16,7 @@
 
 package com.andrewclam.weatherclient.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface BaseModel {
   /**

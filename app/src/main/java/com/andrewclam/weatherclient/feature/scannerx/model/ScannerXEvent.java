@@ -1,8 +1,8 @@
 package com.andrewclam.weatherclient.feature.scannerx.model;
 
-import android.support.annotation.StringDef;
-
 import java.lang.annotation.Retention;
+
+import androidx.annotation.StringDef;
 
 import static com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent.START_SCAN;
 import static com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent.STOP_SCAN;
