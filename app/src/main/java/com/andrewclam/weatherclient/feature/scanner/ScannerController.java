@@ -3,9 +3,10 @@ package com.andrewclam.weatherclient.feature.scanner;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.UiThread;
 
-import com.andrewclam.weatherclient.feature.scanner.data.ServiceEventDataSource;
+import com.andrewclam.weatherclient.feature.scanner.data.event.ServiceEventDataSource;
+import com.andrewclam.weatherclient.feature.scanner.data.result.ServiceResultDataSource;
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
 import javax.inject.Inject;
 
@@ -16,13 +17,13 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.BehaviorProcessor;
 import timber.log.Timber;
 
-class ControllerImpl implements ScannerContract.Controller {
+class ScannerController implements ScannerContract.Controller {
 
   private final ServiceEventDataSource mEventDataSource;
 
-  private final CompositeDisposable mCompositeDisposable;
+  private final ServiceResultDataSource mResultDataSource;
 
-  private final BehaviorProcessor<ServiceModel> mServiceModelSource;
+  private final CompositeDisposable mCompositeDisposable;
 
   private final BluetoothAdapter.LeScanCallback mScanCallback;
 
@@ -31,13 +32,12 @@ class ControllerImpl implements ScannerContract.Controller {
   private int mScanState;
 
   @Inject
-  ControllerImpl(@NonNull ServiceEventDataSource dataSource) {
-    mEventDataSource = dataSource;
+  ScannerController(@NonNull ServiceEventDataSource eventDataSource,
+                    @NonNull ServiceResultDataSource resultDataSource) {
+    mEventDataSource = eventDataSource;
+    mResultDataSource = resultDataSource;
     mCompositeDisposable = new CompositeDisposable();
-    mServiceModelSource = BehaviorProcessor.create();
-    mScanCallback = (device, rssi, scanRecord) -> {
-      mServiceModelSource.onNext(ServiceModel.result(device));
-    };
+    mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ServiceResultModel.result(device));
   }
 
 //  @Override
@@ -46,8 +46,8 @@ class ControllerImpl implements ScannerContract.Controller {
 //  }
 
   @Override
-  public Flowable<ServiceModel> getModel() {
-    return mServiceModelSource;
+  public Flowable<ServiceResultModel> getModel() {
+    return mResultDataSource.get();
   }
 
   @Override
@@ -67,10 +67,10 @@ class ControllerImpl implements ScannerContract.Controller {
   private void onEvent(ServiceEventModel event) {
     switch (event) {
       case START_SCAN:
-        handleStartScan();
+        startScan();
         break;
       case STOP_SCAN:
-        handleStopScan();
+        stopScan();
         break;
     }
   }
@@ -78,21 +78,20 @@ class ControllerImpl implements ScannerContract.Controller {
   @UiThread
   private void onError(Throwable throwable) {
     Timber.e(throwable, "Error in service event source.");
-    mServiceModelSource.onError(throwable);
   }
 
-  private void handleStartScan() {
+  private void startScan() {
     if (mScanState == SCAN_STATE_IN_PROGRESS) {
       Timber.w("Scan is already in progress, start scan ignored.");
       return;
     }
     mScanState = SCAN_STATE_IN_PROGRESS;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-    mServiceModelSource.onNext(ServiceModel.inProgress());
+    mResultDataSource.add(ServiceResultModel.inProgress());
     adapter.startLeScan(mScanCallback);
   }
 
-  private void handleStopScan() {
+  private void stopScan() {
     if (mScanState == SCAN_STATE_IDLE) {
       Timber.w("Scan is already idle, stop scan makes no sense.");
       return;
@@ -100,7 +99,6 @@ class ControllerImpl implements ScannerContract.Controller {
     mScanState = SCAN_STATE_IDLE;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     adapter.stopLeScan(mScanCallback);
-    mServiceModelSource.onNext(ServiceModel.complete());
-
+    mResultDataSource.add(ServiceResultModel.complete());
   }
 }

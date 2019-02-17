@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.data;
+package com.andrewclam.weatherclient.feature.scanner.data.event;
 
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
 
@@ -8,13 +8,16 @@ import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
 
-class ServiceEventRepository implements ServiceEventDataSource {
+/**
+ * In memory implementation of a {@link ServiceEventDataSource}
+ */
+class ServiceEventCacheDataSource implements ServiceEventDataSource {
 
   @NonNull
   private final BehaviorProcessor<ServiceEventModel> mEventSource;
 
   @Inject
-  ServiceEventRepository() {
+  ServiceEventCacheDataSource() {
     mEventSource = BehaviorProcessor.create();
   }
 
@@ -25,6 +28,6 @@ class ServiceEventRepository implements ServiceEventDataSource {
 
   @Override
   public Flowable<ServiceEventModel> get() {
-    return mEventSource;
+    return mEventSource.onBackpressureLatest();
   }
 }

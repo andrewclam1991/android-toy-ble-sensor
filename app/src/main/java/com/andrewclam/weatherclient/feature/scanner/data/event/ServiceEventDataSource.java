@@ -1,4 +1,4 @@
-package com.andrewclam.weatherclient.feature.scanner.data;
+package com.andrewclam.weatherclient.feature.scanner.data.event;
 
 import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
 

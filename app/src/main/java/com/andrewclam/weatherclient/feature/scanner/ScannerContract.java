@@ -1,10 +1,8 @@
 package com.andrewclam.weatherclient.feature.scanner;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceEventModel;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
 
 import io.reactivex.Flowable;
-import io.reactivex.processors.BehaviorProcessor;
 
 public class ScannerContract {
   interface Service {
@@ -19,7 +17,7 @@ public class ScannerContract {
     // NOTE only exposes the event source with platform intent action approach
     // BehaviorProcessor<ServiceEventModel> getEventSource();
 
-    Flowable<ServiceModel> getModel();
+    Flowable<ServiceResultModel> getModel();
 
     void start();
 

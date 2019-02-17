@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice;
  * eg. data changes and updates
  * data -> controller -> view
  */
-public class ServiceModel {
+public class ServiceResultModel {
   private final boolean isInProgress;
   private final boolean isResult;
   private final boolean isComplete;
@@ -15,12 +15,12 @@ public class ServiceModel {
   private final String errorMessage;
   private final BluetoothDevice device;
 
-  private ServiceModel(boolean isInProgress,
-                       boolean isResult,
-                       boolean isComplete,
-                       boolean isError,
-                       String errorMessage,
-                       BluetoothDevice device) {
+  private ServiceResultModel(boolean isInProgress,
+                             boolean isResult,
+                             boolean isComplete,
+                             boolean isError,
+                             String errorMessage,
+                             BluetoothDevice device) {
     this.isInProgress = isInProgress;
     this.isResult = isResult;
     this.isComplete = isComplete;
@@ -29,20 +29,20 @@ public class ServiceModel {
     this.device = device;
   }
 
-  public static ServiceModel inProgress() {
-    return new ServiceModel(true, false, false, false, "no_error", null);
+  public static ServiceResultModel inProgress() {
+    return new ServiceResultModel(true, false, false, false, "no_error", null);
   }
 
-  public static ServiceModel result(BluetoothDevice device) {
-    return new ServiceModel(true, true, false, false, "no_error", device);
+  public static ServiceResultModel result(BluetoothDevice device) {
+    return new ServiceResultModel(true, true, false, false, "no_error", device);
   }
 
-  public static ServiceModel complete() {
-    return new ServiceModel(false, false, true, false, "no_error", null);
+  public static ServiceResultModel complete() {
+    return new ServiceResultModel(false, false, true, false, "no_error", null);
   }
 
-  public static ServiceModel error(String errorMessage) {
-    return new ServiceModel(false, false,false, true, errorMessage, null);
+  public static ServiceResultModel error(String errorMessage) {
+    return new ServiceResultModel(false, false,false, true, errorMessage, null);
   }
 
   public boolean isResult() {

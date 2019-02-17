@@ -6,7 +6,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-class ServiceImpl implements ScannerContract.Service {
+class ScannerService implements ScannerContract.Service {
 
   @Inject
   ScannerContract.Controller mController;
@@ -14,7 +14,8 @@ class ServiceImpl implements ScannerContract.Service {
   @NonNull
   private final CompositeDisposable mCompositeDisposable;
 
-  public ServiceImpl() {
+  @Inject
+  public ScannerService() {
     mCompositeDisposable = new CompositeDisposable();
   }
 
