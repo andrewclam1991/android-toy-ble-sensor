@@ -26,7 +26,9 @@ class ScannerXController implements ScannerXContract.Controller {
 
   private final ScannerResultDataSource mResultDataSource;
 
-  private final CompositeDisposable mCompositeDisposable;
+  private final CompositeDisposable mEventDisposables;
+
+  private final CompositeDisposable mAutoStopDisposables;
 
   private final BluetoothAdapter.LeScanCallback mScanCallback;
 
@@ -39,7 +41,8 @@ class ScannerXController implements ScannerXContract.Controller {
                      @NonNull ScannerResultDataSource resultDataSource) {
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
-    mCompositeDisposable = new CompositeDisposable();
+    mEventDisposables = new CompositeDisposable();
+    mAutoStopDisposables = new CompositeDisposable();
     mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ScannerXResult.result(device));
   }
 
@@ -50,7 +53,7 @@ class ScannerXController implements ScannerXContract.Controller {
 
   @Override
   public void start() {
-    mCompositeDisposable.add(mEventDataSource.get()
+    mEventDisposables.add(mEventDataSource.get()
         .subscribeOn(AndroidSchedulers.mainThread())
         .subscribe(this::onEvent, this::onError)
     );
@@ -58,7 +61,8 @@ class ScannerXController implements ScannerXContract.Controller {
 
   @Override
   public void stop() {
-    mCompositeDisposable.clear();
+    mEventDisposables.clear();
+    mAutoStopDisposables.clear();
   }
 
   @UiThread
@@ -88,7 +92,7 @@ class ScannerXController implements ScannerXContract.Controller {
     mResultDataSource.add(ScannerXResult.inProgress());
     adapter.startLeScan(mScanCallback);
 
-    mCompositeDisposable.add(Completable.timer(10, TimeUnit.SECONDS)
+    mAutoStopDisposables.add(Completable.timer(10, TimeUnit.SECONDS)
         .andThen(Completable.fromAction(this::stopScan))
         .subscribeOn(Schedulers.io())
         .subscribe()
@@ -102,6 +106,7 @@ class ScannerXController implements ScannerXContract.Controller {
       Timber.w("Scan is already idle, stop scan makes no sense.");
       return;
     }
+    mAutoStopDisposables.clear();
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     adapter.stopLeScan(mScanCallback);
     mResultDataSource.add(ScannerXResult.complete());

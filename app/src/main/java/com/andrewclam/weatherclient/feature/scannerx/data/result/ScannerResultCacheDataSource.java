@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
+import io.reactivex.schedulers.Schedulers;
 
 class ScannerResultCacheDataSource implements ScannerResultDataSource {
 
@@ -27,6 +28,7 @@ class ScannerResultCacheDataSource implements ScannerResultDataSource {
 
   @Override
   public Flowable<ScannerXResult> get() {
-    return mResultSource.throttleLast(250, TimeUnit.MILLISECONDS);
+    return mResultSource.throttleLast(1, TimeUnit.SECONDS)
+        .subscribeOn(Schedulers.io());
   }
 }

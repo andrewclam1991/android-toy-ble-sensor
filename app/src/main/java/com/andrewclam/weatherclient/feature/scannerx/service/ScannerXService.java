@@ -47,8 +47,8 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
     super.onCreate();
     mController.start();
     mCompositeDisposable.add(mController.getModel()
-        .observeOn(AndroidSchedulers.mainThread())
         .distinctUntilChanged()
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(model -> {
           Notification notification = ScannerXNotification.build(ScannerXService.this, model);
           startForeground(SCANNER_NOTIFICATION_ID, notification);

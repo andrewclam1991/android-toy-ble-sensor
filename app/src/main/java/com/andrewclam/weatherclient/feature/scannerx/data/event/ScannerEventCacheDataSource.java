@@ -7,8 +7,10 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * In memory implementation of a {@link ScannerEventDataSource}
@@ -30,6 +32,7 @@ class ScannerEventCacheDataSource implements ScannerEventDataSource {
 
   @Override
   public Flowable<String> get() {
-    return mEventSource.throttleLast(250, TimeUnit.MILLISECONDS);
+    return mEventSource.throttleLast(100, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread());
   }
 }
