@@ -2,7 +2,7 @@ package com.andrewclam.weatherclient.feature.scanner.view;
 
 import android.bluetooth.BluetoothDevice;
 
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import io.reactivex.Flowable;
 
@@ -16,6 +16,6 @@ public class ScannerContract {
   }
 
   interface Presenter {
-    Flowable<ServiceResultModel> getModel();
+    Flowable<ScannerResult> getModel();
   }
 }

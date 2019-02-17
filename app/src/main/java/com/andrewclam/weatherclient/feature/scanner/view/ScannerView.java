@@ -5,9 +5,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.andrewclam.weatherclient.R;
-import com.andrewclam.weatherclient.feature.scanner.data.event.ServiceEventDataSource;
+import com.andrewclam.weatherclient.feature.scanner.data.event.ScannerEventDataSource;
 import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import javax.inject.Inject;
 
@@ -18,7 +18,7 @@ import io.reactivex.exceptions.OnErrorNotImplementedException;
 class ScannerView implements ScannerContract.View, View.OnClickListener {
 
   @Inject
-  ServiceEventDataSource mEventDataSource;
+  ScannerEventDataSource mEventDataSource;
 
   @Inject
   ScannerContract.Presenter mPresenter;
@@ -80,7 +80,7 @@ class ScannerView implements ScannerContract.View, View.OnClickListener {
     }
   }
 
-  private void onNextResult(ServiceResultModel model) {
+  private void onNextResult(ScannerResult model) {
     showInProgress(model.isInProgress());
     showIsComplete(model.isComplete());
     showIsError(model.isError());

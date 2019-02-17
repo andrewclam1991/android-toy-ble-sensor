@@ -13,7 +13,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.andrewclam.weatherclient.R;
 import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import io.reactivex.annotations.NonNull;
 
@@ -28,13 +28,13 @@ public final class ScannerNotification {
   }
 
   /**
-   * Factory for making a {@link Notification} with a {@link ServiceResultModel}
+   * Factory for making a {@link Notification} with a {@link ScannerResult}
    *
    * @param context application context
-   * @param model   a {@link ServiceResultModel}
-   * @return a {@link Notification} that represents a {@link ServiceResultModel}
+   * @param model   a {@link ScannerResult}
+   * @return a {@link Notification} that represents a {@link ScannerResult}
    */
-  public static Notification build(@NonNull Context context, @NonNull ServiceResultModel model) {
+  public static Notification build(@NonNull Context context, @NonNull ScannerResult model) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       setupNotificationChannel(context);
     }

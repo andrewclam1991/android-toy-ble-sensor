@@ -9,15 +9,15 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.processors.BehaviorProcessor;
 
 /**
- * In memory implementation of a {@link ServiceEventDataSource}
+ * In memory implementation of a {@link ScannerEventDataSource}
  */
-class ServiceEventCacheDataSource implements ServiceEventDataSource {
+class ScannerEventCacheDataSource implements ScannerEventDataSource {
 
   @NonNull
   private final BehaviorProcessor<String> mEventSource;
 
   @Inject
-  ServiceEventCacheDataSource() {
+  ScannerEventCacheDataSource() {
     mEventSource = BehaviorProcessor.create();
   }
 

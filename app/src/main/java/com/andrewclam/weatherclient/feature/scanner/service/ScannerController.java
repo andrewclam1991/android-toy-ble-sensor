@@ -3,10 +3,10 @@ package com.andrewclam.weatherclient.feature.scanner.service;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.UiThread;
 
-import com.andrewclam.weatherclient.feature.scanner.data.event.ServiceEventDataSource;
-import com.andrewclam.weatherclient.feature.scanner.data.result.ServiceResultDataSource;
+import com.andrewclam.weatherclient.feature.scanner.data.event.ScannerEventDataSource;
+import com.andrewclam.weatherclient.feature.scanner.data.result.ScannerResultDataSource;
 import com.andrewclam.weatherclient.feature.scanner.model.ScannerEvent;
-import com.andrewclam.weatherclient.feature.scanner.model.ServiceResultModel;
+import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,9 +22,9 @@ import timber.log.Timber;
 
 class ScannerController implements ScannerContract.Controller {
 
-  private final ServiceEventDataSource mEventDataSource;
+  private final ScannerEventDataSource mEventDataSource;
 
-  private final ServiceResultDataSource mResultDataSource;
+  private final ScannerResultDataSource mResultDataSource;
 
   private final CompositeDisposable mCompositeDisposable;
 
@@ -35,16 +35,16 @@ class ScannerController implements ScannerContract.Controller {
   private int mScanState;
 
   @Inject
-  ScannerController(@NonNull ServiceEventDataSource eventDataSource,
-                    @NonNull ServiceResultDataSource resultDataSource) {
+  ScannerController(@NonNull ScannerEventDataSource eventDataSource,
+                    @NonNull ScannerResultDataSource resultDataSource) {
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
     mCompositeDisposable = new CompositeDisposable();
-    mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ServiceResultModel.result(device));
+    mScanCallback = (device, rssi, scanRecord) -> mResultDataSource.add(ScannerResult.result(device));
   }
 
   @Override
-  public Flowable<ServiceResultModel> getModel() {
+  public Flowable<ScannerResult> getModel() {
     return mResultDataSource.get();
   }
 
@@ -85,7 +85,7 @@ class ScannerController implements ScannerContract.Controller {
     }
     mScanState = SCAN_STATE_IN_PROGRESS;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-    mResultDataSource.add(ServiceResultModel.inProgress());
+    mResultDataSource.add(ScannerResult.inProgress());
     adapter.startLeScan(mScanCallback);
 
     mCompositeDisposable.add(Completable.fromAction(this::stopScan)
@@ -103,6 +103,6 @@ class ScannerController implements ScannerContract.Controller {
     mScanState = SCAN_STATE_IDLE;
     BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     adapter.stopLeScan(mScanCallback);
-    mResultDataSource.add(ServiceResultModel.complete());
+    mResultDataSource.add(ScannerResult.complete());
   }
 }

@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice;
  * eg. data changes and updates
  * data -> controller -> view
  */
-public class ServiceResultModel {
+public class ScannerResult {
   private final boolean isInProgress;
   private final boolean isResult;
   private final boolean isComplete;
@@ -15,12 +15,12 @@ public class ServiceResultModel {
   private final String errorMessage;
   private final BluetoothDevice device;
 
-  private ServiceResultModel(boolean isInProgress,
-                             boolean isResult,
-                             boolean isComplete,
-                             boolean isError,
-                             String errorMessage,
-                             BluetoothDevice device) {
+  private ScannerResult(boolean isInProgress,
+                        boolean isResult,
+                        boolean isComplete,
+                        boolean isError,
+                        String errorMessage,
+                        BluetoothDevice device) {
     this.isInProgress = isInProgress;
     this.isResult = isResult;
     this.isComplete = isComplete;
@@ -29,20 +29,20 @@ public class ServiceResultModel {
     this.device = device;
   }
 
-  public static ServiceResultModel inProgress() {
-    return new ServiceResultModel(true, false, false, false, "no_error", null);
+  public static ScannerResult inProgress() {
+    return new ScannerResult(true, false, false, false, "no_error", null);
   }
 
-  public static ServiceResultModel result(BluetoothDevice device) {
-    return new ServiceResultModel(true, true, false, false, "no_error", device);
+  public static ScannerResult result(BluetoothDevice device) {
+    return new ScannerResult(true, true, false, false, "no_error", device);
   }
 
-  public static ServiceResultModel complete() {
-    return new ServiceResultModel(false, false, true, false, "no_error", null);
+  public static ScannerResult complete() {
+    return new ScannerResult(false, false, true, false, "no_error", null);
   }
 
-  public static ServiceResultModel error(String errorMessage) {
-    return new ServiceResultModel(false, false,false, true, errorMessage, null);
+  public static ScannerResult error(String errorMessage) {
+    return new ScannerResult(false, false,false, true, errorMessage, null);
   }
 
   public boolean isResult() {
