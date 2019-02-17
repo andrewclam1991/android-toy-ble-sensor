@@ -14,13 +14,13 @@ import io.reactivex.processors.BehaviorProcessor;
 /**
  * In memory implementation of a {@link ScannerXEventDataSource}
  */
-class ScannerXXEventCacheDataSource implements ScannerXEventDataSource {
+class ScannerXEventCacheDataSource implements ScannerXEventDataSource {
 
   @NonNull
   private final BehaviorProcessor<String> mEventSource;
 
   @Inject
-  ScannerXXEventCacheDataSource() {
+  ScannerXEventCacheDataSource() {
     mEventSource = BehaviorProcessor.create();
   }
 

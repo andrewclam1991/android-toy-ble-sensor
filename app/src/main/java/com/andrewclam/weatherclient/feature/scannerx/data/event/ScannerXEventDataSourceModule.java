@@ -14,5 +14,5 @@ public abstract class ScannerXEventDataSourceModule {
   @NonNull
   @Singleton
   @Binds
-  abstract ScannerXEventDataSource providesDataSource(ScannerXXEventCacheDataSource dataSource);
+  abstract ScannerXEventDataSource providesDataSource(ScannerXEventCacheDataSource dataSource);
 }
