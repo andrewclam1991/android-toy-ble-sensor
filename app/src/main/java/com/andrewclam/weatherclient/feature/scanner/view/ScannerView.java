@@ -11,11 +11,12 @@ import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.exceptions.OnErrorNotImplementedException;
 
-class ScannerView implements ScannerContract.View, View.OnClickListener {
+public class ScannerView extends DaggerAppCompatActivity implements ScannerContract.View, View.OnClickListener {
 
   @Inject
   ScannerEventDataSource mEventDataSource;
@@ -25,6 +26,7 @@ class ScannerView implements ScannerContract.View, View.OnClickListener {
 
   private final CompositeDisposable mCompositeDisposable;
 
+  // Note: Android View Bindings
   private Button mStartScanButton;
   private Button mStopScanButton;
 

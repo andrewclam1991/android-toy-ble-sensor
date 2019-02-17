@@ -19,7 +19,7 @@ import io.reactivex.annotations.NonNull;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-public final class ScannerNotification {
+final class ScannerNotification {
   static final int SCANNER_NOTIFICATION_ID = 1001;
   private static final String SCANNER_NOTIFICATION_CHANNEL_ID = "scanner_notification_channel_id";
 
@@ -34,7 +34,7 @@ public final class ScannerNotification {
    * @param model   a {@link ScannerResult}
    * @return a {@link Notification} that represents a {@link ScannerResult}
    */
-  public static Notification build(@NonNull Context context, @NonNull ScannerResult model) {
+  static Notification build(@NonNull Context context, @NonNull ScannerResult model) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       setupNotificationChannel(context);
     }

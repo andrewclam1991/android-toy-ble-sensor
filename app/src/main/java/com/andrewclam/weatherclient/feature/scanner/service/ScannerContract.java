@@ -6,7 +6,7 @@ import com.andrewclam.weatherclient.feature.scanner.model.ScannerResult;
 
 import io.reactivex.Flowable;
 
-public class ScannerContract {
+class ScannerContract {
   interface Service {
     void showInProgress();
 
