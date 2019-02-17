@@ -94,7 +94,7 @@ class ScannerXController implements ScannerXContract.Controller {
 
     mAutoStopDisposables.add(Completable.timer(10, TimeUnit.SECONDS)
         .andThen(Completable.fromAction(this::stopScan))
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .subscribe()
     );
 
