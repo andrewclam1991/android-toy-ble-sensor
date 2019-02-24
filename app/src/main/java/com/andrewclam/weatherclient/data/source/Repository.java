@@ -60,7 +60,7 @@ public class Repository<M extends BaseModel> implements DataSource<M> {
    * Marks the cache as invalid, to force an updateTrip the next time data is requested. This
    * variable
    * has package local visibility so it can be accessed from tests.
-   * Note: default set flag to false, so at init (with mCachedItems empty),
+   * Note: default put flag to false, so at init (with mCachedItems empty),
    * repository will always try local-first
    */
   @VisibleForTesting
@@ -117,7 +117,7 @@ public class Repository<M extends BaseModel> implements DataSource<M> {
       // refresh local data with remote
       return remoteItems;
     } else {
-      // query local and remote data sources, emit the first result
+      // query local and remote data sources, emit the first isAuthorized
       Flowable<List<M>> localItems = getAndCacheLocalItems();
       return Flowable.concat(localItems, remoteItems)
           .filter(items -> !items.isEmpty())

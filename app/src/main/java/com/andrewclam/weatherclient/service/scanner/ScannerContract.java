@@ -42,7 +42,7 @@ public interface ScannerContract {
 
   /**
    * Framework layer
-   * Reactive Authority handles requesting permission and necessary
+   * Reactive AuthorityDataSource handles requesting permission and necessary
    * settings from user.
    */
   interface Authority extends BaseView {
@@ -131,7 +131,7 @@ public interface ScannerContract {
     /**
      * Handle switching context {@link ScannerContract.State}
      *
-     * @param state the current {@link ScannerContract.State} to be set
+     * @param state the current {@link ScannerContract.State} to be put
      */
     void setCurrentState(@NonNull ScannerContract.State state);
 

@@ -24,7 +24,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 /**
- * Reactive and thread-safe state get and set interface
+ * Reactive and thread-safe state get and put interface
  */
 public interface StateSource<S extends BaseModel> {
   @Nonnull

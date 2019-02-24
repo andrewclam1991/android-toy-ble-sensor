@@ -92,7 +92,7 @@ final class ScannerNotification {
         .setOnlyAlertOnce(true);
 
     // If the build version is greater than JELLY_BEAN and lower than OREO,
-    // set the notification's priority to PRIORITY_HIGH.
+    // put the notification's priority to PRIORITY_HIGH.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }

@@ -115,7 +115,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
       // TODO implement post notification requesting user to request necessary permissions.
       Timber.w("Service doesn't have necessary permission.");
       if (mAuthority != null && mAuthority.isActive()) {
-        Timber.d("Authority available to request permission.");
+        Timber.d("AuthorityDataSource available to request permission.");
         mAuthority.requestBluetoothPermissions();
       }
       stopService();
@@ -126,7 +126,7 @@ public final class ScannerService extends DaggerService implements ScannerContra
       // TODO implement post notification requesting user to enable bluetooth adapter
       Timber.w("Device doesn't have valid setting.");
       if (mAuthority != null && mAuthority.isActive()) {
-        Timber.d("Authority available to request enable adapter.");
+        Timber.d("AuthorityDataSource available to request enable adapter.");
         mAuthority.requestEnableBluetoothAdapter();
       }
       stopService();

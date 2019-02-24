@@ -187,7 +187,7 @@ public class ConnectionService extends DaggerService implements ConnectionContra
           .andThen(mAuthority.checkBluetoothPermissions())
           .doOnComplete(() -> Timber.w("Has settings and permissions"));
     } else {
-      return Completable.error(new Throwable("Authority not available to check requirements"));
+      return Completable.error(new Throwable("AuthorityDataSource not available to check requirements"));
     }
   }
 

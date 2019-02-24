@@ -35,7 +35,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 import timber.log.Timber;
 
 /**
- * Framework {@link DaggerAppCompatActivity} that acts as the Authority
+ * Framework {@link DaggerAppCompatActivity} that acts as the AuthorityDataSource
  * <p>
  * Responsibilities:
  * - handles requests for explicit user permissions.
@@ -61,7 +61,7 @@ public class ScannerAuthority extends DaggerAppCompatActivity implements Scanner
     Intent intent = getIntent();
     String action = intent.getAction();
     if (Strings.isNullOrEmpty(action)) {
-      Timber.e("Authority started without any action, terminate.");
+      Timber.e("AuthorityDataSource started without any action, terminate.");
       finish();
     } else {
       switch (action) {

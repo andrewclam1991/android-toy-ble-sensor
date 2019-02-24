@@ -8,6 +8,8 @@ import dagger.Module;
 /**
  * Dagger module for the scanner data feature
  */
-@Module(includes = {ScannerXEventDataSourceModule.class, ScannerXResultDataSourceModule.class})
+@Module(includes = {
+    ScannerXEventDataSourceModule.class,
+    ScannerXResultDataSourceModule.class})
 public abstract class ScannerXDataModule {
 }

@@ -2,6 +2,9 @@ package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.bluetooth.BluetoothAdapter;
 
+import com.andrewclam.weatherclient.feature.scannerx.authority.data.AuthorityDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.authx.data.AuthXDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthX;
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
@@ -17,10 +20,13 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 class ScannerXController implements ScannerXContract.Controller {
+
+  private final AuthorityDataSource mAuthorityDataSource;
+
+  private final AuthXDataSource mAuthXDataSource;
 
   private final ScannerXEventDataSource mEventDataSource;
 
@@ -37,8 +43,12 @@ class ScannerXController implements ScannerXContract.Controller {
   private int mScanState;
 
   @Inject
-  ScannerXController(@NonNull ScannerXEventDataSource eventDataSource,
+  ScannerXController(@NonNull AuthorityDataSource authorityDataSource,
+                     @NonNull AuthXDataSource authXDataSource,
+                     @NonNull ScannerXEventDataSource eventDataSource,
                      @NonNull ScannerXResultDataSource resultDataSource) {
+    mAuthorityDataSource = authorityDataSource;
+    mAuthXDataSource = authXDataSource;
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
     mEventDisposables = new CompositeDisposable();
@@ -53,9 +63,24 @@ class ScannerXController implements ScannerXContract.Controller {
 
   @Override
   public void start() {
-    mEventDisposables.add(mEventDataSource.get()
-        .subscribeOn(AndroidSchedulers.mainThread())
+    // Note: without rx-authorization
+    //    mEventDisposables.add(mEventDataSource.get()
+    //        .subscribeOn(AndroidSchedulers.mainThread())
+    //        .subscribe(this::onEvent, this::onError)
+    //    );
+
+    // Note: with rx-authorization
+    mEventDisposables.add(mAuthXDataSource.getAuthX()
+        .filter(AuthX::isAuthorized)
+        .flatMap(r -> mEventDataSource.get())
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::onEvent, this::onError)
+    );
+
+    mEventDisposables.add(mAuthXDataSource.getAuthX()
+        .filter(AuthX::isDenied)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(denied -> stopScan(), this::onError)
     );
   }
 
@@ -93,9 +118,7 @@ class ScannerXController implements ScannerXContract.Controller {
     adapter.startLeScan(mScanCallback);
 
     mAutoStopDisposables.add(Completable.timer(10, TimeUnit.SECONDS)
-        .andThen(Completable.fromAction(this::stopScan))
-        .subscribeOn(Schedulers.computation())
-        .subscribe()
+        .subscribe(this::stopScan)
     );
 
     mScanState = SCAN_STATE_IN_PROGRESS;

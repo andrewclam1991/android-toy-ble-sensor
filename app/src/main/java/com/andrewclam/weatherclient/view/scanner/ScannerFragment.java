@@ -64,7 +64,7 @@ import timber.log.Timber;
  * - shows user a list of nearby {@link Peripheral}s.
  * - let user choose a {@link Peripheral} to pair.
  * <p>
- * Authority class responsible for
+ * AuthorityDataSource class responsible for
  * - request permission and setting from users
  * - handle on permission and setting changed
  */
