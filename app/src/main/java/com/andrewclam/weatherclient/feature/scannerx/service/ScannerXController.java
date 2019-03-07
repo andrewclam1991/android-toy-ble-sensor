@@ -3,6 +3,7 @@ package com.andrewclam.weatherclient.feature.scannerx.service;
 import android.bluetooth.BluetoothAdapter;
 
 import com.andrewclam.weatherclient.feature.scannerx.authx.data.AuthXDataSource;
+import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthXCommand;
 import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthXResult;
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
@@ -65,11 +66,19 @@ class ScannerXController implements ScannerXContract.Controller {
     //    );
 
     // Note: with rx-authorization
-    mEventDisposables.add(mAuthXDataSource.getAuthXResult()
-        .filter(AuthXResult::isAuthorized)
-        .flatMap(r -> mEventDataSource.get())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::onEvent, this::onError)
+    Completable setAuthXCommands = Completable.fromAction(() -> {
+      mAuthXDataSource.setAuthXCommand(AuthXCommand.IS_BLUETOOTH_LE_AVAILABLE);
+      mAuthXDataSource.setAuthXCommand(AuthXCommand.IS_BLUETOOTH_ADAPTER_AVAILABLE);
+      mAuthXDataSource.setAuthXCommand(AuthXCommand.IS_BLUETOOTH_PERMISSION_GRANTED);
+    });
+
+    mEventDisposables.add(
+        setAuthXCommands
+            .andThen(mAuthXDataSource.getAuthXResult())
+            .filter(AuthXResult::isAuthorized)
+            .flatMap(r -> mEventDataSource.get())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::onEvent, this::onError)
     );
 
     mEventDisposables.add(mAuthXDataSource.getAuthXResult()
