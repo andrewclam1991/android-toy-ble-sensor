@@ -17,7 +17,7 @@ public interface AuthXContract {
     void requestBluetoothPermission();
   }
 
-  interface Controller{
+  interface Presenter {
     Flowable<AuthXCommand> getCommand();
   }
 }

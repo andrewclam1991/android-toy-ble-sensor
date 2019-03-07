@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.view.util.idlingresource;
+package com.andrewclam.weatherclient.feature.util.idlingresource;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

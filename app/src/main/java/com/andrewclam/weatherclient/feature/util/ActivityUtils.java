@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.view.util;
+package com.andrewclam.weatherclient.feature.util;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

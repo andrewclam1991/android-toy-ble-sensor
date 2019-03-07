@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.view;
+package com.andrewclam.weatherclient.feature.main;
 
-/**
- * Base View class
- */
-public interface BaseView {
-  /**
-   * Call is synchronous on UI thread
-   *
-   * @return flag that indicates whether the
-   * view is visible and active.
-   */
-  boolean isActive();
+import com.andrewclam.weatherclient.view.BasePresenter;
+import com.andrewclam.weatherclient.view.BaseView;
+
+interface MainContract {
+  interface View extends BaseView {
+    void showScannerUi();
+  }
+
+  interface Presenter extends BasePresenter<View> {
+
+  }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andrewclam.weatherclient.view.main;
+package com.andrewclam.weatherclient.feature.main;
 
 import android.content.Intent;
 import android.os.Bundle;
