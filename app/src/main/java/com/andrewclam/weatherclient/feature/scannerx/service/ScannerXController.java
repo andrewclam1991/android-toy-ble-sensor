@@ -2,9 +2,8 @@ package com.andrewclam.weatherclient.feature.scannerx.service;
 
 import android.bluetooth.BluetoothAdapter;
 
-import com.andrewclam.weatherclient.feature.scannerx.authority.data.AuthorityDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.authx.data.AuthXDataSource;
-import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthX;
+import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthXResult;
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.data.result.ScannerXResultDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
@@ -24,8 +23,6 @@ import timber.log.Timber;
 
 class ScannerXController implements ScannerXContract.Controller {
 
-  private final AuthorityDataSource mAuthorityDataSource;
-
   private final AuthXDataSource mAuthXDataSource;
 
   private final ScannerXEventDataSource mEventDataSource;
@@ -43,11 +40,9 @@ class ScannerXController implements ScannerXContract.Controller {
   private int mScanState;
 
   @Inject
-  ScannerXController(@NonNull AuthorityDataSource authorityDataSource,
-                     @NonNull AuthXDataSource authXDataSource,
+  ScannerXController(@NonNull AuthXDataSource authXDataSource,
                      @NonNull ScannerXEventDataSource eventDataSource,
                      @NonNull ScannerXResultDataSource resultDataSource) {
-    mAuthorityDataSource = authorityDataSource;
     mAuthXDataSource = authXDataSource;
     mEventDataSource = eventDataSource;
     mResultDataSource = resultDataSource;
@@ -70,15 +65,15 @@ class ScannerXController implements ScannerXContract.Controller {
     //    );
 
     // Note: with rx-authorization
-    mEventDisposables.add(mAuthXDataSource.getAuthX()
-        .filter(AuthX::isAuthorized)
+    mEventDisposables.add(mAuthXDataSource.getAuthXResult()
+        .filter(AuthXResult::isAuthorized)
         .flatMap(r -> mEventDataSource.get())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::onEvent, this::onError)
     );
 
-    mEventDisposables.add(mAuthXDataSource.getAuthX()
-        .filter(AuthX::isDenied)
+    mEventDisposables.add(mAuthXDataSource.getAuthXResult()
+        .filter(AuthXResult::isDenied)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(denied -> stopScan(), this::onError)
     );

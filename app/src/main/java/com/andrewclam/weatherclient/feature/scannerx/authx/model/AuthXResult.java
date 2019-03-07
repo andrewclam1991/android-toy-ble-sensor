@@ -2,12 +2,15 @@ package com.andrewclam.weatherclient.feature.scannerx.authx.model;
 
 import java.util.Objects;
 
-public class AuthX {
+/**
+ * Models the result of a {@link AuthXCommand}
+ */
+public class AuthXResult {
   private final boolean isBluetoothLowEnergyAvailable;
   private final boolean isBluetoothAdapterAvailable;
   private final boolean isBluetoothPermissionGranted;
 
-  public AuthX(boolean isBluetoothLowEnergyAvailable, boolean isBluetoothAdapterAvailable, boolean isBluetoothPermissionGranted) {
+  public AuthXResult(boolean isBluetoothLowEnergyAvailable, boolean isBluetoothAdapterAvailable, boolean isBluetoothPermissionGranted) {
     this.isBluetoothLowEnergyAvailable = isBluetoothLowEnergyAvailable;
     this.isBluetoothAdapterAvailable = isBluetoothAdapterAvailable;
     this.isBluetoothPermissionGranted = isBluetoothPermissionGranted;
@@ -35,7 +38,7 @@ public class AuthX {
 
   @Override
   public String toString() {
-    return "AuthX{" +
+    return "AuthXResult{" +
         "isBluetoothLowEnergyAvailable=" + isBluetoothLowEnergyAvailable +
         ", isBluetoothAdapterAvailable=" + isBluetoothAdapterAvailable +
         ", isBluetoothPermissionGranted=" + isBluetoothPermissionGranted +
@@ -45,11 +48,11 @@ public class AuthX {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof AuthX)) return false;
-    AuthX authX = (AuthX) o;
-    return isBluetoothLowEnergyAvailable() == authX.isBluetoothLowEnergyAvailable() &&
-        isBluetoothAdapterAvailable() == authX.isBluetoothAdapterAvailable() &&
-        isBluetoothPermissionGranted() == authX.isBluetoothPermissionGranted();
+    if (!(o instanceof AuthXResult)) return false;
+    AuthXResult authXResult = (AuthXResult) o;
+    return isBluetoothLowEnergyAvailable() == authXResult.isBluetoothLowEnergyAvailable() &&
+        isBluetoothAdapterAvailable() == authXResult.isBluetoothAdapterAvailable() &&
+        isBluetoothPermissionGranted() == authXResult.isBluetoothPermissionGranted();
   }
 
   @Override

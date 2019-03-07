@@ -1,6 +1,7 @@
 package com.andrewclam.weatherclient.feature.scannerx.authx.data;
 
-import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthX;
+import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthXResult;
+import com.andrewclam.weatherclient.feature.scannerx.authx.model.AuthXCommand;
 
 import javax.inject.Inject;
 
@@ -9,12 +10,14 @@ import io.reactivex.processors.BehaviorProcessor;
 
 class AuthXDataSourceImpl implements AuthXDataSource {
 
+  private final BehaviorProcessor<AuthXCommand> mAuthXCommandStream;
   private final BehaviorProcessor<Boolean> mHasBluetoothLowEnergyStream;
   private final BehaviorProcessor<Boolean> mHasBluetoothAdapterStream;
   private final BehaviorProcessor<Boolean> mHasBluetoothPermissionStream;
 
   @Inject
   AuthXDataSourceImpl(){
+    mAuthXCommandStream = BehaviorProcessor.create();
     mHasBluetoothLowEnergyStream = BehaviorProcessor.create();
     mHasBluetoothAdapterStream = BehaviorProcessor.create();
     mHasBluetoothPermissionStream = BehaviorProcessor.create();
@@ -36,6 +39,11 @@ class AuthXDataSourceImpl implements AuthXDataSource {
   }
 
   @Override
+  public void setAuthXCommand(AuthXCommand command) {
+     mAuthXCommandStream.onNext(command);
+  }
+
+  @Override
   public Flowable<Boolean> getHasBluetoothLowEnergy() {
     return mHasBluetoothLowEnergyStream;
   }
@@ -51,11 +59,16 @@ class AuthXDataSourceImpl implements AuthXDataSource {
   }
 
   @Override
-  public Flowable<AuthX> getAuthX() {
+  public Flowable<AuthXResult> getAuthXResult() {
     return Flowable.combineLatest(
         getHasBluetoothLowEnergy(),
         getHasBluetoothAdapter(),
         getHasBluetoothPermission(),
-        AuthX::new); // Note: constructor signature could be confusing
+        AuthXResult::new); // Note: constructor signature could be confusing
+  }
+
+  @Override
+  public Flowable<AuthXCommand> getAuthXCommand() {
+    return mAuthXCommandStream;
   }
 }
