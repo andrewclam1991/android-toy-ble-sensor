@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.andrewclam.weatherclient.feature.scannerx.authx.view.AuthXService;
 import com.andrewclam.weatherclient.feature.scannerx.data.event.ScannerXEventDataSource;
 import com.andrewclam.weatherclient.feature.scannerx.model.ScannerXEvent;
 
@@ -92,9 +93,9 @@ public class ScannerXService extends DaggerService implements ScannerXContract.S
 
   @Override
   public void onDestroy() {
+    super.onDestroy();
     mController.stop();
     mCompositeDisposable.clear();
-    super.onDestroy();
   }
 
   @Override

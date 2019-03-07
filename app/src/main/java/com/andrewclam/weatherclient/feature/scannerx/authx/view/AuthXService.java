@@ -4,32 +4,45 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 
 import com.andrewclam.weatherclient.feature.scannerx.authx.data.AuthXDataSource;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import dagger.android.DaggerService;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-class ViewImpl extends DaggerAppCompatActivity implements AuthXContract.View {
+/**
+ * Uses framework {@link DaggerAppCompatActivity} to implement {@link AuthXContract.View}
+ */
+public class AuthXService extends DaggerService implements AuthXContract.View {
 
   @Inject
   AuthXDataSource mDataSource;
 
   private final CompositeDisposable mCompositeDisposable;
 
-  public ViewImpl() {
+  @Inject
+  public AuthXService() {
     mCompositeDisposable = new CompositeDisposable();
   }
 
+  @Nullable
   @Override
-  protected void onResume() {
-    super.onResume();
+  public IBinder onBind(Intent intent) {
+    return null;
+  }
 
+  @Override
+  public void onCreate() {
+    super.onCreate();
     // Note: encapsulate the authXCommand with command pattern??
     mCompositeDisposable.add(mDataSource.getAuthXCommand().subscribe(authXCommand -> {
       switch (authXCommand) {
@@ -53,8 +66,8 @@ class ViewImpl extends DaggerAppCompatActivity implements AuthXContract.View {
   }
 
   @Override
-  protected void onPause() {
-    super.onPause();
+  public void onDestroy() {
+    super.onDestroy();
     mCompositeDisposable.clear();
   }
 

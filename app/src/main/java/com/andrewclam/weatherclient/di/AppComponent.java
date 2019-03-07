@@ -29,8 +29,8 @@ import com.andrewclam.weatherclient.di.modules.ActivityBindingModule;
 import com.andrewclam.weatherclient.di.modules.ApplicationModule;
 import com.andrewclam.weatherclient.di.modules.BluetoothAdapterProviderModule;
 import com.andrewclam.weatherclient.di.modules.SchedulerProviderModule;
+import com.andrewclam.weatherclient.feature.scannerx.authx.data.AuthXDataSourceModule;
 import com.andrewclam.weatherclient.feature.scannerx.data.ScannerXDataModule;
-import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
 
 import javax.inject.Singleton;
 
@@ -53,13 +53,13 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Singleton
 @Component(modules = {
     // data modules
-    ScannerServiceModule.class,
     PeripheralsRepositoryModule.class,
     SensorsRepositoryModule.class,
     DataPointsRepositoryModule.class,
     SensorDataPointModule.class,
     AppDatabaseModule.class,
 
+    AuthXDataSourceModule.class,
     ScannerXDataModule.class,
 
     // state modules

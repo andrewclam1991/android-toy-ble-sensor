@@ -22,7 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.exceptions.OnErrorNotImplementedException;
 
-public class ScannerXView extends DaggerAppCompatActivity implements ScannerXContract.View, View.OnClickListener {
+public class ScannerXActivity extends DaggerAppCompatActivity implements ScannerXContract.View, View.OnClickListener {
 
   @Inject
   ScannerXEventDataSource mEventDataSource;
@@ -40,7 +40,7 @@ public class ScannerXView extends DaggerAppCompatActivity implements ScannerXCon
   Button mStopScannerBtn;
 
   @Inject
-  public ScannerXView() {
+  public ScannerXActivity() {
     mCompositeDisposable = new CompositeDisposable();
   }
 

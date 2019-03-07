@@ -27,14 +27,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.scanner.ScannerActivity" />
-        <activity android:name=".service.scanner.ScannerAuthority" />
-
-        <service android:name=".service.scanner.ScannerService" />
-        <service android:name=".service.connection.ConnectionService" />
         <service android:name=".feature.scannerx.service.ScannerXService" />
+        <service android:name=".feature.scannerx.authx.view.AuthXService" />
 
-        <activity android:name=".feature.scannerx.view.ScannerXView" />
+        <activity android:name=".feature.scannerx.view.ScannerXActivity" />
     </application>
 
 </manifest>

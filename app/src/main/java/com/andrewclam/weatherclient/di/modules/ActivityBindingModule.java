@@ -18,15 +18,11 @@ package com.andrewclam.weatherclient.di.modules;
 
 import com.andrewclam.weatherclient.di.ActivityScoped;
 import com.andrewclam.weatherclient.di.ServiceScoped;
-import com.andrewclam.weatherclient.feature.scannerx.service.ScannerXServiceModule;
+import com.andrewclam.weatherclient.feature.scannerx.authx.view.AuthXService;
 import com.andrewclam.weatherclient.feature.scannerx.service.ScannerXService;
-import com.andrewclam.weatherclient.feature.scannerx.view.ScannerXView;
+import com.andrewclam.weatherclient.feature.scannerx.service.ScannerXServiceModule;
+import com.andrewclam.weatherclient.feature.scannerx.view.ScannerXActivity;
 import com.andrewclam.weatherclient.feature.scannerx.view.ScannerXViewModule;
-import com.andrewclam.weatherclient.service.scanner.ScannerAuthority;
-import com.andrewclam.weatherclient.service.scanner.ScannerService;
-import com.andrewclam.weatherclient.service.scanner.ScannerServiceModule;
-import com.andrewclam.weatherclient.view.scanner.ScannerActivity;
-import com.andrewclam.weatherclient.view.scanner.ScannerModule;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -47,16 +43,6 @@ import io.reactivex.annotations.NonNull;
 @Module
 public abstract class ActivityBindingModule {
   @NonNull
-  @ActivityScoped
-  @ContributesAndroidInjector(modules = {ScannerModule.class})
-  abstract ScannerActivity bindsScannerActivity();
-
-  @NonNull
-  @ServiceScoped
-  @ContributesAndroidInjector(modules = {ScannerServiceModule.class})
-  abstract ScannerService bindsScannerService();
-
-  @NonNull
   @ServiceScoped
   @ContributesAndroidInjector(modules = ScannerXServiceModule.class)
   abstract ScannerXService scannerXService();
@@ -64,10 +50,10 @@ public abstract class ActivityBindingModule {
   @NonNull
   @ActivityScoped
   @ContributesAndroidInjector(modules = ScannerXViewModule.class)
-  abstract ScannerXView scannerView();
+  abstract ScannerXActivity scannerXActivity();
 
   @NonNull
   @ActivityScoped
   @ContributesAndroidInjector
-  abstract ScannerAuthority bindsScannerAuthority();
+  abstract AuthXService authXActivity();
 }

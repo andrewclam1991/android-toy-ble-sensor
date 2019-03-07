@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import io.reactivex.Flowable;
 import io.reactivex.processors.BehaviorProcessor;
 
-class AuthXDataSourceImpl implements AuthXDataSource {
+class AuthXCacheDataSource implements AuthXDataSource {
 
   private final BehaviorProcessor<AuthXCommand> mAuthXCommandStream;
   private final BehaviorProcessor<Boolean> mHasBluetoothLowEnergyStream;
@@ -16,7 +16,7 @@ class AuthXDataSourceImpl implements AuthXDataSource {
   private final BehaviorProcessor<Boolean> mHasBluetoothPermissionStream;
 
   @Inject
-  AuthXDataSourceImpl(){
+  AuthXCacheDataSource(){
     mAuthXCommandStream = BehaviorProcessor.create();
     mHasBluetoothLowEnergyStream = BehaviorProcessor.create();
     mHasBluetoothAdapterStream = BehaviorProcessor.create();
